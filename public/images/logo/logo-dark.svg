@@ -1,0 +1,32 @@
+<svg width="148" height="32" viewBox="0 0 148 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Icon Background -->
+  <rect width="32" height="32" rx="8" fill="#7BA428"/>
+
+  <!-- Hammer / Tool Icon -->
+  <path d="M18 16L11.75 22.25C11.62 22.38 11.46 22.48 11.29 22.56C11.12 22.63 10.94 22.66 10.75 22.66C10.38 22.66 10.02 22.51 9.75 22.25C9.49 21.98 9.34 21.62 9.34 21.25C9.34 20.87 9.49 20.51 9.75 20.25L16 14"
+        stroke="white"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <path d="M20 18L22.67 15.33"
+        stroke="white"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <path d="M22.33 15.67L21.06 14.39C20.81 14.14 20.67 13.8 20.67 13.45V13.22C20.67 12.87 20.53 12.53 20.28 12.28L19.17 11.17C18.42 10.42 17.4 10 16.34 10H14L14.83 10.83C15.58 11.58 16 12.6 16 13.66V14.67L17.33 16H18.11C18.47 16 18.81 16.14 19.06 16.39L20.33 17.67"
+        stroke="white"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <!-- Brand Name -->
+  <text x="40" y="22"
+        fill="white"
+        font-family="Inter, Arial, sans-serif"
+        font-size="16"
+        font-weight="700">
+    TugaTrades
+  </text>
+</svg>
