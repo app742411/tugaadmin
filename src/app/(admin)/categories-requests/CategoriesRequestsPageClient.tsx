@@ -18,8 +18,10 @@ import { CategoryRequestItem } from "@/types/category-request.types";
 import { MoreDotIcon } from "@/icons";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
+import { useRouter } from "next/navigation";
 
 export default function CategoriesRequestsPageClient() {
+  const router = useRouter();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [status, setStatus] = useState<string>("--");
@@ -251,7 +253,11 @@ export default function CategoriesRequestsPageClient() {
                   return (
                     <TableRow
                       key={req.id}
-                      onClick={() => setSelectedRequest(req)}
+                      onClick={() => {
+                        if (trader?.id) {
+                          router.push(`/traders/${trader.id}`);
+                        }
+                      }}
                       className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer"
                     >
                       {/* Name / User Info */}
@@ -314,35 +320,37 @@ export default function CategoriesRequestsPageClient() {
                             onClose={() => setOpenDropdownId(null)}
                             className="w-36 shadow-lg border border-gray-150 dark:border-gray-800"
                           >
-                            <DropdownItem
-                              onItemClick={() => {
-                                handleDirectApprove(req.id);
-                                setOpenDropdownId(null);
-                              }}
-                              className="text-brand-600 dark:text-brand-400 font-medium hover:bg-brand-50 dark:hover:bg-brand-500/10"
-                            >
-                              Approve
-                            </DropdownItem>
-                            <DropdownItem
-                              onItemClick={() => {
-                                setSelectedRequest(req);
-                                setReviewType("REJECT");
-                                setIsReviewing(true);
-                                setOpenDropdownId(null);
-                              }}
-                              className="text-rose-600 dark:text-rose-400 font-medium hover:bg-rose-50 dark:hover:bg-rose-500/10"
-                            >
-                              Reject
-                            </DropdownItem>
-                            <DropdownItem
-                              onItemClick={() => {
-                                setSelectedRequest(req);
-                                setOpenDropdownId(null);
-                              }}
-                              className="text-gray-700 dark:text-gray-300 font-medium"
-                            >
-                              Inspect Details
-                            </DropdownItem>
+                            <div onClick={(e) => e.stopPropagation()}>
+                              <DropdownItem
+                                onItemClick={() => {
+                                  handleDirectApprove(req.id);
+                                  setOpenDropdownId(null);
+                                }}
+                                className="text-brand-600 dark:text-brand-400 font-medium hover:bg-brand-50 dark:hover:bg-brand-500/10"
+                              >
+                                Approve
+                              </DropdownItem>
+                              <DropdownItem
+                                onItemClick={() => {
+                                  setSelectedRequest(req);
+                                  setReviewType("REJECT");
+                                  setIsReviewing(true);
+                                  setOpenDropdownId(null);
+                                }}
+                                className="text-rose-600 dark:text-rose-400 font-medium hover:bg-rose-50 dark:hover:bg-rose-500/10"
+                              >
+                                Reject
+                              </DropdownItem>
+                              <DropdownItem
+                                onItemClick={() => {
+                                  setSelectedRequest(req);
+                                  setOpenDropdownId(null);
+                                }}
+                                className="text-gray-700 dark:text-gray-300 font-medium"
+                              >
+                                Inspect Details
+                              </DropdownItem>
+                            </div>
                           </Dropdown>
                         </div>
                       </TableCell>

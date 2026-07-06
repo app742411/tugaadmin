@@ -148,35 +148,46 @@ export default function MonthlySalesChart() {
         <div className="inline-flex rounded-full bg-gray-100 p-1 dark:bg-gray-800">
           <button
             onClick={() => setActiveTab("monthly")}
-            className={`rounded-full px-4 py-1 text-xs font-bold transition-all ${
-              activeTab === "monthly"
-                ? "bg-[#6E9625] text-white shadow-sm"
-                : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-            }`}
+            className={`rounded-full px-4 py-1 text-xs font-bold transition-all ${activeTab === "monthly"
+              ? "bg-[#6E9625] text-white shadow-sm"
+              : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
+              }`}
           >
             Monthly
           </button>
           <button
             onClick={() => setActiveTab("weekly")}
-            className={`rounded-full px-4 py-1 text-xs font-bold transition-all ${
-              activeTab === "weekly"
-                ? "bg-[#6E9625] text-white shadow-sm"
-                : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
-            }`}
+            className={`rounded-full px-4 py-1 text-xs font-bold transition-all ${activeTab === "weekly"
+              ? "bg-[#6E9625] text-white shadow-sm"
+              : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
+              }`}
           >
             Weekly
           </button>
         </div>
       </div>
 
-      <div className="flex-1 w-full overflow-hidden">
-        <div className="-ml-2 w-full pr-1">
+      <div className="flex-1 w-full overflow-hidden min-w-0">
+        <div className="-ml-2 w-full pr-1 min-w-0">
           <ReactApexChart
             options={options}
             series={series}
             type="area"
-            height={260}
+            height={220}
+            width="100%"
           />
+        </div>
+      </div>
+
+      {/* Summary Footer to fill empty space */}
+      <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4 dark:border-gray-800">
+        <div className="flex flex-col">
+          <span className="text-xs text-gray-500 dark:text-gray-400">Total Active Jobs (Year)</span>
+          <span className="text-lg font-bold text-gray-900 dark:text-white">18,450</span>
+        </div>
+        <div className="flex flex-col text-right">
+          <span className="text-xs text-gray-500 dark:text-gray-400">Monthly Average</span>
+          <span className="text-lg font-bold text-gray-900 dark:text-white">1,537</span>
         </div>
       </div>
     </div>

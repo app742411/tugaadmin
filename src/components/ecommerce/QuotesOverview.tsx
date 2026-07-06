@@ -79,14 +79,14 @@ export default function QuotesOverview() {
         Quotes Overview
       </h3>
 
-      <div className="flex flex-col sm:flex-row items-center justify-between flex-1 gap-6">
+      <div className="flex flex-col items-center justify-center flex-1 gap-6 w-full">
         {/* Donut Chart */}
-        <div className="relative w-full max-w-[220px] mx-auto sm:mx-0">
-          <ReactApexChart options={options} series={series} type="donut" height={220} />
+        <div className="relative w-full max-w-[200px] shrink-0">
+          <ReactApexChart options={options} series={series} type="donut" height={200} width="100%" />
         </div>
 
         {/* Legend */}
-        <div className="flex flex-col gap-4 min-w-[140px]">
+        <div className="flex flex-col gap-4 w-full max-w-[200px]">
           {/* Legend Item 1 */}
           <div className="flex flex-col">
             <div className="flex items-center gap-2">

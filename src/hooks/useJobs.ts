@@ -142,6 +142,22 @@ export const useCloseJob = () => {
   });
 };
 
+export const useGetJobActionLogs = (params: JobQueryParams) => {
+  const { data, isLoading, error, refetch, isPlaceholderData } = useQuery<any>({
+    queryKey: ["jobActionLogs", params],
+    queryFn: () => jobService.getJobActionLogs(params),
+    placeholderData: (previousData: any) => previousData,
+  });
+
+  return {
+    data,
+    isLoading,
+    error: error ? (error as any).message || "Failed to load job action logs" : null,
+    refetch,
+    isPlaceholderData,
+  };
+};
+
 // Helper function to avoid queryClient access issues
 function queryClientHook() {
   return useQueryClient();

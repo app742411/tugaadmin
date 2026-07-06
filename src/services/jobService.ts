@@ -93,4 +93,17 @@ export const jobService = {
     const res = await apiClient.post(`/api/jobs/admin/${jobId}/close`);
     return res.data;
   },
+
+  /** Fetch job action logs */
+  getJobActionLogs: async (params?: JobQueryParams): Promise<any> => {
+    const cleanParams: Record<string, any> = {};
+    if (params) {
+      if (params.page !== undefined) cleanParams.page = params.page;
+      if (params.limit !== undefined) cleanParams.limit = params.limit;
+    }
+    const res = await apiClient.get("/api/admin/job-action-logs", {
+      params: cleanParams,
+    });
+    return res.data;
+  },
 };

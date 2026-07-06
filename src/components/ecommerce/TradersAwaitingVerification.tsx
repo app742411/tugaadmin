@@ -70,7 +70,7 @@ const tableData: TraderApplication[] = [
 const PdfIcon = () => (
   <span className="inline-flex items-center justify-center bg-white text-red-500 border border-red-200 text-[10px] font-bold px-1.5 py-0.5 rounded gap-1 cursor-pointer hover:bg-red-50 transition-colors">
     <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="stroke-current">
-      <path d="M1 11V1M9 11V4.5L5.5 1H1" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M1 11V1M9 11V4.5L5.5 1H1" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
     PDF
   </span>
@@ -80,7 +80,7 @@ const PdfIcon = () => (
 const ImgIcon = () => (
   <span className="inline-flex items-center justify-center bg-white text-blue-500 border border-blue-200 text-[10px] font-bold px-1.5 py-0.5 rounded gap-1 cursor-pointer hover:bg-blue-50 transition-colors">
     <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="stroke-current">
-      <path d="M1 11V1M9 11V4.5L5.5 1H1" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M1 11V1M9 11V4.5L5.5 1H1" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
     IMG
   </span>
@@ -128,12 +128,12 @@ export default function TradersAwaitingVerification() {
               >
                 SUBMITTED
               </TableCell>
-              <TableCell
+              {/* <TableCell
                 isHeader
                 className="py-3 font-semibold text-gray-400 text-start text-[10px] uppercase tracking-wider dark:text-gray-500"
               >
                 DOCUMENTS
-              </TableCell>
+              </TableCell> */}
               <TableCell
                 isHeader
                 className="py-3 font-semibold text-gray-400 text-start text-[10px] uppercase tracking-wider dark:text-gray-500"
@@ -167,13 +167,13 @@ export default function TradersAwaitingVerification() {
                 <TableCell className="py-4 text-gray-500 font-medium text-xs dark:text-gray-400">
                   {trader.submitted}
                 </TableCell>
-                <TableCell className="py-4">
+                {/* <TableCell className="py-4">
                   <div className="flex items-center gap-1.5">
                     {trader.docs.map((doc, i) =>
                       doc === "pdf" ? <PdfIcon key={i} /> : <ImgIcon key={i} />
                     )}
                   </div>
-                </TableCell>
+                </TableCell> */}
                 <TableCell className="py-4">
                   <div className="flex items-center gap-2">
                     <button className="inline-flex items-center justify-center py-1.5 px-3 font-bold rounded-lg bg-[#6E9625] text-white text-xs hover:bg-[#5a7a1e] transition-colors shadow-sm cursor-pointer">

@@ -16,14 +16,20 @@ import { useGetJobs } from "@/hooks/useJobs";
 import { JobItem } from "@/types/job.types";
 import Link from "next/link";
 import { MoreDotIcon } from "@/icons";
+import JobActionLogs from "./JobActionLogs";
+import { useRouter } from "next/navigation";
+import { Dropdown } from "@/components/ui/dropdown/Dropdown";
+import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 
 export default function JobsPageClient() {
+  const router = useRouter();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [status, setStatus] = useState<string>("--");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedJob, setSelectedJob] = useState<JobItem | null>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
   // Debounce search input
   useEffect(() => {
@@ -153,147 +159,193 @@ export default function JobsPageClient() {
         </div>
       </div>
 
-      {/* Jobs Table */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-xs overflow-hidden">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-gray-55/40 dark:bg-gray-950/20 border-b border-gray-100 dark:border-gray-800/80">
-                <TableCell className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-400 text-start">Job Title</TableCell>
-                <TableCell className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-400 text-start">Customer</TableCell>
-                <TableCell className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-400 text-start">Category</TableCell>
-                <TableCell className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-400 text-start">Budget & Timescale</TableCell>
-                <TableCell className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-400 text-center">Status</TableCell>
-                <TableCell className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-400 text-center">Actions</TableCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                Array.from({ length: 4 }).map((_, idx) => (
-                  <TableRow key={idx}>
-                    <TableCell colSpan={6} className="px-6 py-4.5 text-center">
-                      <div className="h-8 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse w-full"></div>
-                    </TableCell>
+      {/* Main Grid Layout */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        {/* Column 1: Jobs Table */}
+        <div className="xl:col-span-2 flex flex-col gap-6">
+          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-xs overflow-hidden">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-gray-55/40 dark:bg-gray-950/20 border-b border-gray-100 dark:border-gray-800/80">
+                    <TableCell className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-400 text-start">Job Title</TableCell>
+                    <TableCell className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-400 text-start">Customer</TableCell>
+                    <TableCell className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-400 text-start">Category</TableCell>
+                    <TableCell className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-400 text-start">Budget & Timescale</TableCell>
+                    <TableCell className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-400 text-center">Status</TableCell>
+                    <TableCell className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-400 text-center">Actions</TableCell>
                   </TableRow>
-                ))
-              ) : error ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="px-6 py-10 text-center text-red-500">
-                    <h4 className="text-sm font-semibold">Failed to fetch jobs</h4>
-                    <p className="text-xs mt-1">{error}</p>
-                  </TableCell>
-                </TableRow>
-              ) : jobsList.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="px-6 py-16 text-center text-gray-400">
-                    <p className="text-xs font-semibold">No Jobs Found</p>
-                  </TableCell>
-                </TableRow>
-              ) : (
-                jobsList.map((job) => (
-                  <TableRow
-                    key={job.id}
-                    onClick={() => setSelectedJob(job)}
-                    className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer"
-                  >
-                    {/* Job Title / ID */}
-                    <TableCell className="px-6 py-3.5 text-start">
-                      <div className="flex flex-col">
-                        <Link
-                          href={`/jobs/${job.id}`}
-                          className="font-semibold text-brand-500 hover:underline text-xs truncate max-w-[200px]"
-                        >
-                          {job.title}
-                        </Link>
-                        <span className="text-[10px] text-gray-400 font-mono mt-0.5 truncate max-w-[160px] select-all">
-                          ID: {job.id}
-                        </span>
-                      </div>
-                    </TableCell>
-
-                    {/* Customer */}
-                    <TableCell className="px-6 py-3.5 text-start">
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-gray-800 dark:text-gray-250 text-xs">
-                          {job.customer?.fullName || "Unknown"}
-                        </span>
-                        <span className="text-[10px] text-gray-400">
-                          {job.customer?.email || "No email"}
-                        </span>
-                      </div>
-                    </TableCell>
-
-                    {/* Category / Sub */}
-                    <TableCell className="px-6 py-3.5 text-start">
-                      <div className="flex flex-col">
-                        <span className="text-xs font-semibold text-gray-800 dark:text-gray-250">
-                          {job.category?.name || "N/A"}
-                        </span>
-                        <span className="text-[10px] text-gray-450 dark:text-gray-500">
-                          {job.subCategory?.name || "N/A"}
-                        </span>
-                      </div>
-                    </TableCell>
-
-                    {/* Budget & timescale */}
-                    <TableCell className="px-6 py-3.5 text-start">
-                      <div className="flex flex-col">
-                        <span className="text-xs font-bold text-gray-850 dark:text-gray-200">
-                          {formatBudgetRange(job.budgetRange)}
-                        </span>
-                        <span className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1.5">
-                          {job.emergency && <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse" />}
-                          {job.timescale}
-                        </span>
-                      </div>
-                    </TableCell>
-
-                    {/* Status Badge */}
-                    <TableCell className="px-6 py-3.5 text-center">
-                      <div className="flex flex-col items-center gap-1.5">
-                        <Badge size="sm" color={getStatusColor(job.status)}>
-                          {job.status}
-                        </Badge>
-                        <Badge size="sm" color={getDistributionColor(job.distributionStatus)} variant="light">
-                          {job.distributionStatus}
-                        </Badge>
-                      </div>
-                    </TableCell>
-
-                    {/* Actions */}
-                    <TableCell className="px-6 py-3.5 text-center">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Open an action menu in the future
-                        }}
-                        className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-white/[0.05] transition-colors"
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    Array.from({ length: 4 }).map((_, idx) => (
+                      <TableRow key={idx}>
+                        <TableCell colSpan={6} className="px-6 py-4.5 text-center">
+                          <div className="h-8 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse w-full"></div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : error ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="px-6 py-10 text-center text-red-500">
+                        <h4 className="text-sm font-semibold">Failed to fetch jobs</h4>
+                        <p className="text-xs mt-1">{error}</p>
+                      </TableCell>
+                    </TableRow>
+                  ) : jobsList.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="px-6 py-16 text-center text-gray-400">
+                        <p className="text-xs font-semibold">No Jobs Found</p>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    jobsList.map((job) => (
+                      <TableRow
+                        key={job.id}
+                        onClick={() => router.push(`/jobs/${job.id}`)}
+                        className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer"
                       >
-                        <MoreDotIcon />
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                        {/* Job Title / ID */}
+                        <TableCell className="px-6 py-3.5 text-start">
+                          <div className="flex flex-col">
+                            <Link
+                              href={`/jobs/${job.id}`}
+                              className="font-semibold text-brand-500 hover:underline text-xs truncate max-w-[200px]"
+                            >
+                              {job.title}
+                            </Link>
+                            <span className="text-[10px] text-gray-400 font-mono mt-0.5 truncate max-w-[160px] select-all">
+                              ID: {job.id}
+                            </span>
+                          </div>
+                        </TableCell>
+
+                        {/* Customer */}
+                        <TableCell className="px-6 py-3.5 text-start">
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-gray-800 dark:text-gray-250 text-xs">
+                              {job.customer?.fullName || "Unknown"}
+                            </span>
+                            <span className="text-[10px] text-gray-400">
+                              {job.customer?.email || "No email"}
+                            </span>
+                          </div>
+                        </TableCell>
+
+                        {/* Category / Sub */}
+                        <TableCell className="px-6 py-3.5 text-start">
+                          <div className="flex flex-col">
+                            <span className="text-xs font-semibold text-gray-800 dark:text-gray-250">
+                              {job.category?.name || "N/A"}
+                            </span>
+                            <span className="text-[10px] text-gray-450 dark:text-gray-500">
+                              {job.subCategory?.name || "N/A"}
+                            </span>
+                          </div>
+                        </TableCell>
+
+                        {/* Budget & timescale */}
+                        <TableCell className="px-6 py-3.5 text-start">
+                          <div className="flex flex-col">
+                            <span className="text-xs font-bold text-gray-850 dark:text-gray-200">
+                              {formatBudgetRange(job.budgetRange)}
+                            </span>
+                            <span className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1.5">
+                              {job.emergency && <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse" />}
+                              {job.timescale}
+                            </span>
+                          </div>
+                        </TableCell>
+
+                        {/* Status Badge */}
+                        <TableCell className="px-6 py-3.5 text-center">
+                          <div className="flex flex-col items-center gap-1.5">
+                            <Badge size="sm" color={getStatusColor(job.status)}>
+                              {job.status}
+                            </Badge>
+                            <Badge size="sm" color={getDistributionColor(job.distributionStatus)} variant="light">
+                              {job.distributionStatus}
+                            </Badge>
+                          </div>
+                        </TableCell>
+
+                        {/* Actions */}
+                        <TableCell className="px-6 py-3.5 text-center">
+                          <div className="relative inline-block text-left">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenDropdownId(openDropdownId === job.id ? null : job.id);
+                              }}
+                              className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-white/[0.05] transition-colors"
+                            >
+                              <MoreDotIcon />
+                            </button>
+
+                            <Dropdown
+                              isOpen={openDropdownId === job.id}
+                              onClose={() => setOpenDropdownId(null)}
+                              className="w-48 right-0 top-full z-50 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-lg p-2"
+                            >
+                              <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-1">
+                                <DropdownItem
+                                  onItemClick={() => {
+                                    setOpenDropdownId(null);
+                                    setSelectedJob(job);
+                                  }}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                                >
+                                  <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                  </svg>
+                                  Quick Details
+                                </DropdownItem>
+
+                                <div className="h-px bg-gray-100 dark:bg-gray-800 my-1 mx-2" />
+
+                                <DropdownItem
+                                  onItemClick={() => setOpenDropdownId(null)}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                  Delete Job
+                                </DropdownItem>
+                              </div>
+                            </Dropdown>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Pagination */}
+          {!isLoading && !error && jobsList.length > 0 && (
+            <Pagination
+              currentPage={paginationInfo.page}
+              totalPages={paginationInfo.totalPages}
+              totalItems={paginationInfo.total}
+              limit={paginationInfo.limit}
+              onPageChange={setPage}
+              onLimitChange={(l) => {
+                setLimit(l);
+                setPage(1);
+              }}
+            />
+          )}
+        </div>
+
+        {/* Column 2: Audit Logs */}
+        <div className="xl:col-span-1">
+          <JobActionLogs />
         </div>
       </div>
-
-      {/* Pagination */}
-      {!isLoading && !error && jobsList.length > 0 && (
-        <Pagination
-          currentPage={paginationInfo.page}
-          totalPages={paginationInfo.totalPages}
-          totalItems={paginationInfo.total}
-          limit={paginationInfo.limit}
-          onPageChange={setPage}
-          onLimitChange={(l) => {
-            setLimit(l);
-            setPage(1);
-          }}
-        />
-      )}
 
       {/* Slide-over Inspection Drawer */}
       {selectedJob && (

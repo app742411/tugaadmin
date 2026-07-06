@@ -16,14 +16,21 @@ import { CustomerItem } from "@/types/customer.types";
 import Select from "@/components/ui/select/Select";
 import Link from "next/link";
 import { MoreDotIcon } from "@/icons";
+import { Dropdown } from "@/components/ui/dropdown/Dropdown";
+import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
+import { useRouter } from "next/navigation";
 
 export default function CustomersPageClient() {
+  const router = useRouter();
   // Query parameters state
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [status, setStatus] = useState<string>("--");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  // Dropdown state
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
   // Side drawer state for customer details inspection
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerItem | null>(null);
@@ -135,8 +142,13 @@ export default function CustomersPageClient() {
         </div>
       </div>
 
-      {/* Filter and Search Bar Card */}
-      <div className="p-5 mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+      <div className="flex flex-col xl:flex-row gap-6 items-start">
+        
+        {/* Left Column: Search & Table */}
+        <div className="transition-all duration-300 w-full flex flex-col gap-6">
+          
+          {/* Filter and Search Bar Card */}
+          <div className="p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
           {/* Search Box */}
           <div className="flex flex-col gap-1.5">
@@ -318,7 +330,7 @@ export default function CustomersPageClient() {
                     return (
                       <TableRow
                         key={customer.id}
-                        onClick={() => setSelectedCustomer(customer)}
+                        onClick={() => router.push(`/customers/${customer.id}`)}
                         className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer"
                       >
                         {/* Name and avatar info */}
@@ -380,15 +392,73 @@ export default function CustomersPageClient() {
 
                         {/* Actions */}
                         <TableCell className="px-6 py-3.5 text-center">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // Open an action menu in the future
-                            }}
-                            className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-white/[0.05] transition-colors"
-                          >
-                            <MoreDotIcon />
-                          </button>
+                          <div className="relative flex justify-center">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenDropdownId(
+                                  openDropdownId === customer.id ? null : customer.id
+                                );
+                              }}
+                              className={`inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-white/[0.05] transition-colors ${openDropdownId === customer.id ? 'bg-gray-100 text-gray-700 dark:bg-white/[0.05] dark:text-gray-200' : ''}`}
+                            >
+                              <MoreDotIcon />
+                            </button>
+
+                            <Dropdown
+                              isOpen={openDropdownId === customer.id}
+                              onClose={() => setOpenDropdownId(null)}
+                              className="w-48 absolute right-0 top-full z-50 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-lg p-2"
+                            >
+                              <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-1">
+                                <DropdownItem
+                                  onItemClick={() => {
+                                    setOpenDropdownId(null);
+                                    setSelectedCustomer(customer);
+                                  }}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                                >
+                                  <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                  </svg>
+                                  Quick Details
+                                </DropdownItem>
+
+                                <DropdownItem
+                                  onItemClick={() => setOpenDropdownId(null)}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                                >
+                                  <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                                  </svg>
+                                  Flag Customer
+                                </DropdownItem>
+
+                                <div className="h-px bg-gray-100 dark:bg-gray-800 my-1 mx-2" />
+
+                                <DropdownItem
+                                  onItemClick={() => setOpenDropdownId(null)}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-amber-600 dark:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10 rounded-lg transition-colors"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                                  </svg>
+                                  {customer.status === "BLOCKED" ? "Unblock Customer" : "Block Customer"}
+                                </DropdownItem>
+
+                                <DropdownItem
+                                  onItemClick={() => setOpenDropdownId(null)}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                  Delete Customer
+                                </DropdownItem>
+                              </div>
+                            </Dropdown>
+                          </div>
                         </TableCell>
                       </TableRow>
                     );
@@ -412,18 +482,17 @@ export default function CustomersPageClient() {
           }}
           isLoading={isLoading}
         />
+        </div>
       </div>
 
-      {/* Premium Inspect Slide-over Drawer / Modal backdrop */}
+      {/* Premium Inspect Side-over Drawer / Modal backdrop */}
       {selectedCustomer && (
         <div className="fixed inset-0 z-[1000] flex justify-end bg-black/40 backdrop-blur-xs transition-opacity duration-300">
-          {/* Modal Backdrop Click area */}
           <div
             className="absolute inset-0 cursor-default"
             onClick={() => setSelectedCustomer(null)}
           />
 
-          {/* Drawer Panel */}
           <div className="relative w-full max-w-md bg-white dark:bg-gray-900 h-full shadow-2xl flex flex-col animate-slide-left z-10 border-l border-gray-100 dark:border-gray-800">
             {/* Drawer Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
@@ -626,6 +695,7 @@ export default function CustomersPageClient() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

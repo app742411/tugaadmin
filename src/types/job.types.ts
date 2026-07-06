@@ -153,3 +153,28 @@ export interface JobQueryParams {
   search?: string;
 }
 
+export interface JobActionLog {
+  id: string;
+  jobId: string;
+  action: string;
+  metadata?: Record<string, any>;
+  createdAt: string;
+  adminId?: string;
+  admin?: {
+    id: string;
+    fullName: string;
+    email: string;
+  };
+  job?: {
+    id: string;
+    title: string;
+    status: string;
+  };
+}
+
+export interface JobActionLogResponse {
+  message: string;
+  data: JobActionLog[];
+  pagination: PaginationInfo;
+}
+

@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/useToast";
 import { traderService } from "@/services/traderService";
 import Select from "@/components/ui/select/Select";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "@/icons";
@@ -56,6 +57,7 @@ const toastIcons: Record<string, React.JSX.Element> = {
 export default function TradersPageClient() {
   const queryClient = useQueryClient();
   const { toasts, showToast, removeToast } = useToast();
+  const router = useRouter();
 
   // Query parameters state
   const [page, setPage] = useState(1);
@@ -463,7 +465,8 @@ export default function TradersPageClient() {
                     return (
                       <TableRow
                         key={trader.id}
-                        className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors"
+                        onClick={() => router.push(`/traders/${trader.id}`)}
+                        className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors cursor-pointer"
                       >
                         {/* Trader / Business */}
                         <TableCell className="px-6 py-3.5 text-start">
@@ -553,7 +556,10 @@ export default function TradersPageClient() {
                         <TableCell className="px-6 py-3.5 text-center">
                           <div className="relative inline-block text-left">
                             <button
-                              onClick={() => setOpenDropdownId(openDropdownId === trader.id ? null : trader.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenDropdownId(openDropdownId === trader.id ? null : trader.id);
+                              }}
                               className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
                             >
                               <MoreDotIcon className="w-5 h-5" />
@@ -563,7 +569,7 @@ export default function TradersPageClient() {
                               onClose={() => setOpenDropdownId(null)}
                               className="w-48 right-0"
                             >
-                              <div className="py-1">
+                              <div className="py-1" onClick={(e) => e.stopPropagation()}>
                                 <DropdownItem
                                   onItemClick={() => {
                                     handleVerifyApprove(trader.id);
