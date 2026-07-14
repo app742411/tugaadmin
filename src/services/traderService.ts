@@ -21,7 +21,7 @@ export const traderService = {
   /** Verify or Vetting reject a trader */
   verifyTrader: async (
     id: string,
-    payload: { verificationStatus: "APPROVED" | "REJECTED"; rejectReason: string | null }
+    payload: { verificationStatus: "APPROVED" | "REJECTED" | "MANUAL_CHECK"; rejectReason: string | null }
   ): Promise<any> => {
     const res = await apiClient.patch(`/api/admin/verify-trader/${id}`, payload);
     return res.data;

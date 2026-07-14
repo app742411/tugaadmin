@@ -17,7 +17,7 @@ export interface TraderProfile {
   understandVettingPolicy: boolean;
   acceptedTermsConditions: boolean;
   acceptedPrivacyPolicy: boolean;
-  verificationStatus: "PENDING" | "APPROVED" | "REJECTED";
+  verificationStatus: "PENDING" | "APPROVED" | "REJECTED" | "MANUAL_CHECK";
   rejectReason: string | null;
   subscriptionTier: "BRONZE" | "SILVER" | "GOLD" | null;
   subscriptionStatus: "ACTIVE" | "TRIAL" | "INACTIVE" | null;
@@ -114,7 +114,7 @@ export interface TraderDetail {
     understandVettingPolicy: boolean;
     acceptedTermsConditions: boolean;
     acceptedPrivacyPolicy: boolean;
-    verificationStatus: "PENDING" | "APPROVED" | "REJECTED";
+    verificationStatus: "PENDING" | "APPROVED" | "REJECTED" | "MANUAL_CHECK";
     rejectReason: string | null;
     subscriptionTier: "BRONZE" | "SILVER" | "GOLD" | null;
     subscriptionStatus: "ACTIVE" | "TRIAL" | "INACTIVE" | null;

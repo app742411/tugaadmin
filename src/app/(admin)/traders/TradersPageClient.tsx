@@ -75,6 +75,7 @@ export default function TradersPageClient() {
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [rejectModalTraderId, setRejectModalTraderId] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState("");
+  const [rejectActionType, setRejectActionType] = useState<"REJECTED" | "MANUAL_CHECK">("REJECTED");
 
   // Handler: Approve Trader
   const handleVerifyApprove = async (traderId: string) => {
@@ -86,7 +87,7 @@ export default function TradersPageClient() {
       });
       showToast("success", "Trader business profile approved successfully!");
       queryClient.invalidateQueries({ queryKey: ["traders"] });
-      
+
       // Update drawer state in-place
       setSelectedTrader((prev) => {
         if (!prev || prev.id !== traderId) return prev;
@@ -105,9 +106,10 @@ export default function TradersPageClient() {
   };
 
   // Handler: Open Rejection Modal
-  const handleVerifyRejectOpen = (traderId: string) => {
+  const handleVerifyRejectOpen = (traderId: string, type: "REJECTED" | "MANUAL_CHECK" = "REJECTED") => {
     setRejectModalTraderId(traderId);
     setRejectReason("");
+    setRejectActionType(type);
     setIsRejectModalOpen(true);
   };
 
@@ -115,18 +117,18 @@ export default function TradersPageClient() {
   const handleVerifyRejectSubmit = async () => {
     if (!rejectModalTraderId) return;
     if (!rejectReason.trim()) {
-      showToast("warning", "Please provide a reason for rejecting this trader.");
+      showToast("warning", `Please provide a reason for ${rejectActionType === "MANUAL_CHECK" ? "manual check" : "rejecting"} this trader.`);
       return;
     }
     setIsVerifying(true);
     try {
       await traderService.verifyTrader(rejectModalTraderId, {
-        verificationStatus: "REJECTED",
+        verificationStatus: rejectActionType,
         rejectReason: rejectReason,
       });
-      showToast("success", "Trader business profile rejected successfully.");
+      showToast("success", `Trader business profile ${rejectActionType === "MANUAL_CHECK" ? "moved to manual check" : "rejected"} successfully.`);
       queryClient.invalidateQueries({ queryKey: ["traders"] });
-      
+
       // Update drawer state in-place
       const reasonCopy = rejectReason;
       setSelectedTrader((prev) => {
@@ -134,15 +136,15 @@ export default function TradersPageClient() {
         return {
           ...prev,
           traderProfile: prev.traderProfile
-            ? { ...prev.traderProfile, verificationStatus: "REJECTED", rejectReason: reasonCopy }
+            ? { ...prev.traderProfile, verificationStatus: rejectActionType, rejectReason: reasonCopy }
             : null,
         };
       });
-      
+
       setIsRejectModalOpen(false);
       setRejectModalTraderId(null);
     } catch (err: any) {
-      showToast("error", err?.message || "Failed to reject trader.");
+      showToast("error", err?.message || `Failed to ${rejectActionType === "MANUAL_CHECK" ? "move to manual check" : "reject trader"}.`);
     } finally {
       setIsVerifying(false);
     }
@@ -214,7 +216,6 @@ export default function TradersPageClient() {
     return colors[index];
   };
 
-  // Verification status mapping to Badge color props
   const getVerificationStatusColor = (vStatus: string): "success" | "warning" | "error" | "info" | "light" => {
     switch (vStatus) {
       case "APPROVED":
@@ -223,6 +224,8 @@ export default function TradersPageClient() {
         return "info";
       case "REJECTED":
         return "error";
+      case "MANUAL_CHECK":
+        return "warning";
       default:
         return "light";
     }
@@ -581,13 +584,21 @@ export default function TradersPageClient() {
                                 </DropdownItem>
                                 <DropdownItem
                                   onItemClick={() => {
-                                    setRejectModalTraderId(trader.id);
-                                    setIsRejectModalOpen(true);
+                                    handleVerifyRejectOpen(trader.id, "REJECTED");
                                     setOpenDropdownId(null);
                                   }}
                                   className="text-red-600 dark:text-red-400 font-medium"
                                 >
                                   Reject
+                                </DropdownItem>
+                                <DropdownItem
+                                  onItemClick={() => {
+                                    handleVerifyRejectOpen(trader.id, "MANUAL_CHECK");
+                                    setOpenDropdownId(null);
+                                  }}
+                                  className="text-orange-600 dark:text-orange-400 font-medium"
+                                >
+                                  Manually
                                 </DropdownItem>
                                 <DropdownItem
                                   tag="a"
@@ -702,11 +713,11 @@ export default function TradersPageClient() {
                   </Badge>
                 </div>
 
-                {selectedTrader.traderProfile?.verificationStatus === "REJECTED" &&
+                {(selectedTrader.traderProfile?.verificationStatus === "REJECTED" || selectedTrader.traderProfile?.verificationStatus === "MANUAL_CHECK") &&
                   selectedTrader.traderProfile.rejectReason && (
-                    <div className="mt-3.5 text-xs text-red-500 font-semibold border border-red-200/40 bg-red-50/50 dark:bg-red-950/15 dark:border-red-900/30 rounded-lg p-2.5 max-w-full text-center">
-                      <span className="block text-[10px] text-red-400 dark:text-red-400 font-bold uppercase tracking-wider mb-0.5">
-                        Reason for Rejection:
+                    <div className={`mt-3.5 text-xs font-semibold rounded-lg p-2.5 max-w-full text-center ${selectedTrader.traderProfile.verificationStatus === "MANUAL_CHECK" ? "text-orange-500 border border-orange-200/40 bg-orange-50/50 dark:bg-orange-950/15 dark:border-orange-900/30" : "text-red-500 border border-red-200/40 bg-red-50/50 dark:bg-red-950/15 dark:border-red-900/30"}`}>
+                      <span className={`block text-[10px] font-bold uppercase tracking-wider mb-0.5 ${selectedTrader.traderProfile.verificationStatus === "MANUAL_CHECK" ? "text-orange-400 dark:text-orange-400" : "text-red-400 dark:text-red-400"}`}>
+                        Reason for {selectedTrader.traderProfile.verificationStatus === "MANUAL_CHECK" ? "Manual Check" : "Rejection"}:
                       </span>
                       "{selectedTrader.traderProfile.rejectReason}"
                     </div>
@@ -867,30 +878,45 @@ export default function TradersPageClient() {
               {selectedTrader.traderProfile && (
                 <div className="flex gap-2 w-full">
                   {(selectedTrader.traderProfile.verificationStatus === "PENDING" ||
-                    selectedTrader.traderProfile.verificationStatus === "REJECTED") && (
-                    <button
-                      onClick={() => handleVerifyApprove(selectedTrader.id)}
-                      disabled={isVerifying}
-                      className="flex-1 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg text-xs transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-                      </svg>
-                      Approve
-                    </button>
-                  )}
+                    selectedTrader.traderProfile.verificationStatus === "REJECTED" ||
+                    selectedTrader.traderProfile.verificationStatus === "MANUAL_CHECK") && (
+                      <button
+                        onClick={() => handleVerifyApprove(selectedTrader.id)}
+                        disabled={isVerifying}
+                        className="flex-1 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg text-xs transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Approve
+                      </button>
+                    )}
 
                   {(selectedTrader.traderProfile.verificationStatus === "PENDING" ||
-                    selectedTrader.traderProfile.verificationStatus === "APPROVED") && (
+                    selectedTrader.traderProfile.verificationStatus === "APPROVED" ||
+                    selectedTrader.traderProfile.verificationStatus === "MANUAL_CHECK") && (
+                      <button
+                        onClick={() => handleVerifyRejectOpen(selectedTrader.id, "REJECTED")}
+                        disabled={isVerifying}
+                        className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-xs transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                        </svg>
+                        Reject
+                      </button>
+                    )}
+
+                  {selectedTrader.traderProfile.verificationStatus !== "MANUAL_CHECK" && (
                     <button
-                      onClick={() => handleVerifyRejectOpen(selectedTrader.id)}
+                      onClick={() => handleVerifyRejectOpen(selectedTrader.id, "MANUAL_CHECK")}
                       disabled={isVerifying}
-                      className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-xs transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
+                      className="flex-1 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg text-xs transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
                     >
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                       </svg>
-                      Reject
+                      Manually
                     </button>
                   )}
                 </div>
@@ -912,7 +938,7 @@ export default function TradersPageClient() {
           <div className="bg-white dark:bg-gray-900 w-full max-w-md p-6 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 flex flex-col gap-4 mx-4 animate-zoom-in">
             <div className="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-gray-800">
               <h4 className="text-sm font-bold text-gray-900 dark:text-white">
-                Reject Trader Verification
+                {rejectActionType === "MANUAL_CHECK" ? "Manual Check Trader Verification" : "Reject Trader Verification"}
               </h4>
               <button
                 onClick={() => setIsRejectModalOpen(false)}
@@ -926,13 +952,13 @@ export default function TradersPageClient() {
 
             <div className="flex flex-col gap-2">
               <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                Reason for Rejection
+                Reason for {rejectActionType === "MANUAL_CHECK" ? "Manual Check" : "Rejection"}
               </label>
               <textarea
                 rows={4}
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
-                placeholder="e.g. Invalid business registration documents, expired insurance coverage, etc."
+                placeholder={rejectActionType === "MANUAL_CHECK" ? "e.g. Needs manual verification of identity documents, flagged for review..." : "e.g. Invalid business registration documents, expired insurance coverage, etc."}
                 className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 text-gray-850 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors"
               />
               <p className="text-[10px] text-gray-400 dark:text-gray-500">
@@ -951,7 +977,7 @@ export default function TradersPageClient() {
               <button
                 onClick={handleVerifyRejectSubmit}
                 disabled={isVerifying}
-                className="px-4 py-2 text-xs font-bold text-white bg-red-650 hover:bg-red-700 rounded-lg shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer"
+                className={`px-4 py-2 text-xs font-bold text-white ${rejectActionType === "MANUAL_CHECK" ? "bg-orange-500 hover:bg-orange-600" : "bg-red-650 hover:bg-red-700"} rounded-lg shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer`}
               >
                 {isVerifying && (
                   <svg className="animate-spin -ml-1 mr-1 h-3 w-3 text-white" fill="none" viewBox="0 0 24 24">
@@ -959,7 +985,7 @@ export default function TradersPageClient() {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
                 )}
-                Submit Rejection
+                {rejectActionType === "MANUAL_CHECK" ? "Submit Manual Check" : "Submit Rejection"}
               </button>
             </div>
           </div>
