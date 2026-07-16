@@ -4,10 +4,12 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
+import { Modal } from "../ui/modal";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const { user, logout } = useAuth();
 
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -19,9 +21,14 @@ export default function UserDropdown() {
     setIsOpen(false);
   }
 
-  const handleLogout = (e: React.MouseEvent) => {
+  const handleLogoutClick = (e: React.MouseEvent) => {
     e.preventDefault();
     closeDropdown();
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = () => {
+    setIsLogoutModalOpen(false);
     logout();
   };
 
@@ -166,11 +173,11 @@ export default function UserDropdown() {
           </li>
         </ul>
         <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+          onClick={handleLogoutClick}
+          className="w-full flex items-center gap-3 px-3 py-2 mt-3 font-medium text-rose-600 rounded-lg group text-theme-sm hover:bg-rose-50 dark:text-rose-500 dark:hover:bg-rose-500/10 transition-colors"
         >
           <svg
-            className="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"
+            className="fill-rose-600 group-hover:fill-rose-700 dark:fill-rose-500 dark:group-hover:fill-rose-400 transition-colors"
             width="24"
             height="24"
             viewBox="0 0 24 24"
@@ -187,6 +194,39 @@ export default function UserDropdown() {
           Sign out
         </button>
       </Dropdown>
+
+      {/* Logout Confirmation Modal */}
+      <Modal isOpen={isLogoutModalOpen} onClose={() => setIsLogoutModalOpen(false)} className="max-w-[400px]">
+        <div className="p-6 md:p-8 flex flex-col items-center text-center">
+          <div className="w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-500/20 flex items-center justify-center text-rose-500 mb-5 border border-rose-200 dark:border-rose-500/30">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 16L20 12M20 12L15 8M20 12H9M14 21H5C4.44772 21 4 20.5523 4 20V4C4 3.44772 4.44772 3 5 3H14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            Sign out of TugaTrades?
+          </h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 max-w-[280px]">
+            You'll need to enter your credentials again the next time you want to access the dashboard.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center w-full gap-3">
+            <button
+              onClick={() => setIsLogoutModalOpen(false)}
+              className="w-full px-5 py-3 text-sm font-semibold text-gray-600 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmLogout}
+              className="w-full px-5 py-3 text-sm font-bold text-white bg-rose-600 rounded-xl hover:bg-rose-700 shadow-sm transition-colors"
+            >
+              Yes, sign out
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
