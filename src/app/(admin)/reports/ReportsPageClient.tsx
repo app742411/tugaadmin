@@ -14,9 +14,10 @@ import Pagination from "@/components/ui/pagination/Pagination";
 import Select from "@/components/ui/select/Select";
 import { useGetReports, useUpdateReportStatus } from "@/hooks/useReports";
 import { ReportItem } from "@/types/report.types";
-import Link from "next/link";
 import { MoreDotIcon } from "@/icons";
 import { useRouter } from "next/navigation";
+import { Dropdown } from "@/components/ui/dropdown/Dropdown";
+import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 
 export default function ReportsPageClient() {
   const [page, setPage] = useState(1);
@@ -30,6 +31,7 @@ export default function ReportsPageClient() {
   const updateStatusMutation = useUpdateReportStatus();
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
   // Debounce search input
   useEffect(() => {
@@ -107,6 +109,30 @@ export default function ReportsPageClient() {
     }
   };
 
+  const formatReportStatus = (statusVal: string) => {
+    switch (statusVal) {
+      case "PENDING": return "Pending";
+      case "RESOLVED": return "Resolved";
+      case "REJECTED": return "Rejected";
+      case "REVIEWED": return "Reviewed";
+      default: return statusVal;
+    }
+  };
+
+  const formatReportType = (typeVal: string) => {
+    switch (typeVal) {
+      case "USER": return "User";
+      case "REVIEW": return "Review";
+      case "JOB": return "Job";
+      default: return typeVal;
+    }
+  };
+
+  const formatReportReason = (reasonVal: string) => {
+    if (!reasonVal) return "—";
+    return reasonVal.charAt(0).toUpperCase() + reasonVal.slice(1).toLowerCase();
+  };
+
   const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return "N/A";
     try {
@@ -158,27 +184,43 @@ export default function ReportsPageClient() {
           </p>
         </div>
       </div>
+      {/* Filter and Search Bar Card */}
+      <div className="p-5 mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+          {/* Search Box */}
+          <div className="flex flex-col gap-1.5 lg:col-span-2">
+            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+              Search Reports
+            </label>
+            <div className="relative">
+              <svg
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search reports by reason or reporter..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/80 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition-colors"
+              />
+            </div>
+          </div>
 
-      {/* Search and Filters */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6 p-5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-xs">
-        <div className="relative w-full md:w-80">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </span>
-          <input
-            type="text"
-            placeholder="Search reports by reason or reporter..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs border border-gray-200 dark:border-gray-850 rounded-xl bg-gray-55/10 dark:bg-gray-950/20 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 transition"
-          />
-        </div>
-
-        <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-          <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Status:</span>
-          <div className="w-40">
+          {/* Status Dropdown */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+              Filter by Status
+            </label>
             <Select
               options={[
                 { value: "--", label: "All Statuses" },
@@ -191,12 +233,17 @@ export default function ReportsPageClient() {
               onChange={setStatus}
             />
           </div>
+
+          {/* Results summary */}
+          <div className="flex justify-start sm:justify-end text-xs text-gray-400 dark:text-gray-500 sm:pb-2">
+            <span>Found {paginationInfo.total} report{paginationInfo.total === 1 ? "" : "s"}</span>
+          </div>
         </div>
       </div>
 
       {/* Reports Table */}
       <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-xs overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto min-h-[280px]">
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-55/40 dark:bg-gray-950/20 border-b border-gray-100 dark:border-gray-800/80">
@@ -232,11 +279,13 @@ export default function ReportsPageClient() {
                   </TableCell>
                 </TableRow>
               ) : (
-                reportsList.map((report) => (
+                reportsList.map((report, index) => (
                   <TableRow
                     key={report.id}
                     onClick={() => setSelectedReport(report)}
-                    className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer"
+                    className={`hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer ${
+                      openDropdownId === report.id ? "relative z-30" : ""
+                    }`}
                   >
                     {/* Reporter */}
                     <TableCell className="px-6 py-3.5 text-start">
@@ -253,20 +302,20 @@ export default function ReportsPageClient() {
                     {/* Report Type */}
                     <TableCell className="px-6 py-3.5 text-start">
                       <Badge size="xs" color={getTypeColor(report.reportType)}>
-                        {report.reportType}
+                        {formatReportType(report.reportType)}
                       </Badge>
                     </TableCell>
 
                     {/* Reason */}
                     <TableCell className="px-6 py-3.5 text-start">
                       <Badge size="xs" color={getReasonColor(report.reason)} variant="light">
-                        {report.reason}
+                        {formatReportReason(report.reason)}
                       </Badge>
                     </TableCell>
 
                     {/* Comment */}
                     <TableCell className="px-6 py-3.5 text-start">
-                      <span className="text-xs text-gray-600 dark:text-gray-300 truncate max-w-[220px] block">
+                      <span className="text-xs text-gray-650 dark:text-gray-300 truncate max-w-[220px] block">
                         {report.customReason || "—"}
                       </span>
                     </TableCell>
@@ -274,7 +323,7 @@ export default function ReportsPageClient() {
                     {/* Status */}
                     <TableCell className="px-6 py-3.5 text-center">
                       <Badge size="xs" color={getStatusColor(report.status)}>
-                        {report.status}
+                        {formatReportStatus(report.status)}
                       </Badge>
                     </TableCell>
 
@@ -284,37 +333,100 @@ export default function ReportsPageClient() {
                     </TableCell>
 
                     {/* Actions */}
-                    <TableCell className="px-6 py-3.5 text-center">
-                      <div className="flex items-center justify-center gap-2">
+                    <TableCell className="px-6 py-3.5 text-center" onClick={(e) => e.stopPropagation()}>
+                      <div className="relative inline-block text-left">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            // Open an action menu in the future
+                            setOpenDropdownId(openDropdownId === report.id ? null : report.id);
                           }}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-white/[0.05] transition-colors shrink-0"
+                          className={`dropdown-toggle inline-flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 bg-gray-50/50 hover:bg-gray-100 hover:border-gray-300 text-gray-500 hover:text-gray-800 transition-all duration-200 dark:border-gray-800 dark:bg-gray-900/50 dark:hover:bg-gray-800 dark:hover:border-gray-700 dark:text-gray-400 dark:hover:text-white ${
+                            openDropdownId === report.id
+                              ? "bg-gray-100 border-gray-300 dark:bg-gray-850 dark:border-gray-700 text-gray-800 dark:text-white"
+                              : ""
+                          }`}
                         >
-                          <MoreDotIcon />
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                          </svg>
                         </button>
-                        {report.status !== "RESOLVED" && (
-                          <div className="flex items-center gap-1">
-                            <button
-                              onClick={() => handleUpdateStatus(report.id, "RESOLVED")}
-                              disabled={updateStatusMutation.isPending}
-                              className="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-bold rounded-lg text-[10px] transition shrink-0"
-                              title="Resolve Report"
+
+                        <Dropdown
+                          isOpen={openDropdownId === report.id}
+                          onClose={() => setOpenDropdownId(null)}
+                          className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${
+                            report.status !== "RESOLVED" && index >= 2 && index >= reportsList.length - 2
+                              ? "bottom-full mb-1.5"
+                              : "top-full mt-1.5"
+                          }`}
+                        >
+                          <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-1">
+                            {report.status !== "RESOLVED" && (
+                              <>
+                                <DropdownItem
+                                  baseClassName=""
+                                  onItemClick={() => {
+                                    setOpenDropdownId(null);
+                                    handleUpdateStatus(report.id, "RESOLVED");
+                                  }}
+                                  className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-950/20 rounded-lg transition-colors cursor-pointer"
+                                >
+                                  <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                                  </svg>
+                                  Resolve Report
+                                </DropdownItem>
+
+                                <DropdownItem
+                                  baseClassName=""
+                                  onItemClick={() => {
+                                    setOpenDropdownId(null);
+                                    handleUpdateStatus(report.id, "REJECTED");
+                                  }}
+                                  className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-red-650 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                                  </svg>
+                                  Reject Report
+                                </DropdownItem>
+
+                                {report.status === "PENDING" && (
+                                  <DropdownItem
+                                    baseClassName=""
+                                    onItemClick={() => {
+                                      setOpenDropdownId(null);
+                                      handleUpdateStatus(report.id, "REVIEWED");
+                                    }}
+                                    className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-950/20 rounded-lg transition-colors cursor-pointer"
+                                  >
+                                    <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Mark Reviewed
+                                  </DropdownItem>
+                                )}
+
+                                <div className="h-px bg-gray-100 dark:bg-gray-855 my-1 mx-1.5" />
+                              </>
+                            )}
+
+                            <DropdownItem
+                              baseClassName=""
+                              onItemClick={() => {
+                                setOpenDropdownId(null);
+                                setSelectedReport(report);
+                              }}
+                              className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-855 rounded-lg transition-colors cursor-pointer"
                             >
-                              Resolve
-                            </button>
-                            <button
-                              onClick={() => handleUpdateStatus(report.id, "REJECTED")}
-                              disabled={updateStatusMutation.isPending}
-                              className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-105 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-700 dark:text-rose-400 font-bold rounded-lg text-[10px] transition shrink-0"
-                              title="Reject Report"
-                            >
-                              Reject
-                            </button>
+                              <svg className="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                              Inspect Details
+                            </DropdownItem>
                           </div>
-                        )}
+                        </Dropdown>
                       </div>
                     </TableCell>
                   </TableRow>

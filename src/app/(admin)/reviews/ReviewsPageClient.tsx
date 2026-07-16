@@ -17,6 +17,8 @@ import { ReviewItem, ReviewProof } from "@/types/review.types";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/useToast";
 import { reviewService } from "@/services/reviewService";
+import { Dropdown } from "@/components/ui/dropdown/Dropdown";
+import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 
 // Toast styling
 const toastStyles: Record<string, string> = {
@@ -65,6 +67,7 @@ export default function ReviewsPageClient() {
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [rejectModalReviewId, setRejectModalReviewId] = useState<string | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
   // Debounce search
   useEffect(() => {
@@ -94,6 +97,24 @@ export default function ReviewsPageClient() {
     totalPages: 0,
     hasNextPage: false,
     hasPreviousPage: false,
+  };
+
+  const getStatusColor = (statusVal: string): "success" | "warning" | "error" | "info" | "light" => {
+    switch (statusVal) {
+      case "APPROVED": return "success";
+      case "REJECTED": return "error";
+      case "PENDING": return "warning";
+      default: return "light";
+    }
+  };
+
+  const formatReviewStatus = (statusVal: string) => {
+    switch (statusVal) {
+      case "APPROVED": return "Approved";
+      case "REJECTED": return "Rejected";
+      case "PENDING": return "Pending";
+      default: return statusVal;
+    }
   };
 
   // Helper to format image URLs
@@ -223,18 +244,21 @@ export default function ReviewsPageClient() {
         <div>
           <PageBreadcrumb pageTitle="Reviews Moderation" />
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 ml-0.5">
-            Approve or reject customer reviews before they publish to trader profiles
+            View and moderates customer reviews across the platform.
           </p>
+        </div>
+        <div className="text-xs text-gray-455 dark:text-gray-500 font-semibold bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-850 px-3 py-1.5 rounded-lg flex items-center justify-center sm:self-end">
+          Found {paginationInfo.total} pending review{paginationInfo.total === 1 ? "" : "s"}
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
+      {/* Filter and Search Bar Card */}
       <div className="p-5 mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
           {/* Search Box */}
-          <div className="flex flex-col gap-1.5 col-span-1 sm:col-span-2">
+          <div className="flex flex-col gap-1.5 lg:col-span-2">
             <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
-              Search Reviews
+              Search Pending Reviews
             </label>
             <div className="relative">
               <svg
@@ -254,28 +278,20 @@ export default function ReviewsPageClient() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search by customer name, trader name, review title..."
-                className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/80 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition-colors"
+                placeholder="Search by customer, trader, or review title..."
+                className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/80 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition-colors"
               />
             </div>
           </div>
 
+          {/* Spacer */}
           <div className="hidden lg:block"></div>
-
-          {/* Results Summary */}
-          <div className="flex justify-start sm:justify-end text-xs text-gray-400 dark:text-gray-500 sm:pb-2">
-            {isLoading ? (
-              <span>Loading reviews...</span>
-            ) : (
-              <span>Found {paginationInfo.total} pending review{paginationInfo.total === 1 ? "" : "s"}</span>
-            )}
-          </div>
         </div>
       </div>
 
       {/* Main Table Card */}
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-sm flex flex-col">
-        <div className="max-w-full overflow-x-auto">
+        <div className="max-w-full overflow-x-auto min-h-[280px]">
           <div className="min-w-[1100px] w-full">
             <Table>
               <TableHeader className="border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/20">
@@ -402,7 +418,7 @@ export default function ReviewsPageClient() {
                   </TableRow>
                 ) : (
                   // Data state
-                  reviewsList.map((review) => {
+                  reviewsList.map((review, index) => {
                     const custInit = getInitials(review.customer.fullName);
                     const custColor = getAvatarBg(review.customer.fullName);
                     const tradInit = getInitials(review.trader.fullName);
@@ -412,7 +428,9 @@ export default function ReviewsPageClient() {
                       <TableRow
                         key={review.id}
                         onClick={() => setSelectedReview(review)}
-                        className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors cursor-pointer"
+                        className={`hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer ${
+                          openDropdownId === review.id ? "relative z-30" : ""
+                        }`}
                       >
                         {/* Customer */}
                         <TableCell className="px-6 py-3.5 text-start">
@@ -505,17 +523,82 @@ export default function ReviewsPageClient() {
                           {formatDate(review.createdAt)}
                         </TableCell>
 
-                        {/* Action buttons */}
-                        <TableCell className="px-6 py-3.5 text-center">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // Open an action menu in the future
-                            }}
-                            className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-white/[0.05] transition-colors"
-                          >
-                            <MoreDotIcon />
-                          </button>
+                        {/* Actions */}
+                        <TableCell className="px-6 py-3.5 text-center" onClick={(e) => e.stopPropagation()}>
+                          <div className="relative inline-block text-left">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenDropdownId(openDropdownId === review.id ? null : review.id);
+                              }}
+                              className={`dropdown-toggle inline-flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 bg-gray-50/50 hover:bg-gray-100 hover:border-gray-300 text-gray-500 hover:text-gray-800 transition-all duration-200 dark:border-gray-800 dark:bg-gray-900/50 dark:hover:bg-gray-800 dark:hover:border-gray-700 dark:text-gray-400 dark:hover:text-white ${
+                                openDropdownId === review.id
+                                  ? "bg-gray-100 border-gray-300 dark:bg-gray-850 dark:border-gray-700 text-gray-800 dark:text-white"
+                                  : ""
+                              }`}
+                            >
+                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                              </svg>
+                            </button>
+
+                            <Dropdown
+                              isOpen={openDropdownId === review.id}
+                              onClose={() => setOpenDropdownId(null)}
+                              className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${
+                                index >= 2 && index >= reviewsList.length - 2
+                                  ? "bottom-full mb-1.5"
+                                  : "top-full mt-1.5"
+                              }`}
+                            >
+                              <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-1">
+                                <DropdownItem
+                                  baseClassName=""
+                                  onItemClick={() => {
+                                    setOpenDropdownId(null);
+                                    handleApproveReview(review.id);
+                                  }}
+                                  className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-950/20 rounded-lg transition-colors cursor-pointer"
+                                >
+                                  <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                                  </svg>
+                                  Approve Review
+                                </DropdownItem>
+
+                                <DropdownItem
+                                  baseClassName=""
+                                  onItemClick={() => {
+                                    setOpenDropdownId(null);
+                                    handleOpenRejectModal(review.id);
+                                  }}
+                                  className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-red-650 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                                  </svg>
+                                  Reject Review
+                                </DropdownItem>
+
+                                <div className="h-px bg-gray-100 dark:bg-gray-850 my-1 mx-1.5" />
+
+                                <DropdownItem
+                                  baseClassName=""
+                                  onItemClick={() => {
+                                    setOpenDropdownId(null);
+                                    setSelectedReview(review);
+                                  }}
+                                  className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-850 rounded-lg transition-colors cursor-pointer"
+                                >
+                                  <svg className="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                  </svg>
+                                  Inspect Details
+                                </DropdownItem>
+                              </div>
+                            </Dropdown>
+                          </div>
                         </TableCell>
                       </TableRow>
                     );
@@ -554,7 +637,9 @@ export default function ReviewsPageClient() {
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
               <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>Review Details Moderation</span>
-                <Badge color="warning" size="sm">PENDING</Badge>
+                <Badge color={getStatusColor(selectedReview.status)} size="sm">
+                  {formatReviewStatus(selectedReview.status)}
+                </Badge>
               </h3>
               <button
                 onClick={() => setSelectedReview(null)}

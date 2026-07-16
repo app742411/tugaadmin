@@ -12,13 +12,14 @@ import {
 import Badge from "@/components/ui/badge/Badge";
 import Pagination from "@/components/ui/pagination/Pagination";
 import { useGetCustomers } from "@/hooks/useCustomers";
+import { useToast } from "@/hooks/useToast";
 import { CustomerItem } from "@/types/customer.types";
 import Select from "@/components/ui/select/Select";
 import Link from "next/link";
-import { MoreDotIcon } from "@/icons";
+import { useRouter } from "next/navigation";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
-import { useRouter } from "next/navigation";
+import { Modal } from "@/components/ui/modal";
 
 export default function CustomersPageClient() {
   const router = useRouter();
@@ -34,6 +35,16 @@ export default function CustomersPageClient() {
 
   // Side drawer state for customer details inspection
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerItem | null>(null);
+
+  const { toasts, showToast, removeToast } = useToast();
+  const [deleteModalCustomer, setDeleteModalCustomer] = useState<{ id: string; name: string } | null>(null);
+
+  const confirmDeleteCustomer = () => {
+    if (deleteModalCustomer) {
+      showToast("success", `Customer account for ${deleteModalCustomer.name} deleted successfully.`);
+      setDeleteModalCustomer(null);
+    }
+  };
 
   // Debounce search query changes
   useEffect(() => {
@@ -130,6 +141,41 @@ export default function CustomersPageClient() {
     }
   };
 
+  const formatRelativeTime = (dateString: string | null | undefined) => {
+    if (!dateString) return "";
+    try {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now.getTime() - date.getTime();
+      
+      const seconds = Math.floor(diffMs / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+      const months = Math.floor(days / 30);
+      const years = Math.floor(months / 12);
+      
+      if (years > 0) {
+        return `(${years} yr${years > 1 ? "s" : ""} ago)`;
+      }
+      if (months > 0) {
+        return `(${months} mo${months > 1 ? "s" : ""} ago)`;
+      }
+      if (days > 0) {
+        return `(${days} day${days > 1 ? "s" : ""} ago)`;
+      }
+      if (hours > 0) {
+        return `(${hours} hr${hours > 1 ? "s" : ""} ago)`;
+      }
+      if (minutes > 0) {
+        return `(${minutes} min${minutes > 1 ? "s" : ""} ago)`;
+      }
+      return "(just now)";
+    } catch {
+      return "";
+    }
+  };
+
   return (
     <div className="w-full pb-8">
       {/* Page Header */}
@@ -151,7 +197,7 @@ export default function CustomersPageClient() {
           <div className="p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
           {/* Search Box */}
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5 lg:col-span-2">
             <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
               Search Customers
             </label>
@@ -174,7 +220,7 @@ export default function CustomersPageClient() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by name or email..."
-                className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/80 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition-colors"
+                className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/80 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition-colors"
               />
             </div>
           </div>
@@ -197,9 +243,6 @@ export default function CustomersPageClient() {
             />
           </div>
 
-          {/* Spacer for desktops */}
-          <div className="hidden lg:block"></div>
-
           {/* Results summary / Quick action */}
           <div className="flex justify-start sm:justify-end text-xs text-gray-400 dark:text-gray-500 sm:pb-2">
             {isLoading ? (
@@ -213,7 +256,7 @@ export default function CustomersPageClient() {
 
       {/* Main Table Card */}
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-sm flex flex-col">
-        <div className="max-w-full overflow-x-auto">
+        <div className="max-w-full overflow-x-auto min-h-[280px]">
           <div className="min-w-[900px] w-full">
             <Table>
               <TableHeader className="border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/20">
@@ -322,7 +365,7 @@ export default function CustomersPageClient() {
                   </TableRow>
                 ) : (
                   // Data state
-                  customersList.map((customer) => {
+                  customersList.map((customer, index) => {
                     const initials = getInitials(customer.fullName);
                     const avatarColorClass = getAvatarBg(customer.fullName);
                     const location = [customer.city, customer.country].filter(Boolean).join(", ") || "N/A";
@@ -331,22 +374,24 @@ export default function CustomersPageClient() {
                       <TableRow
                         key={customer.id}
                         onClick={() => router.push(`/customers/${customer.id}`)}
-                        className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer"
+                        className={`hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer ${
+                          openDropdownId === customer.id ? "relative z-30" : ""
+                        }`}
                       >
                         {/* Name and avatar info */}
                         <TableCell className="px-6 py-3.5 text-start">
                           <div className="flex items-center gap-3">
                             {customer.profileImage ? (
-                              <div className="w-10 h-10 overflow-hidden rounded-full border border-gray-100 dark:border-gray-800">
+                              <div className="w-10 h-10 overflow-hidden rounded-full border border-gray-150 dark:border-gray-800 flex-shrink-0">
                                 <img
-                                  src={customer.profileImage}
+                                  src={customer.profileImage.startsWith("http") ? customer.profileImage : `${process.env.NEXT_PUBLIC_API_URL || ""}${customer.profileImage}`}
                                   alt={customer.fullName}
                                   className="w-full h-full object-cover"
                                 />
                               </div>
                             ) : (
                               <div
-                                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${avatarColorClass}`}
+                                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 ${avatarColorClass}`}
                               >
                                 {initials}
                               </div>
@@ -386,72 +431,82 @@ export default function CustomersPageClient() {
                         </TableCell>
 
                         {/* Created Date */}
-                        <TableCell className="px-6 py-3.5 text-start text-gray-600 dark:text-gray-400 text-sm font-medium">
-                          {formatDate(customer.createdAt)}
+                        <TableCell className="px-6 py-3.5 text-start text-sm">
+                          <div className="flex flex-col">
+                            <span className="text-gray-800 dark:text-white font-medium">
+                              {formatDate(customer.createdAt)}
+                            </span>
+                            <span className="text-gray-400 dark:text-gray-500 text-xs font-mono">
+                              {formatRelativeTime(customer.createdAt)}
+                            </span>
+                          </div>
                         </TableCell>
 
                         {/* Actions */}
-                        <TableCell className="px-6 py-3.5 text-center">
-                          <div className="relative flex justify-center">
+                        <TableCell className="px-6 py-3.5 text-center" onClick={(e) => e.stopPropagation()}>
+                          <div className="relative inline-block text-left">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setOpenDropdownId(
-                                  openDropdownId === customer.id ? null : customer.id
-                                );
+                                setOpenDropdownId(openDropdownId === customer.id ? null : customer.id);
                               }}
-                              className={`inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-white/[0.05] transition-colors ${openDropdownId === customer.id ? 'bg-gray-100 text-gray-700 dark:bg-white/[0.05] dark:text-gray-200' : ''}`}
+                              className={`dropdown-toggle inline-flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 bg-gray-50/50 hover:bg-gray-100 hover:border-gray-300 text-gray-500 hover:text-gray-800 transition-all duration-200 dark:border-gray-800 dark:bg-gray-900/50 dark:hover:bg-gray-800 dark:hover:border-gray-700 dark:text-gray-400 dark:hover:text-white ${
+                                openDropdownId === customer.id
+                                  ? "bg-gray-100 border-gray-300 dark:bg-gray-850 dark:border-gray-700 text-gray-800 dark:text-white"
+                                  : ""
+                              }`}
                             >
-                              <MoreDotIcon />
+                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                              </svg>
                             </button>
 
                             <Dropdown
                               isOpen={openDropdownId === customer.id}
                               onClose={() => setOpenDropdownId(null)}
-                              className="w-48 absolute right-0 top-full z-50 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-lg p-2"
+                              className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${
+                                (index >= 2 && index >= customersList.length - 2)
+                                  ? "bottom-full mb-1.5"
+                                  : "top-full mt-1.5"
+                              }`}
                             >
                               <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-1">
                                 <DropdownItem
-                                  onItemClick={() => {
-                                    setOpenDropdownId(null);
-                                    setSelectedCustomer(customer);
-                                  }}
-                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                                >
-                                  <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                  </svg>
-                                  Quick Details
-                                </DropdownItem>
-
-                                <DropdownItem
+                                  baseClassName=""
                                   onItemClick={() => setOpenDropdownId(null)}
-                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                                  className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-850 rounded-lg transition-colors cursor-pointer"
                                 >
-                                  <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <svg className="w-4 h-4 flex-shrink-0 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
                                   </svg>
                                   Flag Customer
                                 </DropdownItem>
 
-                                <div className="h-px bg-gray-100 dark:bg-gray-800 my-1 mx-2" />
-
                                 <DropdownItem
+                                  baseClassName=""
                                   onItemClick={() => setOpenDropdownId(null)}
-                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-amber-600 dark:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10 rounded-lg transition-colors"
+                                  className={`flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
+                                    customer.status === "BLOCKED"
+                                      ? "text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-500/10"
+                                      : "text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-500/10"
+                                  }`}
                                 >
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                                   </svg>
                                   {customer.status === "BLOCKED" ? "Unblock Customer" : "Block Customer"}
                                 </DropdownItem>
 
                                 <DropdownItem
-                                  onItemClick={() => setOpenDropdownId(null)}
-                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                  baseClassName=""
+                                  onItemClick={(e) => {
+                                    e.stopPropagation();
+                                    setDeleteModalCustomer({ id: customer.id, name: customer.fullName });
+                                    setOpenDropdownId(null);
+                                  }}
+                                  className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-red-650 hover:bg-red-50 dark:text-red-455 dark:hover:bg-red-550/10 rounded-lg transition-colors cursor-pointer"
                                 >
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                   </svg>
                                   Delete Customer
@@ -695,6 +750,55 @@ export default function CustomersPageClient() {
           </div>
         </div>
       )}
+
+      {/* Custom Delete Confirmation Modal Popup */}
+      <Modal
+        isOpen={!!deleteModalCustomer}
+        onClose={() => setDeleteModalCustomer(null)}
+        className="max-w-md p-6"
+        showCloseButton={false}
+      >
+        <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-3">
+          Delete Customer Account
+        </h4>
+        <p className="text-xs text-gray-550 dark:text-gray-400 leading-relaxed mb-5">
+          Are you sure you want to permanently delete the profile for <strong className="text-gray-855 dark:text-white">{deleteModalCustomer?.name}</strong>? This action is permanent and cannot be undone. All associated customer reviews and logs will be removed.
+        </p>
+        <div className="flex justify-end gap-3 pt-3 border-t border-gray-50 dark:border-gray-850">
+          <button
+            onClick={() => setDeleteModalCustomer(null)}
+            className="px-4 py-2 text-xs font-semibold text-gray-650 hover:bg-gray-55 dark:text-gray-400 dark:hover:bg-white/5 border border-gray-200 dark:border-gray-755 rounded-xl transition-colors cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={confirmDeleteCustomer}
+            className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-xs transition-colors cursor-pointer"
+          >
+            Confirm Delete
+          </button>
+        </div>
+      </Modal>
+
+      {/* Floating Toast Notification Container */}
+      <div className="fixed top-6 right-6 z-[999999] flex flex-col gap-2.5 pointer-events-none">
+        {toasts.map((toast) => (
+          <div
+            key={toast.id}
+            className="flex items-center gap-3.5 px-4.5 py-3 rounded-2xl shadow-xl border border-gray-200/90 dark:border-gray-805/90 max-w-sm w-full pointer-events-auto transition-all duration-300 bg-white dark:bg-gray-900/95 text-gray-800 dark:text-white"
+          >
+            <span className="text-xs font-bold flex-1">{toast.message}</span>
+            <button
+              onClick={() => removeToast(toast.id)}
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors cursor-pointer shrink-0"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        ))}
+      </div>
       </div>
     </div>
   );

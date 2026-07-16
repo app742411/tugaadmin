@@ -3,48 +3,51 @@ import React from "react";
 
 interface BreadcrumbProps {
   pageTitle: string;
+  customPath?: { label: string; href?: string }[];
 }
 
-const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
+const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle, customPath }) => {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-      <h2
-        className="text-xl font-semibold text-gray-800 dark:text-white/90"
-        x-text="pageName"
-      >
+    <div className="flex flex-col gap-1 mb-2">
+      {/* Minimal breadcrumb trail */}
+      <nav className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 select-none">
+        <Link
+          href="/"
+          className="hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+        >
+          Dashboard
+        </Link>
+        <span className="text-gray-300 dark:text-gray-800">/</span>
+        {customPath ? (
+          customPath.map((item, idx) => (
+            <React.Fragment key={idx}>
+              {item.href ? (
+                <Link
+                  href={item.href}
+                  className="hover:text-gray-750 dark:hover:text-gray-200 transition-colors"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <span className="text-gray-500 dark:text-gray-400 font-bold">
+                  {item.label}
+                </span>
+              )}
+              {idx < customPath.length - 1 && (
+                <span className="text-gray-300 dark:text-gray-800">/</span>
+              )}
+            </React.Fragment>
+          ))
+        ) : (
+          <span className="text-gray-500 dark:text-gray-400 font-bold">
+            {pageTitle}
+          </span>
+        )}
+      </nav>
+      {/* Page Title */}
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
         {pageTitle}
       </h2>
-      <nav>
-        <ol className="flex items-center gap-1.5">
-          <li>
-            <Link
-              className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400"
-              href="/"
-            >
-              Home
-              <svg
-                className="stroke-current"
-                width="17"
-                height="16"
-                viewBox="0 0 17 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6.0765 12.667L10.2432 8.50033L6.0765 4.33366"
-                  stroke=""
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </Link>
-          </li>
-          <li className="text-sm text-gray-800 dark:text-white/90">
-            {pageTitle}
-          </li>
-        </ol>
-      </nav>
     </div>
   );
 };

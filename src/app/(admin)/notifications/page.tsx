@@ -90,7 +90,7 @@ export default function NotificationsPage() {
   return (
     <>
       <PageBreadcrumb pageTitle="Notifications" />
-      <div className="p-6">
+      <div className="p-6 max-w-3xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-4">
           <h1 className="text-2xl font-semibold">All Notifications</h1>
           <button 

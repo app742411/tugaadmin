@@ -145,6 +145,24 @@ export default function ManualReviewJobsPageClient() {
     }
   };
 
+  const formatJobStatus = (statusVal: string) => {
+    switch (statusVal) {
+      case "POSTED": return "Posted";
+      case "IN_PROGRESS": return "In Progress";
+      case "COMPLETED": return "Completed";
+      case "CANCELLED": return "Cancelled";
+      default: return statusVal;
+    }
+  };
+
+  const formatDistributionStatus = (distVal: string) => {
+    switch (distVal) {
+      case "AUTO": return "Auto";
+      case "MANUAL_REVIEW": return "Manual Review";
+      default: return distVal;
+    }
+  };
+
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "N/A";
     try {
@@ -182,26 +200,43 @@ export default function ManualReviewJobsPageClient() {
         </div>
       </div>
 
-      {/* Search and Filters */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6 p-5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-xs">
-        <div className="relative w-full md:w-80">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </span>
-          <input
-            type="text"
-            placeholder="Search manual review jobs..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs border border-gray-200 dark:border-gray-850 rounded-xl bg-gray-55/10 dark:bg-gray-950/20 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 transition"
-          />
-        </div>
+      {/* Filter and Search Bar Card */}
+      <div className="p-5 mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+          {/* Search Box */}
+          <div className="flex flex-col gap-1.5 lg:col-span-2">
+            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+              Search Jobs
+            </label>
+            <div className="relative">
+              <svg
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search manual review jobs..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/80 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition-colors"
+              />
+            </div>
+          </div>
 
-        <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-          <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Status:</span>
-          <div className="w-40">
+          {/* Status Dropdown */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+              Filter by Status
+            </label>
             <Select
               options={[
                 { value: "--", label: "All Jobs" },
@@ -214,12 +249,21 @@ export default function ManualReviewJobsPageClient() {
               onChange={setStatus}
             />
           </div>
+
+          {/* Results summary */}
+          <div className="flex justify-start sm:justify-end text-xs text-gray-400 dark:text-gray-500 sm:pb-2">
+            {isLoading ? (
+              <span>Loading results...</span>
+            ) : (
+              <span>Found {paginationInfo.total} job{paginationInfo.total === 1 ? "" : "s"}</span>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Table grid */}
       <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-xs overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto min-h-[280px]">
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-55/40 dark:bg-gray-950/20 border-b border-gray-100 dark:border-gray-800/80">
@@ -254,11 +298,13 @@ export default function ManualReviewJobsPageClient() {
                   </TableCell>
                 </TableRow>
               ) : (
-                jobsList.map((job) => (
+                jobsList.map((job, index) => (
                   <TableRow
                     key={job.id}
                     onClick={() => router.push(`/jobs/${job.id}`)}
-                    className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer"
+                    className={`hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer ${
+                      openDropdownId === job.id ? "relative z-30" : ""
+                    }`}
                   >
                     <TableCell className="px-6 py-3.5 text-start">
                       <div className="flex flex-col">
@@ -294,49 +340,77 @@ export default function ManualReviewJobsPageClient() {
                     </TableCell>
                     <TableCell className="px-6 py-3.5 text-center">
                       <div className="flex flex-col items-center gap-1.5">
-                        <Badge size="sm" color={getStatusColor(job.status)}>{job.status}</Badge>
-                        <Badge size="sm" color={getDistributionColor(job.distributionStatus)} variant="light">{job.distributionStatus}</Badge>
+                        <Badge size="sm" color={getStatusColor(job.status)}>{formatJobStatus(job.status)}</Badge>
+                        <Badge size="sm" color={getDistributionColor(job.distributionStatus)} variant="light">{formatDistributionStatus(job.distributionStatus)}</Badge>
                       </div>
                     </TableCell>
-                    <TableCell className="px-6 py-3.5 text-center">
+                    <TableCell className="px-6 py-3.5 text-center" onClick={(e) => e.stopPropagation()}>
                       <div className="relative inline-block text-left">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setOpenDropdownId(openDropdownId === job.id ? null : job.id);
                           }}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-white/[0.05] transition-colors"
+                          className={`dropdown-toggle inline-flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 bg-gray-50/50 hover:bg-gray-100 hover:border-gray-300 text-gray-500 hover:text-gray-800 transition-all duration-200 dark:border-gray-800 dark:bg-gray-900/50 dark:hover:bg-gray-800 dark:hover:border-gray-700 dark:text-gray-400 dark:hover:text-white ${
+                            openDropdownId === job.id
+                              ? "bg-gray-100 border-gray-300 dark:bg-gray-850 dark:border-gray-700 text-gray-800 dark:text-white"
+                              : ""
+                          }`}
                         >
-                          <MoreDotIcon />
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                          </svg>
                         </button>
 
                         <Dropdown
                           isOpen={openDropdownId === job.id}
                           onClose={() => setOpenDropdownId(null)}
-                          className="w-48 right-0 top-full z-50 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-lg p-2"
+                          className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${
+                            job.status === "POSTED" && index >= 2 && index >= jobsList.length - 2
+                              ? "bottom-full mb-1.5"
+                              : "top-full mt-1.5"
+                          }`}
                         >
                           <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-1">
                             <DropdownItem
+                              baseClassName=""
                               onItemClick={() => {
                                 setOpenDropdownId(null);
                                 setSelectedJob(job);
                               }}
-                              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                              className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-850 rounded-lg transition-colors cursor-pointer"
                             >
-                              <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              Assign Traders
+                            </DropdownItem>
+
+                            {/*
+                            <DropdownItem
+                              baseClassName=""
+                              onItemClick={() => {
+                                setOpenDropdownId(null);
+                                router.push(`/jobs/${job.id}`);
+                              }}
+                              className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-850 rounded-lg transition-colors cursor-pointer"
+                            >
+                              <svg className="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                               </svg>
-                              Quick Details
+                              View details page
                             </DropdownItem>
+                            */}
 
-                            <div className="h-px bg-gray-100 dark:bg-gray-800 my-1 mx-2" />
+                            {/* <div className="h-px bg-gray-100 dark:bg-gray-850 my-1 mx-1.5" /> */}
 
                             <DropdownItem
+                              baseClassName=""
                               onItemClick={() => setOpenDropdownId(null)}
-                              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                              className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
                             >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                               </svg>
                               Delete Job

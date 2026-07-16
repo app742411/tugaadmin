@@ -1,19 +1,29 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import Badge from "@/components/ui/badge/Badge";
 import { Modal } from "@/components/ui/modal";
+import Pagination from "@/components/ui/pagination/Pagination";
 import { useGetFaqs, useCreateFaq, useUpdateFaq, useDeleteFaq } from "@/hooks/useFaqs";
 
 export default function FaqsPageClient() {
-  const { data: faqsList, isLoading, error, refetch } = useGetFaqs();
+  const [activeAudienceFilter, setActiveAudienceFilter] = useState<string>("CUSTOMER");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(50);
+
+  const queryParams = useMemo(() => {
+    return {
+      page: currentPage,
+      limit,
+      audience: activeAudienceFilter,
+    };
+  }, [currentPage, limit, activeAudienceFilter]);
+
+  const { data: faqsList, pagination: paginationInfo, isLoading, error, refetch } = useGetFaqs(queryParams);
   const createMutation = useCreateFaq();
   const updateMutation = useUpdateFaq();
   const deleteMutation = useDeleteFaq();
-
-  const [activeAudienceFilter, setActiveAudienceFilter] = useState<string>("BOTH");
-  const [expandedFaqId, setExpandedFaqId] = useState<string | null>(null);
 
   // Form Modal state
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -27,17 +37,11 @@ export default function FaqsPageClient() {
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
 
-  // Toggle accordion expand/collapse
-  const toggleFaq = (id: string) => {
-    setExpandedFaqId((prev) => (prev === id ? null : id));
-  };
+  const [expandedFaqId, setExpandedFaqId] = useState<string | null>(null);
 
   // Filter & sort FAQs
   const processedFaqs = useMemo(() => {
     let list = [...faqsList];
-    if (activeAudienceFilter !== "BOTH") {
-      list = list.filter((faq) => faq.audience === activeAudienceFilter);
-    }
     // Sort by sortOrder ascending, then by createdAt descending
     return list.sort((a, b) => {
       if (a.sortOrder !== b.sortOrder) {
@@ -45,7 +49,20 @@ export default function FaqsPageClient() {
       }
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
-  }, [faqsList, activeAudienceFilter]);
+  }, [faqsList]);
+
+  // Adjust pagination if page exceeds totalPages (e.g. after deletion)
+  useEffect(() => {
+    const totalPages = paginationInfo.totalPages;
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [paginationInfo.totalPages, currentPage]);
+
+  // Toggle accordion expand/collapse
+  const toggleFaq = (id: string) => {
+    setExpandedFaqId((prev) => (prev === id ? null : id));
+  };
 
   const handleSubmitFaq = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,15 +171,18 @@ export default function FaqsPageClient() {
       </div>
 
       {/* Audience Filter Tabs */}
-      <div className="flex items-center gap-2 mb-6 border-b border-gray-100 dark:border-gray-800 pb-px">
+      <div className="flex items-center gap-2 mb-6 border-b border-gray-100 dark:border-gray-800 pb-px max-w-3xl mx-auto">
         {[
-          { value: "BOTH", label: "All Audiences" },
+          { value: "BOTH", label: "Both" },
           { value: "CUSTOMER", label: "Customers Only" },
           { value: "TRADER", label: "Traders Only" },
         ].map((tab) => (
           <button
             key={tab.value}
-            onClick={() => setActiveAudienceFilter(tab.value)}
+            onClick={() => {
+              setActiveAudienceFilter(tab.value);
+              setCurrentPage(1);
+            }}
             className={`px-4 py-2.5 text-xs font-semibold border-b-2 transition-all ${activeAudienceFilter === tab.value
               ? "border-brand-500 text-brand-500"
               : "border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
@@ -174,7 +194,7 @@ export default function FaqsPageClient() {
       </div>
 
       {/* FAQs Collapsible List Container */}
-      <div className="space-y-3.5">
+      <div className="space-y-3.5 max-w-3xl mx-auto">
         {isLoading ? (
           Array.from({ length: 4 }).map((_, idx) => (
             <div key={idx} className="h-16 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl animate-pulse" />
@@ -197,7 +217,7 @@ export default function FaqsPageClient() {
         ) : (
           processedFaqs.map((faq) => {
             const isExpanded = expandedFaqId === faq.id;
-            
+
             // Left border accent color depending on audience
             let borderAccent = "border-l-transparent";
             if (faq.audience === "CUSTOMER") borderAccent = "border-l-blue-500";
@@ -207,18 +227,16 @@ export default function FaqsPageClient() {
             return (
               <div
                 key={faq.id}
-                className={`bg-white dark:bg-gray-900 border ${
-                  isExpanded 
-                    ? "border-gray-200 dark:border-gray-700 shadow-sm" 
-                    : "border-gray-100 dark:border-gray-800 shadow-xs"
-                } border-l-4 ${borderAccent} rounded-xl overflow-hidden hover:border-gray-200 dark:hover:border-gray-750 transition-all duration-200`}
+                className={`bg-white dark:bg-gray-900 border ${isExpanded
+                  ? "border-gray-200 dark:border-gray-700 shadow-sm"
+                  : "border-gray-100 dark:border-gray-800 shadow-xs"
+                  } border-l-4 ${borderAccent} rounded-xl overflow-hidden hover:border-gray-200 dark:hover:border-gray-750 transition-all duration-200`}
               >
                 {/* Accordion Trigger Head */}
                 <div
                   onClick={() => toggleFaq(faq.id)}
-                  className={`p-4 sm:p-5 flex items-center justify-between gap-4 cursor-pointer select-none transition-colors ${
-                    isExpanded ? "bg-gray-50/40 dark:bg-gray-850/10" : ""
-                  }`}
+                  className={`p-4 sm:p-5 flex items-center justify-between gap-4 cursor-pointer select-none transition-colors ${isExpanded ? "bg-gray-50/40 dark:bg-gray-850/10" : ""
+                    }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <span className="text-[10px] font-mono font-bold text-gray-400 bg-gray-50 dark:bg-gray-800 px-2 py-1 rounded-lg shrink-0">
@@ -294,6 +312,24 @@ export default function FaqsPageClient() {
           })
         )}
       </div>
+
+      {/* Pagination component */}
+      {processedFaqs.length > 0 && (
+        <div className="mt-6 max-w-3xl mx-auto">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={paginationInfo.totalPages}
+            totalItems={paginationInfo.total}
+            limit={limit}
+            onPageChange={(page) => setCurrentPage(page)}
+            onLimitChange={(newLimit) => {
+              setLimit(newLimit);
+              setCurrentPage(1);
+            }}
+            isLoading={isLoading}
+          />
+        </div>
+      )}
 
       {/* Creation Modal Form */}
       <Modal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} className="max-w-lg p-6">

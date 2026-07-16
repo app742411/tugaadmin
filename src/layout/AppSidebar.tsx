@@ -190,7 +190,7 @@ const navGroups: NavGroup[] = [
       {
         icon: <SettingsIcon />,
         name: "Settings",
-        path: "/settings",
+        path: "/profile",
       },
     ],
   },

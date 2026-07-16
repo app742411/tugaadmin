@@ -21,6 +21,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
+import { Modal } from "@/components/ui/modal";
 import { MoreDotIcon } from "@/icons";
 
 // Toast styling and icons
@@ -59,6 +60,17 @@ export default function TradersPageClient() {
   const { toasts, showToast, removeToast } = useToast();
   const router = useRouter();
 
+  // Helper to format image and document URLs
+  const getFormattedImageUrl = (path: string | null | undefined) => {
+    if (!path) return "";
+    if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("data:")) {
+      return path;
+    }
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    const cleanPath = path.startsWith("/") ? path : `/${path}`;
+    return `${baseUrl}${cleanPath}`;
+  };
+
   // Query parameters state
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -76,6 +88,7 @@ export default function TradersPageClient() {
   const [rejectModalTraderId, setRejectModalTraderId] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState("");
   const [rejectActionType, setRejectActionType] = useState<"REJECTED" | "MANUAL_CHECK">("REJECTED");
+  const [deleteModalTrader, setDeleteModalTrader] = useState<{ id: string; name: string } | null>(null);
 
   // Handler: Approve Trader
   const handleVerifyApprove = async (traderId: string) => {
@@ -147,6 +160,15 @@ export default function TradersPageClient() {
       showToast("error", err?.message || `Failed to ${rejectActionType === "MANUAL_CHECK" ? "move to manual check" : "reject trader"}.`);
     } finally {
       setIsVerifying(false);
+    }
+  };
+
+  const confirmDeleteTrader = () => {
+    if (deleteModalTrader) {
+      showToast("success", `Trader account for ${deleteModalTrader.name} deleted successfully.`);
+      setDeleteModalTrader(null);
+      // Trigger query invalidation or manual updates if list data should reload
+      queryClient.invalidateQueries({ queryKey: ["traders"] });
     }
   };
 
@@ -261,6 +283,41 @@ export default function TradersPageClient() {
     }
   };
 
+  const formatRelativeTime = (dateString: string | null | undefined) => {
+    if (!dateString) return "";
+    try {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now.getTime() - date.getTime();
+      
+      const seconds = Math.floor(diffMs / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+      const months = Math.floor(days / 30);
+      const years = Math.floor(months / 12);
+      
+      if (years > 0) {
+        return `(${years} yr${years > 1 ? "s" : ""} ago)`;
+      }
+      if (months > 0) {
+        return `(${months} mo${months > 1 ? "s" : ""} ago)`;
+      }
+      if (days > 0) {
+        return `(${days} day${days > 1 ? "s" : ""} ago)`;
+      }
+      if (hours > 0) {
+        return `(${hours} hr${hours > 1 ? "s" : ""} ago)`;
+      }
+      if (minutes > 0) {
+        return `(${minutes} min${minutes > 1 ? "s" : ""} ago)`;
+      }
+      return "(just now)";
+    } catch {
+      return "";
+    }
+  };
+
   return (
     <div className="w-full pb-8">
       {/* Page Header */}
@@ -277,7 +334,7 @@ export default function TradersPageClient() {
       <div className="p-5 mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
           {/* Search Box */}
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5 lg:col-span-2">
             <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
               Search Traders
             </label>
@@ -300,7 +357,7 @@ export default function TradersPageClient() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by name, email, or company..."
-                className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/80 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition-colors"
+                className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/80 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition-colors"
               />
             </div>
           </div>
@@ -323,9 +380,6 @@ export default function TradersPageClient() {
             />
           </div>
 
-          {/* Spacer */}
-          <div className="hidden lg:block"></div>
-
           {/* Results summary */}
           <div className="flex justify-start sm:justify-end text-xs text-gray-400 dark:text-gray-500 sm:pb-2">
             {isLoading ? (
@@ -339,8 +393,8 @@ export default function TradersPageClient() {
 
       {/* Main Table Card */}
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-sm flex flex-col">
-        <div className="max-w-full overflow-x-auto">
-          <div className="min-w-[1100px] w-full">
+        <div className="max-w-full overflow-x-auto min-h-[280px]">
+          <div className="min-w-[1300px] w-full">
             <Table>
               <TableHeader className="border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/20">
                 <TableRow>
@@ -348,7 +402,19 @@ export default function TradersPageClient() {
                     isHeader
                     className="px-6 py-4 font-bold text-gray-600 text-start text-xs uppercase tracking-wider dark:text-gray-400"
                   >
-                    Trader / Business
+                    Trader
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-6 py-4 font-bold text-gray-600 text-start text-xs uppercase tracking-wider dark:text-gray-400"
+                  >
+                    Business Name
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-6 py-4 font-bold text-gray-600 text-start text-xs uppercase tracking-wider dark:text-gray-400"
+                  >
+                    Category
                   </TableCell>
                   <TableCell
                     isHeader
@@ -404,6 +470,12 @@ export default function TradersPageClient() {
                         </div>
                       </TableCell>
                       <TableCell className="px-6 py-4">
+                        <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded w-24 animate-pulse" />
+                      </TableCell>
+                      <TableCell className="px-6 py-4">
+                        <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded w-20 animate-pulse" />
+                      </TableCell>
+                      <TableCell className="px-6 py-4">
                         <div className="space-y-2 animate-pulse">
                           <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded w-24" />
                           <div className="h-2.5 bg-gray-200 dark:bg-gray-800 rounded w-16" />
@@ -429,9 +501,9 @@ export default function TradersPageClient() {
                 ) : error ? (
                   // Error state
                   <TableRow>
-                    <TableCell colSpan={7} className="px-6 py-12 text-center">
+                    <TableCell colSpan={9} className="px-6 py-12 text-center">
                       <div className="flex flex-col items-center justify-center max-w-md mx-auto">
-                        <div className="p-3 bg-red-50 dark:bg-red-950/20 text-red-500 dark:text-red-400 rounded-full mb-3">
+                        <div className="p-3 bg-red-50 dark:bg-red-955/20 text-red-500 dark:text-red-400 rounded-full mb-3">
                           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                           </svg>
@@ -444,9 +516,9 @@ export default function TradersPageClient() {
                 ) : tradersList.length === 0 ? (
                   // Empty state
                   <TableRow>
-                    <TableCell colSpan={7} className="px-6 py-16 text-center">
+                    <TableCell colSpan={9} className="px-6 py-16 text-center">
                       <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
-                        <div className="p-4 bg-gray-50 dark:bg-gray-950/40 text-gray-400 dark:text-gray-600 rounded-full mb-4">
+                        <div className="p-4 bg-gray-50 dark:bg-gray-955/40 text-gray-400 dark:text-gray-650 rounded-full mb-4">
                           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                           </svg>
@@ -460,31 +532,34 @@ export default function TradersPageClient() {
                   </TableRow>
                 ) : (
                   // Data state
-                  tradersList.map((trader) => {
+                  tradersList.map((trader, index) => {
                     const initials = getInitials(trader.fullName);
                     const avatarColorClass = getAvatarBg(trader.fullName);
                     const profile = trader.traderProfile;
+                    const verificationStatus = profile?.verificationStatus || "PENDING";
 
                     return (
                       <TableRow
                         key={trader.id}
                         onClick={() => router.push(`/traders/${trader.id}`)}
-                        className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors cursor-pointer"
+                        className={`hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors cursor-pointer ${
+                          openDropdownId === trader.id ? "relative z-30" : ""
+                        }`}
                       >
-                        {/* Trader / Business */}
+                        {/* Trader */}
                         <TableCell className="px-6 py-3.5 text-start">
                           <div className="flex items-center gap-3">
-                            {trader.profileImage ? (
-                              <div className="w-10 h-10 overflow-hidden rounded-full border border-gray-100 dark:border-gray-800">
+                            {trader.profileImage || profile?.logo ? (
+                              <div className="w-10 h-10 overflow-hidden rounded-full border border-gray-100 dark:border-gray-800 flex-shrink-0">
                                 <img
-                                  src={trader.profileImage}
+                                  src={getFormattedImageUrl(trader.profileImage || profile?.logo)}
                                   alt={trader.fullName}
                                   className="w-full h-full object-cover"
                                 />
                               </div>
                             ) : (
                               <div
-                                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${avatarColorClass}`}
+                                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 ${avatarColorClass}`}
                               >
                                 {initials}
                               </div>
@@ -496,13 +571,34 @@ export default function TradersPageClient() {
                               <span className="text-gray-400 dark:text-gray-500 text-xs">
                                 {trader.email}
                               </span>
-                              {profile?.companyName && (
-                                <span className="text-brand-500 dark:text-brand-400 text-xs font-semibold mt-0.5">
-                                  🏢 {profile.companyName}
-                                </span>
-                              )}
                             </div>
                           </div>
+                        </TableCell>
+
+                        {/* Business Name */}
+                        <TableCell className="px-6 py-3.5 text-start text-xs font-semibold text-gray-800 dark:text-gray-200">
+                          {profile?.companyName ? (
+                            <span className="text-brand-505 dark:text-brand-400">
+                              🏢 {profile.companyName}
+                            </span>
+                          ) : (
+                            <span className="text-gray-400 dark:text-gray-600 italic">No business name</span>
+                          )}
+                        </TableCell>
+
+                        {/* Category */}
+                        <TableCell className="px-6 py-3.5 text-start">
+                          {profile?.tradeCategories && profile.tradeCategories.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {profile.tradeCategories.map((cat: any) => (
+                                <span key={cat.id || cat} className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 border border-brand-100/25 dark:border-brand-900/35 uppercase tracking-wider font-mono">
+                                  {cat.name || cat}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-gray-400 dark:text-gray-600 text-xs italic">N/A</span>
+                          )}
                         </TableCell>
 
                         {/* Company Details */}
@@ -535,7 +631,11 @@ export default function TradersPageClient() {
                             color={getVerificationStatusColor(profile?.verificationStatus || "PENDING")}
                             variant="light"
                           >
-                            {profile?.verificationStatus || "PENDING"}
+                            {profile?.verificationStatus === "MANUAL_CHECK"
+                              ? "Manual Review"
+                              : profile?.verificationStatus
+                              ? profile.verificationStatus.charAt(0) + profile.verificationStatus.slice(1).toLowerCase()
+                              : "Pending"}
                           </Badge>
                         </TableCell>
 
@@ -546,76 +646,130 @@ export default function TradersPageClient() {
                             color={getStatusColor(trader.status)}
                             variant="light"
                           >
-                            {trader.status}
+                            {trader.status
+                              ? trader.status.charAt(0) + trader.status.slice(1).toLowerCase()
+                              : "Pending"}
                           </Badge>
                         </TableCell>
 
                         {/* Created Date */}
-                        <TableCell className="px-6 py-3.5 text-start text-gray-600 dark:text-gray-400 text-sm font-medium">
-                          {formatDate(trader.createdAt)}
+                        <TableCell className="px-6 py-3.5 text-start text-sm">
+                          <div className="flex flex-col">
+                            <span className="text-gray-800 dark:text-white font-medium">
+                              {formatDate(trader.createdAt)}
+                            </span>
+                            <span className="text-gray-400 dark:text-gray-500 text-xs font-mono">
+                              {formatRelativeTime(trader.createdAt)}
+                            </span>
+                          </div>
                         </TableCell>
 
                         {/* Actions */}
-                        <TableCell className="px-6 py-3.5 text-center">
+                        <TableCell className="px-6 py-3.5 text-center" onClick={(e) => e.stopPropagation()}>
                           <div className="relative inline-block text-left">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setOpenDropdownId(openDropdownId === trader.id ? null : trader.id);
                               }}
-                              className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                              className={`dropdown-toggle inline-flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 bg-gray-50/50 hover:bg-gray-100 hover:border-gray-300 text-gray-500 hover:text-gray-800 transition-all duration-200 dark:border-gray-800 dark:bg-gray-900/50 dark:hover:bg-gray-800 dark:hover:border-gray-700 dark:text-gray-400 dark:hover:text-white ${openDropdownId === trader.id
+                                ? "bg-gray-100 border-gray-300 dark:bg-gray-850 dark:border-gray-700 text-gray-800 dark:text-white"
+                                : ""
+                                }`}
                             >
-                              <MoreDotIcon className="w-5 h-5" />
+                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                              </svg>
                             </button>
+
                             <Dropdown
                               isOpen={openDropdownId === trader.id}
                               onClose={() => setOpenDropdownId(null)}
-                              className="w-48 right-0"
+                              className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${
+                                (index >= 2 && index >= tradersList.length - 2)
+                                  ? "bottom-full mb-1.5"
+                                  : "top-full mt-1.5"
+                                }`}
                             >
-                              <div className="py-1" onClick={(e) => e.stopPropagation()}>
+                              <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-1">
+                                {verificationStatus !== "APPROVED" && (
+                                  <DropdownItem
+                                    baseClassName=""
+                                    onItemClick={() => {
+                                      handleVerifyApprove(trader.id);
+                                      setOpenDropdownId(null);
+                                    }}
+                                    className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-500/10 rounded-lg transition-colors cursor-pointer"
+                                  >
+                                    <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    Approve Profile
+                                  </DropdownItem>
+                                )}
+
+                                {verificationStatus !== "REJECTED" && (
+                                  <DropdownItem
+                                    baseClassName=""
+                                    onItemClick={() => {
+                                      handleVerifyRejectOpen(trader.id, "REJECTED");
+                                      setOpenDropdownId(null);
+                                    }}
+                                    className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
+                                  >
+                                    <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    Reject Profile
+                                  </DropdownItem>
+                                )}
+
+                                {verificationStatus !== "MANUAL_CHECK" && (
+                                  <DropdownItem
+                                    baseClassName=""
+                                    onItemClick={() => {
+                                      handleVerifyRejectOpen(trader.id, "MANUAL_CHECK");
+                                      setOpenDropdownId(null);
+                                    }}
+                                    className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-500/10 rounded-lg transition-colors cursor-pointer"
+                                  >
+                                    <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                    Manual Review
+                                  </DropdownItem>
+                                )}
+
+                                <div className="h-px bg-gray-100 dark:bg-gray-850 my-1 mx-1.5" />
+
                                 <DropdownItem
-                                  onItemClick={() => {
-                                    handleVerifyApprove(trader.id);
+                                  baseClassName=""
+                                  onItemClick={() => setOpenDropdownId(null)}
+                                  className={`flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
+                                    trader.status === "BLOCKED"
+                                      ? "text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-500/10"
+                                      : "text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-500/10"
+                                  }`}
+                                >
+                                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                                  </svg>
+                                  {trader.status === "BLOCKED" ? "Unblock Trader" : "Block Trader"}
+                                </DropdownItem>
+
+                                <DropdownItem
+                                  baseClassName=""
+                                  onItemClick={(e) => {
+                                    e.stopPropagation();
+                                    setDeleteModalTrader({ id: trader.id, name: trader.fullName });
                                     setOpenDropdownId(null);
                                   }}
-                                  className="text-green-600 dark:text-green-400 font-medium"
+                                  className="flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 dark:text-red-455 dark:hover:bg-red-550/10 rounded-lg transition-colors cursor-pointer"
                                 >
-                                  Approve
-                                </DropdownItem>
-                                <DropdownItem
-                                  onItemClick={() => {
-                                    handleVerifyRejectOpen(trader.id, "REJECTED");
-                                    setOpenDropdownId(null);
-                                  }}
-                                  className="text-red-600 dark:text-red-400 font-medium"
-                                >
-                                  Reject
-                                </DropdownItem>
-                                <DropdownItem
-                                  onItemClick={() => {
-                                    handleVerifyRejectOpen(trader.id, "MANUAL_CHECK");
-                                    setOpenDropdownId(null);
-                                  }}
-                                  className="text-orange-600 dark:text-orange-400 font-medium"
-                                >
-                                  Manually
-                                </DropdownItem>
-                                <DropdownItem
-                                  tag="a"
-                                  href={`/traders/${trader.id}`}
-                                  className="font-medium"
-                                  onClick={() => setOpenDropdownId(null)}
-                                >
-                                  View details
-                                </DropdownItem>
-                                <DropdownItem
-                                  onItemClick={() => {
-                                    setSelectedTrader(trader);
-                                    setOpenDropdownId(null);
-                                  }}
-                                  className="font-medium"
-                                >
-                                  Quick detail
+                                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                  Delete Trader
                                 </DropdownItem>
                               </div>
                             </Dropdown>
@@ -673,9 +827,9 @@ export default function TradersPageClient() {
             <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
               {/* Profile Card Summary */}
               <div className="flex flex-col items-center text-center p-4 rounded-2xl bg-gray-50/50 dark:bg-gray-950/20 border border-gray-100 dark:border-gray-800/80">
-                {selectedTrader.profileImage ? (
+                {selectedTrader.profileImage || selectedTrader.traderProfile?.logo ? (
                   <img
-                    src={selectedTrader.profileImage}
+                    src={getFormattedImageUrl(selectedTrader.profileImage || selectedTrader.traderProfile?.logo)}
                     alt={selectedTrader.fullName}
                     className="w-16 h-16 rounded-full border border-gray-200 dark:border-gray-700 object-cover mb-3"
                   />
@@ -991,6 +1145,35 @@ export default function TradersPageClient() {
           </div>
         </div>
       )}
+
+      {/* Custom Delete Confirmation Modal Popup */}
+      <Modal
+        isOpen={!!deleteModalTrader}
+        onClose={() => setDeleteModalTrader(null)}
+        className="max-w-md p-6"
+        showCloseButton={false}
+      >
+        <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-3">
+          Delete Trader Account
+        </h4>
+        <p className="text-xs text-gray-550 dark:text-gray-400 leading-relaxed mb-5">
+          Are you sure you want to permanently delete the profile for <strong className="text-gray-855 dark:text-white">{deleteModalTrader?.name}</strong>? This action is permanent and cannot be undone. All associated business information, portfolio showcase items, and certificates will be removed.
+        </p>
+        <div className="flex justify-end gap-3 pt-3 border-t border-gray-50 dark:border-gray-850">
+          <button
+            onClick={() => setDeleteModalTrader(null)}
+            className="px-4 py-2 text-xs font-semibold text-gray-655 hover:bg-gray-55 dark:text-gray-400 dark:hover:bg-white/5 border border-gray-200 dark:border-gray-755 rounded-xl transition-colors cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={confirmDeleteTrader}
+            className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-xs transition-colors cursor-pointer"
+          >
+            Confirm Delete
+          </button>
+        </div>
+      </Modal>
 
       {/* Toast Container */}
       <div className="fixed top-6 right-6 z-[999999] flex flex-col gap-2 pointer-events-none">

@@ -129,7 +129,8 @@ const Pagination: React.FC<PaginationProps> = ({
               value={limit}
               onChange={(val) => onLimitChange(Number(val))}
               disabled={isLoading}
-              className="w-20"
+              className="w-24"
+              dropdownPosition="top"
             />
             <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">entries</span>
           </div>

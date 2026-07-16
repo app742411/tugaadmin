@@ -3,8 +3,13 @@ import { FAQItem, CreateFAQInput, FAQListResponse } from "@/types/faq.types";
 
 export const faqService = {
   /** Fetch all FAQs */
-  getFaqs: async (): Promise<FAQListResponse> => {
-    const res = await apiClient.get<FAQListResponse>("/api/faq");
+  getFaqs: async (params?: { page?: number; limit?: number; audience?: string }): Promise<FAQListResponse> => {
+    const res = await apiClient.get<FAQListResponse>("/api/faq", {
+      params: {
+        limit: 50,
+        ...params,
+      }
+    });
     return res.data;
   },
 

@@ -7,6 +7,7 @@ import CategoryColumn from "@/components/categories/CategoryColumn";
 import SubCategoryColumn from "@/components/categories/SubCategoryColumn";
 import SubSubCategoryColumn from "@/components/categories/SubSubCategoryColumn";
 import CategoryModal from "@/components/categories/CategoryModal";
+import { Modal } from "@/components/ui/modal";
 import { useGetCategories, useGetSkillServices, useGetSubCategories } from "@/hooks/useCategories";
 import { useToast } from "@/hooks/useToast";
 import { categoryService } from "@/services/categoryService";
@@ -67,6 +68,10 @@ export default function CategoriesPage() {
     title: "Add New Category",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Delete confirm modal state
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; type: "category" | "skill-service" | "sub-category"; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Data hooks (lazy loading enforced by the hooks themselves)
   const {
@@ -87,6 +92,32 @@ export default function CategoriesPage() {
     error: subsError,
   } = useGetSubCategories(selectedSkillService?.id ?? null);
 
+  // Automatically select the first category if none is selected or if the selected one is invalid
+  React.useEffect(() => {
+    if (categories && categories.length > 0) {
+      const isSelectedValid = selectedCategory && categories.some((cat) => cat.id === selectedCategory.id);
+      if (!isSelectedValid) {
+        setSelectedCategory(categories[0]);
+        setSelectedSkillService(null);
+      }
+    } else {
+      setSelectedCategory(null);
+      setSelectedSkillService(null);
+    }
+  }, [categories, selectedCategory]);
+
+  // Automatically select the first skill service if none is selected or if the selected one is invalid
+  React.useEffect(() => {
+    if (skillServices && skillServices.length > 0) {
+      const isSelectedValid = selectedSkillService && skillServices.some((skill) => skill.id === selectedSkillService.id);
+      if (!isSelectedValid) {
+        setSelectedSkillService(skillServices[0]);
+      }
+    } else {
+      setSelectedSkillService(null);
+    }
+  }, [skillServices, selectedSkillService]);
+
   // Toast
   const { toasts, showToast, removeToast } = useToast();
 
@@ -103,40 +134,56 @@ export default function CategoriesPage() {
 
   // ── Delete (toggle) handlers ─────────────────────────────────────────────────
 
-  const handleDeleteCategory = useCallback(async (id: string) => {
+  const handleDeleteCategory = useCallback((id: string) => {
+    const item = categories?.find((c) => c.id === id);
+    const name = item ? item.name : "Category";
+    setDeleteTarget({ id, type: "category", name });
+    return Promise.resolve();
+  }, [categories]);
+
+  const handleDeleteSkillService = useCallback((id: string) => {
+    const item = skillServices?.find((s) => s.id === id);
+    const name = item ? item.name : "Skill Service";
+    setDeleteTarget({ id, type: "skill-service", name });
+    return Promise.resolve();
+  }, [skillServices]);
+
+  const handleDeleteSubCategory = useCallback((id: string) => {
+    const item = subCategories?.find((s) => s.id === id);
+    const name = item ? item.name : "Sub Category";
+    setDeleteTarget({ id, type: "sub-category", name });
+    return Promise.resolve();
+  }, [subCategories]);
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
     try {
-      await categoryService.toggleCategory(id);
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      if (selectedCategory?.id === id) {
-        setSelectedCategory(null);
-        setSelectedSkillService(null);
+      if (deleteTarget.type === "category") {
+        await categoryService.toggleCategory(deleteTarget.id);
+        queryClient.invalidateQueries({ queryKey: ["categories"] });
+        if (selectedCategory?.id === deleteTarget.id) {
+          setSelectedCategory(null);
+          setSelectedSkillService(null);
+        }
+        showToast("success", `Category "${deleteTarget.name}" removed successfully.`);
+      } else if (deleteTarget.type === "skill-service") {
+        await categoryService.toggleSkillService(deleteTarget.id);
+        queryClient.invalidateQueries({ queryKey: ["skillServices", selectedCategory?.id] });
+        if (selectedSkillService?.id === deleteTarget.id) setSelectedSkillService(null);
+        showToast("success", `Skill service "${deleteTarget.name}" removed successfully.`);
+      } else if (deleteTarget.type === "sub-category") {
+        await categoryService.toggleSubCategory(deleteTarget.id);
+        queryClient.invalidateQueries({ queryKey: ["subCategories", selectedSkillService?.id] });
+        showToast("success", `Sub category "${deleteTarget.name}" removed successfully.`);
       }
-      showToast("success", "Category removed.");
+      setDeleteTarget(null);
     } catch (err: any) {
-      showToast("error", err?.message || "Failed to remove category.");
+      showToast("error", err?.message || `Failed to delete ${deleteTarget.type}.`);
+    } finally {
+      setIsDeleting(false);
     }
-  }, [selectedCategory, showToast, queryClient]);
-
-  const handleDeleteSkillService = useCallback(async (id: string) => {
-    try {
-      await categoryService.toggleSkillService(id);
-      queryClient.invalidateQueries({ queryKey: ["skillServices", selectedCategory?.id] });
-      if (selectedSkillService?.id === id) setSelectedSkillService(null);
-      showToast("success", "Skill service removed.");
-    } catch (err: any) {
-      showToast("error", err?.message || "Failed to remove skill service.");
-    }
-  }, [selectedCategory?.id, selectedSkillService, showToast, queryClient]);
-
-  const handleDeleteSubCategory = useCallback(async (id: string) => {
-    try {
-      await categoryService.toggleSubCategory(id);
-      queryClient.invalidateQueries({ queryKey: ["subCategories", selectedSkillService?.id] });
-      showToast("success", "Sub category removed.");
-    } catch (err: any) {
-      showToast("error", err?.message || "Failed to remove sub category.");
-    }
-  }, [selectedSkillService?.id, showToast, queryClient]);
+  };
 
   const openModal = useCallback(
     (level: ModalConfig["level"]) => {
@@ -355,6 +402,38 @@ export default function CategoriesPage() {
         onClose={closeModal}
         onSubmit={handleSubmit}
       />
+
+      {/* Confirmation Modal: Delete Category/Skill/Subcategory */}
+      <Modal isOpen={!!deleteTarget} onClose={() => !isDeleting && setDeleteTarget(null)} className="max-w-md p-6" showCloseButton={false}>
+        <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-3">
+          Delete {deleteTarget?.type === "category" ? "Category" : deleteTarget?.type === "skill-service" ? "Skill Service" : "Sub Category"}
+        </h4>
+        <p className="text-xs text-gray-550 dark:text-gray-400 leading-relaxed mb-5">
+          Are you sure you want to permanently delete <strong className="text-gray-855 dark:text-white">{deleteTarget?.name}</strong>? All sub-levels and associated records under this category path will be affected.
+        </p>
+        <div className="flex justify-end gap-3 pt-3 border-t border-gray-50 dark:border-gray-850">
+          <button
+            onClick={() => setDeleteTarget(null)}
+            disabled={isDeleting}
+            className="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-white/5 border border-gray-200 dark:border-gray-755 rounded-xl transition-colors cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={confirmDelete}
+            disabled={isDeleting}
+            className="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+          >
+            {isDeleting && (
+              <svg className="animate-spin -ml-1 mr-1 h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            )}
+            Confirm Delete
+          </button>
+        </div>
+      </Modal>
 
       {/* Toast Container */}
       <div className="fixed top-6 right-6 z-[999999] flex flex-col gap-2 pointer-events-none">

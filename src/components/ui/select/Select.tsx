@@ -14,6 +14,7 @@ interface SelectProps {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  dropdownPosition?: "top" | "bottom";
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -23,6 +24,7 @@ const Select: React.FC<SelectProps> = ({
   placeholder = "Select option",
   className = "",
   disabled = false,
+  dropdownPosition = "bottom",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -61,7 +63,7 @@ const Select: React.FC<SelectProps> = ({
         type="button"
         onClick={handleToggle}
         disabled={disabled}
-        className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg border bg-gray-50 text-gray-800 hover:bg-gray-100/50 transition-colors focus:outline-none focus:ring-1 focus:ring-brand-500 cursor-pointer ${
+        className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg border bg-white text-gray-800 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-1 focus:ring-brand-500 cursor-pointer ${
           isOpen
             ? "border-brand-500 ring-1 ring-brand-500 dark:border-brand-500"
             : "border-gray-200 dark:border-gray-800"
@@ -88,7 +90,9 @@ const Select: React.FC<SelectProps> = ({
 
       {/* Options Dropdown Menu */}
       {isOpen && (
-        <div className="absolute z-50 w-full left-0 mt-1.5 bg-white border border-gray-200 dark:border-gray-800 dark:bg-gray-950 rounded-xl shadow-lg max-h-60 overflow-y-auto animate-fade-in no-scrollbar">
+        <div className={`absolute z-50 min-w-full left-0 bg-white border border-gray-200 dark:border-gray-800 dark:bg-gray-950 rounded-xl shadow-lg max-h-60 overflow-y-auto animate-fade-in no-scrollbar ${
+          dropdownPosition === "top" ? "bottom-full mb-1.5" : "mt-1.5"
+        }`}>
           <div className="p-1 space-y-0.5">
             {options.map((option) => {
               const isSelected = option.value === value;

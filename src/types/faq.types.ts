@@ -10,7 +10,11 @@ export interface FAQItem {
 }
 
 export interface FAQListResponse {
+  success?: boolean;
   message?: string;
+  total?: number;
+  page?: number;
+  limit?: number;
   data: FAQItem[];
 }
 
