@@ -289,14 +289,14 @@ export default function TradersPageClient() {
       const date = new Date(dateString);
       const now = new Date();
       const diffMs = now.getTime() - date.getTime();
-      
+
       const seconds = Math.floor(diffMs / 1000);
       const minutes = Math.floor(seconds / 60);
       const hours = Math.floor(minutes / 60);
       const days = Math.floor(hours / 24);
       const months = Math.floor(days / 30);
       const years = Math.floor(months / 12);
-      
+
       if (years > 0) {
         return `(${years} yr${years > 1 ? "s" : ""} ago)`;
       }
@@ -331,7 +331,7 @@ export default function TradersPageClient() {
       </div>
 
       {/* Filter and Search Bar Card */}
-      <div className="p-5 mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+      <div className="p-5 mb-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
           {/* Search Box */}
           <div className="flex flex-col gap-1.5 lg:col-span-2">
@@ -392,7 +392,7 @@ export default function TradersPageClient() {
       </div>
 
       {/* Main Table Card */}
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-sm flex flex-col">
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-sm flex flex-col">
         <div className="max-w-full overflow-x-auto min-h-[280px]">
           <div className="min-w-[1300px] w-full">
             <Table>
@@ -542,9 +542,8 @@ export default function TradersPageClient() {
                       <TableRow
                         key={trader.id}
                         onClick={() => router.push(`/traders/${trader.id}`)}
-                        className={`hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors cursor-pointer ${
-                          openDropdownId === trader.id ? "relative z-30" : ""
-                        }`}
+                        className={`hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors cursor-pointer ${openDropdownId === trader.id ? "relative z-30" : ""
+                          }`}
                       >
                         {/* Trader */}
                         <TableCell className="px-6 py-3.5 text-start">
@@ -634,8 +633,8 @@ export default function TradersPageClient() {
                             {profile?.verificationStatus === "MANUAL_CHECK"
                               ? "Manual Review"
                               : profile?.verificationStatus
-                              ? profile.verificationStatus.charAt(0) + profile.verificationStatus.slice(1).toLowerCase()
-                              : "Pending"}
+                                ? profile.verificationStatus.charAt(0) + profile.verificationStatus.slice(1).toLowerCase()
+                                : "Pending"}
                           </Badge>
                         </TableCell>
 
@@ -685,10 +684,9 @@ export default function TradersPageClient() {
                             <Dropdown
                               isOpen={openDropdownId === trader.id}
                               onClose={() => setOpenDropdownId(null)}
-                              className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${
-                                (index >= 2 && index >= tradersList.length - 2)
-                                  ? "bottom-full mb-1.5"
-                                  : "top-full mt-1.5"
+                              className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${(index >= 2 && index >= tradersList.length - 2)
+                                ? "bottom-full mb-1.5"
+                                : "top-full mt-1.5"
                                 }`}
                             >
                               <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-1">
@@ -745,11 +743,10 @@ export default function TradersPageClient() {
                                 <DropdownItem
                                   baseClassName=""
                                   onItemClick={() => setOpenDropdownId(null)}
-                                  className={`flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
-                                    trader.status === "BLOCKED"
-                                      ? "text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-500/10"
-                                      : "text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-500/10"
-                                  }`}
+                                  className={`flex items-center gap-2.5 w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${trader.status === "BLOCKED"
+                                    ? "text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-500/10"
+                                    : "text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-500/10"
+                                    }`}
                                 >
                                   <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
@@ -826,7 +823,7 @@ export default function TradersPageClient() {
             {/* Content */}
             <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
               {/* Profile Card Summary */}
-              <div className="flex flex-col items-center text-center p-4 rounded-2xl bg-gray-50/50 dark:bg-gray-950/20 border border-gray-100 dark:border-gray-800/80">
+              <div className="flex flex-col items-center text-center p-4 rounded-xl bg-gray-50/50 dark:bg-gray-950/20 border border-gray-100 dark:border-gray-800/80">
                 {selectedTrader.profileImage || selectedTrader.traderProfile?.logo ? (
                   <img
                     src={getFormattedImageUrl(selectedTrader.profileImage || selectedTrader.traderProfile?.logo)}
@@ -1089,7 +1086,7 @@ export default function TradersPageClient() {
       {/* Reject Reason Modal Popup */}
       {isRejectModalOpen && (
         <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/50 backdrop-blur-xs">
-          <div className="bg-white dark:bg-gray-900 w-full max-w-md p-6 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 flex flex-col gap-4 mx-4 animate-zoom-in">
+          <div className="bg-white dark:bg-gray-900 w-full max-w-md p-6 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 flex flex-col gap-4 mx-4 animate-zoom-in">
             <div className="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-gray-800">
               <h4 className="text-sm font-bold text-gray-900 dark:text-white">
                 {rejectActionType === "MANUAL_CHECK" ? "Manual Check Trader Verification" : "Reject Trader Verification"}

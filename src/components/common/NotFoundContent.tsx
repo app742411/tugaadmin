@@ -8,7 +8,8 @@ export default function NotFoundContent() {
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen p-6 overflow-hidden z-1 bg-gray-50 dark:bg-[#080d08] transition-colors duration-300">
       {/* CSS Animations */}
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @keyframes float {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-14px); }
@@ -72,8 +73,8 @@ export default function NotFoundContent() {
       </div>
 
       {/* Main Glassmorphic Container Card */}
-      <div className="relative z-10 w-full max-w-xl p-8 md:p-14 text-center rounded-3xl backdrop-blur-md bg-white/40 dark:bg-white/[0.02] border border-white/50 dark:border-white/[0.04] shadow-theme-xl dark:shadow-2xl">
-        
+      <div className="relative z-10 w-full max-w-xl p-8 md:p-14 text-center rounded-xl backdrop-blur-md bg-white/40 dark:bg-white/[0.02] border border-white/50 dark:border-white/[0.04] shadow-theme-xl dark:shadow-2xl">
+
         {/* Error Badge */}
         <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold tracking-[0.2em] uppercase rounded-full bg-success-50 text-success-600 border border-success-200 dark:bg-success-500/10 dark:text-success-400 dark:border-success-500/20 mb-6">
           <span className="w-1.5 h-1.5 rounded-full bg-success-500 animate-pulse" />
@@ -95,7 +96,7 @@ export default function NotFoundContent() {
                 <stop offset="100%" stopColor="#89a086" />
               </linearGradient>
             </defs>
-            
+
             {/* Left Digit '4' */}
             <g className="fill-brand-500 dark:fill-brand-300 transition-colors duration-300">
               <rect x="0.0405273" y="0.522461" width="32.6255" height="77.5957" rx="6.26271" />
@@ -107,13 +108,13 @@ export default function NotFoundContent() {
             <g className="animate-float" style={{ transformOrigin: '236px 79px' }}>
               {/* Monitor Screen Frame */}
               <rect x="152.769" y="15.167" width="166.462" height="130.311" rx="28" stroke="url(#brandLinearGrad)" strokeWidth="24" className="dark:stroke-[url(#brandLinearGradDark)]" />
-              
+
               {/* Inner face components */}
               <g className="fill-brand-500 dark:fill-brand-300">
                 {/* Eyes - blinking */}
                 <rect x="203.103" y="41.7015" width="22.1453" height="20.7141" rx="2.63433" className="animate-blink" style={{ transformOrigin: '214px 52px' }} />
                 <rect x="246.752" y="41.7015" width="22.1453" height="20.7141" rx="2.63433" className="animate-blink" style={{ transformOrigin: '257px 52px' }} />
-                
+
                 {/* Sad Mouth */}
                 <rect x="191.654" y="98.2303" width="22.1453" height="20.7141" rx="2.63433" />
                 <rect x="258.201" y="98.2303" width="22.1453" height="20.7141" rx="2.63433" />
@@ -134,7 +135,7 @@ export default function NotFoundContent() {
         <h2 className="text-xl font-bold text-gray-800 dark:text-white/95 sm:text-2xl mb-3">
           Page Not Found
         </h2>
-        
+
         {/* Description */}
         <p className="max-w-md mx-auto mb-8 text-sm text-gray-500 dark:text-gray-400">
           We can’t seem to find the page you are looking for. It might have been moved, renamed, or is temporarily unavailable.

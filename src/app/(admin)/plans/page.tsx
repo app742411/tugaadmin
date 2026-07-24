@@ -125,7 +125,7 @@ export default function PlansPage() {
 
     try {
       setIsSaving(true);
-      
+
       // Submit exactly matching the update request payload:
       await planService.updatePlan(editingPlan.id, {
         description: formDesc.trim(),
@@ -164,21 +164,19 @@ export default function PlansPage() {
         <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800/80 p-1.5 rounded-xl self-start sm:self-center">
           <button
             onClick={() => setBillingCycle("MONTHLY")}
-            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-150 ${
-              billingCycle === "MONTHLY"
+            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-150 ${billingCycle === "MONTHLY"
                 ? "bg-[#1a2e05] text-white shadow-sm dark:bg-brand-500"
                 : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            }`}
+              }`}
           >
             Monthly Billing
           </button>
           <button
             onClick={() => setBillingCycle("YEARLY")}
-            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-150 ${
-              billingCycle === "YEARLY"
+            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-150 ${billingCycle === "YEARLY"
                 ? "bg-[#1a2e05] text-white shadow-sm dark:bg-brand-500"
                 : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            }`}
+              }`}
           >
             Yearly Billing
           </button>
@@ -191,7 +189,7 @@ export default function PlansPage() {
           {Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
-              className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 p-6 animate-pulse space-y-4"
+              className="rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 p-6 animate-pulse space-y-4"
             >
               <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/4" />
               <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded w-1/2" />
@@ -207,7 +205,7 @@ export default function PlansPage() {
 
       {/* Error state */}
       {error && !isLoading && (
-        <div className="rounded-2xl border border-red-200 dark:border-red-900/50 bg-red-50/50 dark:bg-red-950/10 p-6 max-w-xl mx-auto text-center mt-12">
+        <div className="rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50/50 dark:bg-red-950/10 p-6 max-w-xl mx-auto text-center mt-12">
           <svg
             className="w-10 h-10 text-red-500 mx-auto mb-3"
             fill="none"
@@ -237,7 +235,7 @@ export default function PlansPage() {
               <div
                 key={plan.id}
                 className={`
-                  rounded-2xl border bg-white dark:bg-gray-900/60 p-6 shadow-sm
+                  rounded-xl border bg-white dark:bg-gray-900/60 p-6 shadow-sm
                   transition-all duration-200 hover:-translate-y-1 hover:shadow-md
                   flex flex-col relative overflow-hidden
                   ${styles.border} ${styles.glow}
@@ -245,7 +243,10 @@ export default function PlansPage() {
               >
                 {/* Badge for Popular/Gold */}
                 {plan.name.toUpperCase().includes("GOLD") && (
-                  <div className="absolute top-0 right-6 -translate-y-1/2 bg-yellow-500 text-yellow-950 text-[10px] font-bold tracking-wider px-2.5 py-0.5 rounded-full uppercase">
+                  <div className="absolute top-0 right-0 bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-950 text-[10px] font-bold tracking-wider px-3 py-1 rounded-bl-xl shadow-sm uppercase flex items-center gap-1">
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
                     Premium Tier
                   </div>
                 )}
@@ -257,13 +258,22 @@ export default function PlansPage() {
                       {plan.name}
                     </h3>
                     <span
-                      className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                        plan.isActive
-                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-400"
-                          : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400"
-                      }`}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${plan.isActive
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
+                          : "bg-gray-50 text-gray-600 border border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
+                        }`}
                     >
-                      {plan.isActive ? "Active" : "Inactive"}
+                      {plan.isActive ? (
+                        <>
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          Active
+                        </>
+                      ) : (
+                        <>
+                          <span className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+                          Inactive
+                        </>
+                      )}
                     </span>
                   </div>
                   <p className="text-xs text-gray-400 dark:text-gray-500 line-clamp-2">
@@ -304,7 +314,7 @@ export default function PlansPage() {
                         Category Limit
                       </h4>
                       <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                        {plan.maxCategories >= 9999 ? "Unlimited Categories" : `${plan.maxCategories} Category`}
+                        {plan.maxCategories == null || plan.maxCategories >= 9999 ? "Unlimited Categories" : `${plan.maxCategories} Category${plan.maxCategories !== 1 ? 's' : ''}`}
                       </p>
                     </div>
                   </div>
@@ -321,7 +331,7 @@ export default function PlansPage() {
                         Portfolio Uploads
                       </h4>
                       <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                        Max {plan.maxPortfolioUploads} high-res showcase media
+                        {plan.maxPortfolioUploads == null || plan.maxPortfolioUploads >= 9999 ? "Unlimited high-res showcase media" : `Max ${plan.maxPortfolioUploads} high-res showcase media`}
                       </p>
                     </div>
                   </div>
@@ -338,7 +348,7 @@ export default function PlansPage() {
                         Daily Quotes Limit
                       </h4>
                       <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                        Send up to {plan.maxQuotesPerDay} quotes to clients every day
+                        {plan.maxQuotesPerDay == null || plan.maxQuotesPerDay >= 9999 ? "Unlimited quotes to clients every day" : `Send up to ${plan.maxQuotesPerDay} quotes to clients every day`}
                       </p>
                     </div>
                   </div>
@@ -367,7 +377,7 @@ export default function PlansPage() {
           />
 
           {/* Panel */}
-          <div className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+          <div className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
             {/* Header */}
             <div className="flex items-start justify-between p-6 border-b border-gray-100 dark:border-gray-800">
               <div>

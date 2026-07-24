@@ -132,7 +132,7 @@ export default function MonthlyTarget() {
   return (
     <div className="flex flex-col gap-6 w-full">
       {/* 1. Quotes Overview Card */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] shadow-sm flex flex-col justify-between h-[360px]">
+      <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] shadow-sm flex flex-col justify-between h-[360px]">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">
             Quotes Overview
@@ -167,7 +167,7 @@ export default function MonthlyTarget() {
       </div>
 
       {/* 2. Subscription Status Card */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] shadow-sm flex flex-col justify-between h-[400px]">
+      <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] shadow-sm flex flex-col justify-between h-[400px]">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">
             Subscription Status

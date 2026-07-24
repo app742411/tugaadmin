@@ -40,38 +40,38 @@ export default function CategoriesRequestsPageClient() {
   // Dynamic recursive loading of category tree names when inspect drawer opens
   useEffect(() => {
     if (!selectedRequest) return;
-    
+
     const loadNames = async () => {
       const names: Record<string, string> = {};
       try {
         const catIds = selectedRequest.tradeCategories || [];
-        const skillServicePromises = catIds.map(id => 
+        const skillServicePromises = catIds.map(id =>
           categoryService.getSkillServices(id).catch(() => [])
         );
         const skillServicesResults = await Promise.all(skillServicePromises);
         const allSkillServices = skillServicesResults.flat();
-        
+
         allSkillServices.forEach(s => {
           names[s.id] = s.name;
         });
 
         const skillIds = allSkillServices.map(s => s.id);
-        const subCategoryPromises = skillIds.map(id => 
+        const subCategoryPromises = skillIds.map(id =>
           categoryService.getSubCategories(id).catch(() => [])
         );
         const subCategoriesResults = await Promise.all(subCategoryPromises);
         const allSubCategories = subCategoriesResults.flat();
-        
+
         allSubCategories.forEach(sub => {
           names[sub.id] = sub.name;
         });
-        
+
         setResolvedNames(prev => ({ ...prev, ...names }));
       } catch (err) {
         console.error("Failed loading category tree names:", err);
       }
     };
-    
+
     loadNames();
   }, [selectedRequest]);
 
@@ -223,7 +223,7 @@ export default function CategoriesRequestsPageClient() {
       </div>
 
       {/* Filter and Search Bar Card */}
-      <div className="p-5 mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+      <div className="p-5 mb-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
           {/* Search Box */}
           <div className="flex flex-col gap-1.5 lg:col-span-2">
@@ -286,7 +286,7 @@ export default function CategoriesRequestsPageClient() {
       </div>
 
       {/* Main Table Container */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-xs overflow-hidden">
+      <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl shadow-xs overflow-hidden">
         <div className="overflow-x-auto min-h-[300px]">
           <Table>
             <TableHeader>
@@ -335,9 +335,8 @@ export default function CategoriesRequestsPageClient() {
                           router.push(`/traders/${trader.id}`);
                         }
                       }}
-                      className={`hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer ${
-                        openDropdownId === req.id ? "relative z-30" : ""
-                      }`}
+                      className={`hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer ${openDropdownId === req.id ? "relative z-30" : ""
+                        }`}
                     >
                       {/* Name / User Info */}
                       <TableCell className="px-6 py-3.5 text-start">
@@ -400,11 +399,10 @@ export default function CategoriesRequestsPageClient() {
                               e.stopPropagation();
                               setOpenDropdownId(openDropdownId === req.id ? null : req.id);
                             }}
-                            className={`dropdown-toggle inline-flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 bg-gray-50/50 hover:bg-gray-100 hover:border-gray-300 text-gray-500 hover:text-gray-800 transition-all duration-200 dark:border-gray-800 dark:bg-gray-900/50 dark:hover:bg-gray-800 dark:hover:border-gray-700 dark:text-gray-400 dark:hover:text-white ${
-                              openDropdownId === req.id
-                                ? "bg-gray-100 border-gray-300 dark:bg-gray-850 dark:border-gray-700 text-gray-800 dark:text-white"
-                                : ""
-                            }`}
+                            className={`dropdown-toggle inline-flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 bg-gray-50/50 hover:bg-gray-100 hover:border-gray-300 text-gray-500 hover:text-gray-800 transition-all duration-200 dark:border-gray-800 dark:bg-gray-900/50 dark:hover:bg-gray-800 dark:hover:border-gray-700 dark:text-gray-400 dark:hover:text-white ${openDropdownId === req.id
+                              ? "bg-gray-100 border-gray-300 dark:bg-gray-850 dark:border-gray-700 text-gray-800 dark:text-white"
+                              : ""
+                              }`}
                           >
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                               <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
@@ -413,11 +411,10 @@ export default function CategoriesRequestsPageClient() {
                           <Dropdown
                             isOpen={openDropdownId === req.id}
                             onClose={() => setOpenDropdownId(null)}
-                            className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${
-                              req.status === "PENDING" && index >= 2 && index >= requestsList.length - 2
-                                ? "bottom-full mb-1.5"
-                                : "top-full mt-1.5"
-                            }`}
+                            className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${req.status === "PENDING" && index >= 2 && index >= requestsList.length - 2
+                              ? "bottom-full mb-1.5"
+                              : "top-full mt-1.5"
+                              }`}
                           >
                             <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-1">
                               {req.status === "PENDING" && (
@@ -501,7 +498,7 @@ export default function CategoriesRequestsPageClient() {
       {selectedRequest && (
         <div className="fixed inset-0 z-[1000] flex justify-end bg-black/40 backdrop-blur-xs transition-opacity duration-300">
           <div className="absolute inset-0 cursor-default" onClick={() => { setSelectedRequest(null); setIsReviewing(false); }} />
-          
+
           <div className="relative w-full max-w-lg bg-white dark:bg-gray-900 h-full shadow-2xl flex flex-col z-10 border-l border-gray-150 dark:border-gray-800">
             {/* Drawer Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-150 dark:border-gray-800 flex-shrink-0">
@@ -577,7 +574,7 @@ export default function CategoriesRequestsPageClient() {
               {/* Categories/Skills details list */}
               <div className="space-y-4 pt-2">
                 <h5 className="text-xs font-bold uppercase tracking-wider text-gray-400">Requested Categories & Services</h5>
-                
+
                 <div className="space-y-3">
                   <div className="p-3 bg-gray-50/30 dark:bg-gray-950/10 rounded-xl border border-gray-100 dark:border-gray-850">
                     <span className="text-[11px] text-gray-400 uppercase tracking-wider font-semibold block mb-1.5">Trade Categories</span>
@@ -645,7 +642,7 @@ export default function CategoriesRequestsPageClient() {
                       <h4 className="text-xs font-bold text-gray-800 dark:text-white uppercase tracking-wider">
                         {reviewType === "APPROVE" ? "Confirm Approval" : "Specify Rejection Reason"}
                       </h4>
-                      
+
                       {reviewType === "REJECT" && (
                         <div>
                           <textarea
@@ -668,9 +665,8 @@ export default function CategoriesRequestsPageClient() {
                         <button
                           type="submit"
                           disabled={reviewMutation.isPending}
-                          className={`w-full py-2.5 text-white font-bold rounded-xl text-xs transition ${
-                            reviewType === "APPROVE" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-red-600 hover:bg-red-700"
-                          } disabled:opacity-50`}
+                          className={`w-full py-2.5 text-white font-bold rounded-xl text-xs transition ${reviewType === "APPROVE" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-red-600 hover:bg-red-700"
+                            } disabled:opacity-50`}
                         >
                           {reviewMutation.isPending ? "Submitting..." : reviewType === "APPROVE" ? "Confirm Approve" : "Confirm Reject"}
                         </button>

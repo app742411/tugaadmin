@@ -13,7 +13,7 @@ interface ReportDetailPageClientProps {
 export default function ReportDetailPageClient({ id }: ReportDetailPageClientProps) {
   const { data: report, isLoading, error, refetch } = useGetReportDetail(id);
   const updateStatusMutation = useUpdateReportStatus();
-  
+
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 
@@ -124,7 +124,7 @@ export default function ReportDetailPageClient({ id }: ReportDetailPageClientPro
             &larr; Back to Reports
           </Link>
         </div>
-        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-8">
+        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-8">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-500"></div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">Loading report details...</p>
         </div>
@@ -143,7 +143,7 @@ export default function ReportDetailPageClient({ id }: ReportDetailPageClientPro
             &larr; Back to Reports
           </Link>
         </div>
-        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-8 text-center">
+        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-8 text-center">
           <div className="p-3 bg-red-50 dark:bg-red-950/20 text-red-500 rounded-full mb-4">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -192,9 +192,9 @@ export default function ReportDetailPageClient({ id }: ReportDetailPageClientPro
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Columns: Report info & Action panel */}
         <div className="lg:col-span-2 space-y-6">
-          
+
           {/* Card: Report Overview */}
-          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-6 shadow-xs space-y-6">
+          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-6 shadow-xs space-y-6">
             <div className="flex items-start justify-between border-b border-gray-100 dark:border-gray-850 pb-4">
               <div>
                 <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Reason Flag</span>
@@ -237,11 +237,11 @@ export default function ReportDetailPageClient({ id }: ReportDetailPageClientPro
 
           {/* Card: Action Controls */}
           {report.status !== "RESOLVED" && (
-            <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-6 shadow-xs space-y-4">
+            <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-6 shadow-xs space-y-4">
               <h3 className="text-xs font-bold text-gray-450 uppercase tracking-wider border-b border-gray-100 dark:border-gray-855 pb-2">
                 Report Administrative Resolution Actions
               </h3>
-              
+
               {actionError && (
                 <div className="p-2.5 bg-rose-50 border border-rose-150 text-rose-605 rounded-xl text-xs font-semibold">
                   {actionError}
@@ -281,7 +281,7 @@ export default function ReportDetailPageClient({ id }: ReportDetailPageClientPro
 
           {/* Resolution logs metadata */}
           {report.status !== "PENDING" && (
-            <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-6 shadow-xs space-y-4">
+            <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-6 shadow-xs space-y-4">
               <h3 className="text-xs font-bold text-gray-450 uppercase tracking-wider border-b border-gray-100 dark:border-gray-855 pb-2">
                 Resolution History Logs
               </h3>
@@ -322,9 +322,9 @@ export default function ReportDetailPageClient({ id }: ReportDetailPageClientPro
 
         {/* Right Column: Profile details */}
         <div className="space-y-6">
-          
+
           {/* Card: Reporter Profile */}
-          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-6 shadow-xs space-y-4">
+          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-6 shadow-xs space-y-4">
             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-850 pb-2">
               Reporter Details
             </h3>
@@ -375,7 +375,7 @@ export default function ReportDetailPageClient({ id }: ReportDetailPageClientPro
           </div>
 
           {/* Card: Targeted entity details */}
-          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-6 shadow-xs space-y-4">
+          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-6 shadow-xs space-y-4">
             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-850 pb-2">
               Targeted Account Details
             </h3>

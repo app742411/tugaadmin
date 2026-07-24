@@ -113,22 +113,30 @@ const CategoryColumn: React.FC<CategoryColumnProps> = ({
             )}
           </div>
         ) : (
-          filtered.map((cat) => (
-            <CategoryCard
-              key={cat.id}
-              id={cat.id}
-              name={cat.name}
-              imageUrl={resolveImage(cat) || undefined}
-              isSelected={selectedId === cat.id}
-              isDeleting={deletingId === cat.id}
-              onClick={() => onSelect(cat)}
-              onEdit={() => onEdit(cat)}
-              onDelete={async () => {
-                setDeletingId(cat.id);
-                try { await onDelete(cat.id); } finally { setDeletingId(null); }
-              }}
-            />
-          ))
+          filtered.map((cat) => {
+            const resolvedImg = resolveImage(cat);
+            const isLuIcon = resolvedImg && resolvedImg.startsWith("Lu");
+            const finalImageUrl = isLuIcon ? undefined : resolvedImg || undefined;
+            const finalIcon = isLuIcon ? resolvedImg : cat.icon;
+
+            return (
+              <CategoryCard
+                key={cat.id}
+                id={cat.id}
+                name={cat.name}
+                imageUrl={finalImageUrl}
+                icon={finalIcon}
+                isSelected={selectedId === cat.id}
+                isDeleting={deletingId === cat.id}
+                onClick={() => onSelect(cat)}
+                onEdit={() => onEdit(cat)}
+                onDelete={async () => {
+                  setDeletingId(cat.id);
+                  try { await onDelete(cat.id); } finally { setDeletingId(null); }
+                }}
+              />
+            );
+          })
         )}
       </div>
     </div>

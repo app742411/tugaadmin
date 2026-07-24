@@ -108,7 +108,7 @@ export default function CustomerDetailPageClient({ id }: CustomerDetailPageClien
             &larr; Back to Customers
           </Link>
         </div>
-        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8">
+        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-8">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-500"></div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">Loading customer details...</p>
         </div>
@@ -127,7 +127,7 @@ export default function CustomerDetailPageClient({ id }: CustomerDetailPageClien
             &larr; Back to Customers
           </Link>
         </div>
-        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 text-center">
+        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-8 text-center">
           <div className="p-3 bg-red-50 dark:bg-red-950/20 text-red-500 rounded-full mb-4">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -154,7 +154,7 @@ export default function CustomerDetailPageClient({ id }: CustomerDetailPageClien
   return (
     <div className="w-full pb-8">
       {/* Header action bar (Glassmorphism design) */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl border border-gray-100 dark:border-gray-800/60 shadow-xs">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-xl border border-gray-100 dark:border-gray-800/60 shadow-xs">
         <div className="flex items-center gap-3">
           <Link
             href="/customers"
@@ -188,7 +188,7 @@ export default function CustomerDetailPageClient({ id }: CustomerDetailPageClien
         {/* Left Column (Span 4) - Profile Card */}
         <div className="lg:col-span-4 space-y-6">
           {/* Executive Profile Card */}
-          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800/80 rounded-3xl overflow-hidden shadow-xs relative">
+          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800/80 rounded-xl overflow-hidden shadow-xs relative">
             {/* Header Banner */}
             <div className="h-22 w-full bg-gradient-to-r from-blue-500/15 via-purple-500/10 to-indigo-500/5 dark:from-blue-500/10 dark:via-purple-500/5 dark:to-indigo-500/2 relative overflow-hidden">
               <div className="absolute inset-0 bg-grid-white/[0.02]" />
@@ -217,7 +217,7 @@ export default function CustomerDetailPageClient({ id }: CustomerDetailPageClien
               <h2 className="text-base font-extrabold text-gray-900 dark:text-white leading-tight">
                 {customer.fullName}
               </h2>
-              
+
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 select-all font-medium">
                 {customer.email}
               </p>
@@ -267,34 +267,39 @@ export default function CustomerDetailPageClient({ id }: CustomerDetailPageClien
 
         {/* Right Column (Span 8) - Tabs & Detail Tables */}
         <div className="lg:col-span-8 space-y-6">
-          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800/80 rounded-3xl shadow-xs overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800/80 rounded-xl shadow-xs overflow-hidden">
             {/* Pill tabs headers */}
             <div className="flex border-b border-gray-100 dark:border-gray-800 bg-gray-50/40 dark:bg-gray-950/20 px-6 py-4 overflow-x-auto scrollbar-none gap-2">
               {[
-                { id: "general", label: "General Details", icon: (
-                  <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                ) },
-                { id: "saved-traders", label: "Saved Traders", icon: (
-                  <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                ), badgeCount: customer.savedTraders?.length },
-                { id: "reviews", label: "Reviews Feed", icon: (
-                  <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                ) }
+                {
+                  id: "general", label: "General Details", icon: (
+                    <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  )
+                },
+                {
+                  id: "saved-traders", label: "Saved Traders", icon: (
+                    <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  ), badgeCount: customer.savedTraders?.length
+                },
+                {
+                  id: "reviews", label: "Reviews Feed", icon: (
+                    <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  )
+                }
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-                    activeTab === tab.id
-                      ? "bg-brand-500 text-white shadow-sm shadow-brand-500/10"
-                      : "text-gray-450 hover:text-gray-700 dark:hover:text-gray-255 hover:bg-gray-50 dark:hover:bg-gray-950/40"
-                  }`}
+                  className={`flex items-center px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${activeTab === tab.id
+                    ? "bg-brand-500 text-white shadow-sm shadow-brand-500/10"
+                    : "text-gray-450 hover:text-gray-700 dark:hover:text-gray-255 hover:bg-gray-50 dark:hover:bg-gray-950/40"
+                    }`}
                 >
                   {tab.icon}
                   {tab.label}
@@ -396,7 +401,7 @@ export default function CustomerDetailPageClient({ id }: CustomerDetailPageClien
                 <div className="space-y-4">
                   <h3 className="text-xs font-bold text-gray-400 dark:text-gray-550 uppercase tracking-wider mb-4 font-mono">Bookmarked Traders Profiles</h3>
                   {(!customer.savedTraders || customer.savedTraders.length === 0) ? (
-                    <div className="text-center py-10 bg-gray-50/40 dark:bg-gray-950/10 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+                    <div className="text-center py-10 bg-gray-50/40 dark:bg-gray-950/10 rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
                       <p className="text-xs text-gray-400 dark:text-gray-600 italic">This customer hasn't bookmarked any traders yet.</p>
                     </div>
                   ) : (
@@ -404,7 +409,7 @@ export default function CustomerDetailPageClient({ id }: CustomerDetailPageClien
                       {customer.savedTraders.map((saved) => (
                         <div
                           key={saved.id}
-                          className="p-4 border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950/15 rounded-2xl flex flex-col justify-between hover:border-gray-200 dark:hover:border-gray-700 transition-colors shadow-2xs"
+                          className="p-4 border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950/15 rounded-xl flex flex-col justify-between hover:border-gray-200 dark:hover:border-gray-700 transition-colors shadow-2xs"
                         >
                           <div>
                             <div className="flex items-center gap-3 mb-3">
@@ -457,13 +462,13 @@ export default function CustomerDetailPageClient({ id }: CustomerDetailPageClien
                   <div>
                     <h3 className="text-xs font-bold text-gray-400 dark:text-gray-550 uppercase tracking-wider mb-4 font-mono">Reviews Written (As Customer)</h3>
                     {(!customer.customerReviews || customer.customerReviews.length === 0) ? (
-                      <div className="text-center py-8 bg-gray-50/40 dark:bg-gray-950/10 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+                      <div className="text-center py-8 bg-gray-50/40 dark:bg-gray-950/10 rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
                         <p className="text-xs text-gray-400 dark:text-gray-500 italic">No feedback reviews written by this customer.</p>
                       </div>
                     ) : (
                       <div className="space-y-3">
                         {customer.customerReviews.map((rev: any) => (
-                          <div key={rev.id} className="p-4 border border-gray-100 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-950/5 hover:border-gray-200 dark:hover:border-gray-700 transition-colors shadow-3xs">
+                          <div key={rev.id} className="p-4 border border-gray-100 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-950/5 hover:border-gray-200 dark:hover:border-gray-700 transition-colors shadow-3xs">
                             <div className="flex items-center justify-between mb-2.5 gap-2">
                               <span className="text-xs font-bold text-gray-850 dark:text-white bg-gray-50 dark:bg-gray-800 px-2.5 py-0.5 rounded-lg border border-gray-100 dark:border-gray-755 font-mono">
                                 Rating: {rev.rating} / 5
@@ -483,13 +488,13 @@ export default function CustomerDetailPageClient({ id }: CustomerDetailPageClien
                   <div className="pt-2 border-t border-gray-50 dark:border-gray-800/80">
                     <h3 className="text-xs font-bold text-gray-400 dark:text-gray-550 uppercase tracking-wider mb-4 font-mono">Reviews Received</h3>
                     {(!customer.traderReviews || customer.traderReviews.length === 0) ? (
-                      <div className="text-center py-8 bg-gray-50/40 dark:bg-gray-950/10 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+                      <div className="text-center py-8 bg-gray-50/40 dark:bg-gray-950/10 rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
                         <p className="text-xs text-gray-400 dark:text-gray-500 italic">No feedback reviews received.</p>
                       </div>
                     ) : (
                       <div className="space-y-3">
                         {customer.traderReviews.map((rev: any) => (
-                          <div key={rev.id} className="p-4 border border-gray-100 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-950/5 hover:border-gray-200 dark:hover:border-gray-700 transition-colors shadow-3xs">
+                          <div key={rev.id} className="p-4 border border-gray-100 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-950/5 hover:border-gray-200 dark:hover:border-gray-700 transition-colors shadow-3xs">
                             <div className="flex items-center justify-between mb-2.5 gap-2">
                               <span className="text-xs font-bold text-gray-850 dark:text-white bg-gray-50 dark:bg-gray-800 px-2.5 py-0.5 rounded-lg border border-gray-100 dark:border-gray-755 font-mono">
                                 Rating: {rev.rating} / 5
@@ -508,7 +513,7 @@ export default function CustomerDetailPageClient({ id }: CustomerDetailPageClien
               )}
             </div>
           </div>
-      </div>
+        </div>
       </div>
 
       {/* Confirmation Modal: Delete */}
@@ -540,7 +545,7 @@ export default function CustomerDetailPageClient({ id }: CustomerDetailPageClien
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className="flex items-center gap-3.5 px-4.5 py-3 rounded-2xl shadow-xl border border-gray-200/90 dark:border-gray-805/90 max-w-sm w-full pointer-events-auto transition-all duration-300 bg-white dark:bg-gray-900/95 text-gray-800 dark:text-white"
+            className="flex items-center gap-3.5 px-4.5 py-3 rounded-xl shadow-xl border border-gray-200/90 dark:border-gray-805/90 max-w-sm w-full pointer-events-auto transition-all duration-300 bg-white dark:bg-gray-900/95 text-gray-800 dark:text-white"
           >
             <span className="text-xs font-bold flex-1">{toast.message}</span>
             <button

@@ -42,7 +42,7 @@ export default function ChangePasswordCard() {
   };
 
   return (
-    <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6 bg-white dark:bg-white/[0.03]">
+    <div className="p-5 border border-gray-200 rounded-xl dark:border-gray-800 lg:p-6 bg-white dark:bg-white/[0.03]">
       <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-5 lg:mb-6">
         Change Password
       </h4>
@@ -91,7 +91,7 @@ export default function ChangePasswordCard() {
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className="flex items-center gap-3.5 px-4.5 py-3 rounded-2xl shadow-xl border border-gray-250/90 dark:border-gray-805/90 max-w-sm w-full pointer-events-auto transition-all duration-300 bg-white dark:bg-gray-900/95 text-gray-800 dark:text-white"
+            className="flex items-center gap-3.5 px-4.5 py-3 rounded-xl shadow-xl border border-gray-250/90 dark:border-gray-805/90 max-w-sm w-full pointer-events-auto transition-all duration-300 bg-white dark:bg-gray-900/95 text-gray-800 dark:text-white"
           >
             <span className="text-xs font-bold flex-1">{toast.message}</span>
             <button

@@ -143,7 +143,7 @@ export default function JobsPageClient() {
       </div>
 
       {/* Filter and Search Bar Card */}
-      <div className="p-5 mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+      <div className="p-5 mb-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
           {/* Search Box (Left side: spans 2 columns) */}
           <div className="flex flex-col gap-1.5 lg:col-span-2">
@@ -210,7 +210,7 @@ export default function JobsPageClient() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Column 1: Jobs Table */}
         <div className="xl:col-span-2 flex flex-col gap-6">
-          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-xs overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl shadow-xs overflow-hidden">
             <div className="overflow-x-auto min-h-[280px]">
               <Table>
                 <TableHeader>
@@ -339,8 +339,8 @@ export default function JobsPageClient() {
                               isOpen={openDropdownId === job.id}
                               onClose={() => setOpenDropdownId(null)}
                               className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${(index >= 2 && index >= jobsList.length - 2)
-                                  ? "bottom-full mb-1.5"
-                                  : "top-full mt-1.5"
+                                ? "bottom-full mb-1.5"
+                                : "top-full mt-1.5"
                                 }`}
                             >
                               <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-1">

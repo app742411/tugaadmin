@@ -6,8 +6,11 @@ import Button from "@/components/ui/button/Button";
 import { ChevronLeftIcon, CheckCircleIcon } from "@/icons";
 import Link from "next/link";
 import { authService } from "@/services/authService";
+import { useRouter } from "next/navigation";
+import { Modal } from "@/components/ui/modal";
 
 export default function ResetPasswordForm() {
+  const router = useRouter();
   const [step, setStep] = useState<"forgot" | "verify" | "reset" | "success">("forgot");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -20,6 +23,8 @@ export default function ResetPasswordForm() {
   const [countdown, setCountdown] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
   // Countdown timer effect for Resend OTP cooldown
   useEffect(() => {
@@ -72,8 +77,12 @@ export default function ResetPasswordForm() {
       if (!response.resetToken) {
         throw new Error("No reset token returned from server.");
       }
-      setResetToken(response.resetToken);
-      setStep("reset");
+      setIsSuccess(true);
+      setTimeout(() => {
+        setResetToken(response.resetToken);
+        setStep("reset");
+        setIsSuccess(false);
+      }, 1000);
     } catch (err: any) {
       setError(err.message || "Invalid or expired OTP code. Please try again.");
     } finally {
@@ -84,7 +93,7 @@ export default function ResetPasswordForm() {
   // STEP 2b: Resend OTP (with 30 seconds wait constraint)
   const handleResendOtp = async () => {
     if (countdown > 0) return; // Prevent triggers if timer is active
-    
+
     setError(null);
     setInfoMessage(null);
     setIsResending(true);
@@ -135,13 +144,8 @@ export default function ResetPasswordForm() {
   const handleBack = () => {
     setError(null);
     setInfoMessage(null);
-    if (step === "verify") {
-      setStep("forgot");
-      setOtp("");
-    } else if (step === "reset") {
-      setStep("verify");
-      setPassword("");
-      setConfirmPassword("");
+    if (step === "verify" || step === "reset") {
+      setIsCancelModalOpen(true);
     }
   };
 
@@ -161,18 +165,16 @@ export default function ResetPasswordForm() {
           return (
             <div key={s.id} className="flex-1">
               <div
-                className={`h-1 rounded-full transition-all duration-300 ${
-                  isActive ? "bg-[#1a2e05] dark:bg-brand-500" : "bg-gray-200 dark:bg-gray-800"
-                }`}
+                className={`h-1 rounded-full transition-all duration-300 ${isActive ? "bg-[#1a2e05] dark:bg-brand-500" : "bg-gray-200 dark:bg-gray-800"
+                  }`}
               />
               <p
-                className={`text-[10px] font-bold mt-1.5 transition-colors duration-300 uppercase tracking-wider ${
-                  idx === currentIndex
-                    ? "text-[#1a2e05] dark:text-brand-400"
-                    : idx < currentIndex
+                className={`text-[10px] font-bold mt-1.5 transition-colors duration-300 uppercase tracking-wider ${idx === currentIndex
+                  ? "text-[#1a2e05] dark:text-brand-400"
+                  : idx < currentIndex
                     ? "text-gray-500 dark:text-gray-400"
                     : "text-gray-400 dark:text-gray-600"
-                }`}
+                  }`}
               >
                 {s.label}
               </p>
@@ -250,7 +252,10 @@ export default function ResetPasswordForm() {
                       placeholder="name@example.com"
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (error) setError(null);
+                      }}
                       disabled={isLoading}
                       error={!!error}
                     />
@@ -299,15 +304,89 @@ export default function ResetPasswordForm() {
                     <Label>
                       OTP Code <span className="text-error-500">*</span>
                     </Label>
-                    <Input
-                      placeholder="123456"
-                      type="text"
-                      className="tracking-[0.75em] font-mono text-center text-lg font-bold"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                      disabled={isLoading}
-                      error={!!error}
-                    />
+                    <div className="flex gap-2 justify-center sm:justify-between w-full">
+                      {[0, 1, 2, 3, 4, 5].map((index) => (
+                        <div key={index} className="relative w-12 h-14 sm:w-14 sm:h-16">
+                          <input
+                            id={`otp-input-${index}`}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            className={`w-full h-full text-center text-xl font-bold rounded-xl outline-none transition-all border-2
+                              ${error ? 'border-red-500 text-transparent bg-red-50 focus:border-red-600' :
+                                isSuccess ? 'border-green-500 text-transparent bg-green-50' :
+                                  isLoading ? 'border-brand-500/50 bg-brand-50 text-brand-700 animate-pulse' :
+                                    'border-gray-200 bg-gray-50 focus:border-brand-500 focus:bg-white text-gray-900'}
+                              ${isLoading || isSuccess ? 'cursor-not-allowed opacity-70' : ''}
+                            `}
+                            value={otp[index] || ""}
+                            disabled={isLoading || isSuccess}
+                            onChange={(e) => {
+                              const val = e.target.value.replace(/\D/g, ""); // Strip non-numeric
+                              if (!val && e.target.value) return; // Prevent typing letters entirely
+                              if (error) setError(null);
+
+                              if (val) {
+                                const newOtp = otp.substring(0, index) + val + otp.substring(index + 1);
+                                setOtp(newOtp.slice(0, 6));
+                                // Move to next input
+                                if (index < 5) {
+                                  const nextInput = document.getElementById(`otp-input-${index + 1}`);
+                                  nextInput?.focus();
+                                }
+                              }
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Backspace") {
+                                if (!otp[index] && index > 0) {
+                                  // If empty, delete previous and move back
+                                  const newOtp = otp.substring(0, index - 1) + otp.substring(index);
+                                  setOtp(newOtp);
+                                  const prevInput = document.getElementById(`otp-input-${index - 1}`);
+                                  prevInput?.focus();
+                                } else {
+                                  // Just delete current
+                                  const newOtp = otp.substring(0, index) + otp.substring(index + 1);
+                                  setOtp(newOtp);
+                                  if (error) setError(null);
+                                }
+                              } else if (e.key === "ArrowLeft" && index > 0) {
+                                document.getElementById(`otp-input-${index - 1}`)?.focus();
+                              } else if (e.key === "ArrowRight" && index < 5) {
+                                document.getElementById(`otp-input-${index + 1}`)?.focus();
+                              }
+                            }}
+                            onPaste={(e) => {
+                              e.preventDefault();
+                              const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+                              if (pasted) {
+                                setOtp(pasted);
+                                if (error) setError(null);
+                                // Focus the last filled input
+                                const focusIndex = Math.min(pasted.length, 5);
+                                document.getElementById(`otp-input-${focusIndex}`)?.focus();
+                              }
+                            }}
+                          />
+                          {/* Visual Icons */}
+                          {error && (
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                              <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                              </svg>
+                            </div>
+                          )}
+                          {isSuccess && (
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                              <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   <div>
                     <Button
@@ -384,7 +463,10 @@ export default function ResetPasswordForm() {
                       placeholder="••••••••"
                       type="password"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (error) setError(null);
+                      }}
                       disabled={isLoading}
                       error={!!error}
                     />
@@ -398,7 +480,10 @@ export default function ResetPasswordForm() {
                       placeholder="••••••••"
                       type="password"
                       value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                        if (error) setError(null);
+                      }}
                       disabled={isLoading}
                       error={!!error}
                     />
@@ -450,6 +535,40 @@ export default function ResetPasswordForm() {
           )}
         </div>
       </div>
+
+      {/* Cancel Confirmation Modal */}
+      <Modal isOpen={isCancelModalOpen} onClose={() => setIsCancelModalOpen(false)} className="max-w-[400px]">
+        <div className="p-6 md:p-8 flex flex-col items-center text-center">
+          <div className="w-16 h-16 rounded-xl bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center text-amber-500 mb-5 border border-amber-200 dark:border-amber-500/30">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            Cancel Password Reset?
+          </h3>
+
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            Are you sure you want to cancel the password reset process? You will need to request a new code if you decide to reset it later.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center w-full gap-3">
+            <button
+              onClick={() => setIsCancelModalOpen(false)}
+              className="w-full h-12 font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-all duration-200"
+            >
+              No, continue
+            </button>
+            <button
+              onClick={() => router.push("/signin")}
+              className="w-full h-12 font-medium text-white bg-amber-500 rounded-xl hover:bg-amber-600 focus:ring-4 focus:ring-amber-500/20 transition-all duration-200 shadow-sm shadow-amber-500/20"
+            >
+              Yes, cancel
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

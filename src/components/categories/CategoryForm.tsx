@@ -9,9 +9,12 @@ interface CategoryFormProps {
   isEditMode?: boolean;
   initialName?: string;
   initialImageUrl?: string;
-  onSubmit: (name: string, image: File | null) => Promise<void>;
+  initialIcon?: string;
+  onSubmit: (name: string, image: File | null, icon?: string) => Promise<void>;
   onCancel: () => void;
 }
+
+
 
 const levelMeta: Record<CategoryLevel, { label: string; placeholder: string }> = {
   category: { label: "Category Name", placeholder: "e.g. Home Improvement" },
@@ -25,6 +28,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   isEditMode = false,
   initialName = "",
   initialImageUrl,
+  initialIcon = "",
   onSubmit,
   onCancel,
 }) => {
@@ -56,7 +60,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     const e: { name?: string; image?: string } = {};
     if (!name.trim()) e.name = "Name is required";
     // In edit mode, image is optional (keep existing if not changed)
-    // if (!isEditMode && !image) e.image = "Image is required";
+    if (!isEditMode && !image) e.image = "Image is required";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -64,7 +68,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    await onSubmit(name.trim(), image);
+    await onSubmit(name.trim(), image, initialIcon);
   };
 
   return (
@@ -102,7 +106,9 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
         )}
       </div>
 
-      {/* Image Upload commented out per request
+
+
+      {/* Image Upload */}
       <div>
         <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
           Image {!isEditMode && <span className="text-red-500">*</span>}
@@ -144,7 +150,11 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
 
           {preview ? (
             <>
-              <img src={preview} alt="preview" className="w-full h-36 object-cover" />
+              <img 
+                src={preview.startsWith("blob:") ? preview : `${process.env.NEXT_PUBLIC_API_URL}${preview}`} 
+                alt="preview" 
+                className="w-full h-36 object-cover" 
+              />
               <div className="absolute inset-0 bg-black/0 hover:bg-black/40 flex items-center justify-center transition-colors">
                 <span className="opacity-0 hover:opacity-100 text-white text-xs font-semibold bg-black/60 px-3 py-1 rounded-full transition-opacity">
                   Click to replace
@@ -179,7 +189,6 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           </p>
         )}
       </div>
-      */}
 
       {/* Actions */}
       <div className="flex gap-3 pt-1">

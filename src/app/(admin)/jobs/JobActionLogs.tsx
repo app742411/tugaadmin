@@ -44,7 +44,7 @@ export default function JobActionLogs() {
 
   const formatMetadata = (metadata?: Record<string, any>) => {
     if (!metadata) return null;
-    
+
     const details = [];
     if (metadata.previousStatus && metadata.newStatus) {
       details.push(`Status changed from ${metadata.previousStatus} to ${metadata.newStatus}`);
@@ -78,11 +78,11 @@ export default function JobActionLogs() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-xs overflow-hidden flex flex-col h-full">
+    <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl shadow-xs overflow-hidden flex flex-col h-full">
       <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
         <h3 className="font-bold text-gray-900 dark:text-white text-sm">Jobs Audit Log</h3>
       </div>
-      
+
       <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px]">
         {isLoading ? (
           Array.from({ length: 5 }).map((_, idx) => (
@@ -120,7 +120,7 @@ export default function JobActionLogs() {
                     {formatDate(log.createdAt)}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                   <Badge size="sm" color={getActionColor(log.action)}>
                     {formatActionName(log.action)}
@@ -131,7 +131,7 @@ export default function JobActionLogs() {
                     </span>
                   )}
                 </div>
-                
+
                 {formatMetadata(log.metadata) && (
                   <p className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-2 mt-1 bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">
                     {formatMetadata(log.metadata)}

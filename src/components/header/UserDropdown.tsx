@@ -46,7 +46,7 @@ export default function UserDropdown() {
   return (
     <div className="relative">
       <button
-        onClick={toggleDropdown} 
+        onClick={toggleDropdown}
         className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle"
       >
         <span className="mr-3 overflow-hidden rounded-full h-11 w-11 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 flex items-center justify-center p-1">
@@ -62,9 +62,8 @@ export default function UserDropdown() {
         <span className="block mr-1 font-medium text-theme-sm">{fullName}</span>
 
         <svg
-          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+            }`}
           width="18"
           height="20"
           viewBox="0 0 18 20"
@@ -84,7 +83,7 @@ export default function UserDropdown() {
       <Dropdown
         isOpen={isOpen}
         onClose={closeDropdown}
-        className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
+        className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
@@ -198,19 +197,19 @@ export default function UserDropdown() {
       {/* Logout Confirmation Modal */}
       <Modal isOpen={isLogoutModalOpen} onClose={() => setIsLogoutModalOpen(false)} className="max-w-[400px]">
         <div className="p-6 md:p-8 flex flex-col items-center text-center">
-          <div className="w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-500/20 flex items-center justify-center text-rose-500 mb-5 border border-rose-200 dark:border-rose-500/30">
+          <div className="w-16 h-16 rounded-xl bg-rose-100 dark:bg-rose-500/20 flex items-center justify-center text-rose-500 mb-5 border border-rose-200 dark:border-rose-500/30">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 16L20 12M20 12L15 8M20 12H9M14 21H5C4.44772 21 4 20.5523 4 20V4C4 3.44772 4.44772 3 5 3H14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M15 16L20 12M20 12L15 8M20 12H9M14 21H5C4.44772 21 4 20.5523 4 20V4C4 3.44772 4.44772 3 5 3H14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          
+
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
             Sign out of TugaTrades?
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 max-w-[280px]">
             You'll need to enter your credentials again the next time you want to access the dashboard.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row items-center w-full gap-3">
             <button
               onClick={() => setIsLogoutModalOpen(false)}

@@ -68,7 +68,7 @@ export default function CategoriesPage() {
     title: "Add New Category",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Delete confirm modal state
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; type: "category" | "skill-service" | "sub-category"; name: string } | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -206,12 +206,18 @@ export default function CategoriesPage() {
   // ── Edit modals ──────────────────────────────────────────────────────────────
 
   const openEditCategory = useCallback((item: CategoryItem) => {
+    const resolvedImg = item.image || item.imageUrl;
+    const isLuIcon = resolvedImg && resolvedImg.startsWith("Lu");
     setModalConfig({
       isOpen: true,
       level: "category",
       title: "Edit Category",
       editId: item.id,
-      editData: { name: item.name, imageUrl: item.image || item.imageUrl },
+      editData: {
+        name: item.name,
+        imageUrl: isLuIcon ? undefined : resolvedImg,
+        icon: isLuIcon ? resolvedImg : item.icon
+      },
     });
   }, []);
 
@@ -242,11 +248,12 @@ export default function CategoriesPage() {
   }, [isSubmitting]);
 
   const handleSubmit = useCallback(
-    async (name: string, image: File | null, config: ModalConfig) => {
+    async (name: string, image: File | null, config: ModalConfig, icon?: string) => {
       setIsSubmitting(true);
       const formData = new FormData();
       formData.append("name", name);
       if (image) formData.append("image", image);
+      else if (icon) formData.append("image", icon);
 
       try {
         // ── EDIT mode ─────────────────────────────────────────────────────────
@@ -353,7 +360,7 @@ export default function CategoriesPage() {
         style={{ height: "calc(100vh - 220px)", minHeight: "520px" }}
       >
         {/* Column 1: Main Categories */}
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden flex flex-col border-t-4 border-t-emerald-500">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden flex flex-col border-t-4 border-t-emerald-500">
           <CategoryColumn
             categories={categories}
             isLoading={catsLoading}
@@ -367,7 +374,7 @@ export default function CategoriesPage() {
         </div>
 
         {/* Column 2: Skill Services */}
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden flex flex-col border-t-4 border-t-blue-500">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden flex flex-col border-t-4 border-t-blue-500">
           <SubCategoryColumn
             selectedCategory={selectedCategory}
             skillServices={skillServices}
@@ -382,7 +389,7 @@ export default function CategoriesPage() {
         </div>
 
         {/* Column 3: Sub Categories */}
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden flex flex-col border-t-4 border-t-purple-500">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden flex flex-col border-t-4 border-t-purple-500">
           <SubSubCategoryColumn
             selectedSkillService={selectedSkillService}
             subCategories={subCategories}

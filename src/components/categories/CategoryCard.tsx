@@ -6,27 +6,42 @@ interface CategoryCardProps {
   id: string;
   name: string;
   imageUrl?: string;
+  icon?: string;
   isSelected?: boolean;
   isDeleting?: boolean;
   onClick: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
+  hideThumbnail?: boolean;
 }
+
+import * as LuIcons from "react-icons/lu";
 
 /** Resolve the best available image URL from either field name the API sends */
 export const resolveImage = (item: { image?: string; imageUrl?: string }): string | null => {
-  return item.image || item.imageUrl || null;
+  const url = item.image || item.imageUrl;
+  if (!url) return null;
+  if (url.startsWith("Lu")) return url;
+  if (url.startsWith("http") || url.startsWith("data:") || url.startsWith("blob:")) return url;
+
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.tugatraders.server24.in";
+  const cleanBaseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
+  return url.startsWith("/")
+    ? `${cleanBaseUrl}${url}`
+    : `${cleanBaseUrl}/${url}`;
 };
 
 const CategoryCard: React.FC<CategoryCardProps> = ({
   id,
   name,
   imageUrl,
+  icon,
   isSelected = false,
   isDeleting = false,
   onClick,
   onEdit,
   onDelete,
+  hideThumbnail = false,
 }) => {
   return (
     <div className="relative group/row">
@@ -42,29 +57,30 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
           }
         `}
       >
-        {/* Thumbnail commented out per request
-        <div
-          className={`
-            flex-shrink-0 w-9 h-9 rounded-lg overflow-hidden border
-            ${isSelected ? "border-white/20" : "border-gray-200 dark:border-gray-700"}
-          `}
-        >
-          {imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
-          ) : (
-            <div
-              className={`w-full h-full flex items-center justify-center text-xs font-bold
-                ${isSelected
-                  ? "!bg-white/10 !text-white"
-                  : "bg-gray-100 dark:bg-gray-800 text-gray-500"
-                }`}
-            >
-              {name.charAt(0).toUpperCase()}
-            </div>
-          )}
-        </div>
-        */}
+        {!hideThumbnail && (
+          <div className="flex-shrink-0 w-9 h-9 rounded-lg overflow-hidden">
+            {imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
+            ) : (
+              <div
+                className={`w-full h-full flex items-center justify-center text-xs font-bold
+                  ${isSelected
+                    ? "!bg-white/10 !text-white"
+                    : "bg-gray-100 dark:bg-gray-800 text-gray-500"
+                  }`}
+              >
+                {name.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
+        )}
+
+        {icon && (LuIcons as any)[icon] && (
+          <div className={`flex-shrink-0 w-6 h-6 flex items-center justify-center ${isSelected ? 'text-white' : 'text-gray-500 dark:text-gray-400'}`}>
+            {React.createElement((LuIcons as any)[icon], { className: "w-4 h-4" })}
+          </div>
+        )}
 
         {/* Name */}
         <span

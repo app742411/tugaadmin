@@ -53,7 +53,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
   const { toasts, showToast, removeToast } = useToast();
 
   const [activeTab, setActiveTab] = useState<"business" | "subscription" | "compliance" | "reviews-engagement">("business");
-  
+
   // Verification states
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
@@ -229,7 +229,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
             &larr; Back to Traders
           </Link>
         </div>
-        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8">
+        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-8">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-500"></div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">Loading trader details...</p>
         </div>
@@ -248,7 +248,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
             &larr; Back to Traders
           </Link>
         </div>
-        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 text-center">
+        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-8 text-center">
           <div className="p-3 bg-red-50 dark:bg-red-950/20 text-red-500 rounded-full mb-4">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -279,7 +279,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
   return (
     <div className="w-full pb-8">
       {/* Header action bar (Glassmorphism design) */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl border border-gray-100 dark:border-gray-800/60 shadow-xs">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-xl border border-gray-100 dark:border-gray-800/60 shadow-xs">
         <div className="flex items-center gap-3">
           <Link
             href="/traders"
@@ -356,7 +356,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
         {/* Left Column (Span 4) - Profile Card & Metrics */}
         <div className="lg:col-span-4 space-y-6">
           {/* Executive Profile Card */}
-          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800/80 rounded-3xl overflow-hidden shadow-xs relative">
+          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800/80 rounded-xl overflow-hidden shadow-xs relative">
             {/* Header Banner */}
             <div className="h-22 w-full bg-gradient-to-r from-brand-500/15 via-blue-500/10 to-indigo-500/5 dark:from-brand-500/10 dark:via-blue-500/5 dark:to-indigo-500/2 relative overflow-hidden">
               <div className="absolute inset-0 bg-grid-white/[0.02]" />
@@ -385,7 +385,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
               <h2 className="text-base font-extrabold text-gray-900 dark:text-white leading-tight">
                 {trader.fullName}
               </h2>
-              
+
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 select-all font-medium">
                 {trader.email}
               </p>
@@ -439,7 +439,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
 
           {/* Vetting Reject Reason Box (Visible if status is REJECTED) */}
           {currentVerificationStatus === "REJECTED" && profile?.rejectReason && (
-            <div className="bg-rose-50/20 dark:bg-rose-950/5 border border-rose-100/40 dark:border-rose-900/15 rounded-3xl p-5 shadow-xs animate-pulse-subtle">
+            <div className="bg-rose-50/20 dark:bg-rose-950/5 border border-rose-100/40 dark:border-rose-900/15 rounded-xl p-5 shadow-xs animate-pulse-subtle">
               <div className="flex items-center gap-2 text-rose-600 dark:text-rose-450 mb-2.5">
                 <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -454,12 +454,12 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
 
           {/* Performance Dashboard */}
           {metrics && (
-            <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800/80 rounded-3xl p-6 shadow-xs">
+            <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800/80 rounded-xl p-6 shadow-xs">
               <h3 className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4 font-mono">
                 Performance Dashboard
               </h3>
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3.5 bg-gray-50/30 dark:bg-gray-950/10 hover:bg-gray-50/70 dark:hover:bg-gray-950/20 border border-gray-100 dark:border-gray-800/40 rounded-2xl text-center transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between aspect-square">
+                <div className="p-3.5 bg-gray-50/30 dark:bg-gray-950/10 hover:bg-gray-50/70 dark:hover:bg-gray-950/20 border border-gray-100 dark:border-gray-800/40 rounded-xl text-center transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between aspect-square">
                   <span className="block text-[9px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider">Average Rating</span>
                   <div className="my-auto">
                     <span className="text-lg font-extrabold text-gray-950 dark:text-white block">
@@ -468,22 +468,22 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
                     <span className="text-[9px] text-yellow-500 font-bold block mt-0.5">★★★★★</span>
                   </div>
                 </div>
-                
-                <div className="p-3.5 bg-gray-50/30 dark:bg-gray-950/10 hover:bg-gray-50/70 dark:hover:bg-gray-950/20 border border-gray-100 dark:border-gray-800/40 rounded-2xl text-center transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between aspect-square">
+
+                <div className="p-3.5 bg-gray-50/30 dark:bg-gray-950/10 hover:bg-gray-50/70 dark:hover:bg-gray-950/20 border border-gray-100 dark:border-gray-800/40 rounded-xl text-center transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between aspect-square">
                   <span className="block text-[9px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider">Completed Jobs</span>
                   <span className="text-2xl font-extrabold text-gray-950 dark:text-white my-auto block">
                     {metrics.completedJobs}
                   </span>
                 </div>
-                
-                <div className="p-3.5 bg-gray-50/30 dark:bg-gray-950/10 hover:bg-gray-50/70 dark:hover:bg-gray-950/20 border border-gray-100 dark:border-gray-800/40 rounded-2xl text-center transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between aspect-square">
+
+                <div className="p-3.5 bg-gray-50/30 dark:bg-gray-950/10 hover:bg-gray-50/70 dark:hover:bg-gray-950/20 border border-gray-100 dark:border-gray-800/40 rounded-xl text-center transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between aspect-square">
                   <span className="block text-[9px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider">Leads Received</span>
                   <span className="text-2xl font-extrabold text-gray-950 dark:text-white my-auto block">
                     {metrics.recentLeads}
                   </span>
                 </div>
-                
-                <div className="p-3.5 bg-gray-50/30 dark:bg-gray-950/10 hover:bg-gray-50/70 dark:hover:bg-gray-950/20 border border-gray-100 dark:border-gray-800/40 rounded-2xl text-center transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between aspect-square">
+
+                <div className="p-3.5 bg-gray-50/30 dark:bg-gray-950/10 hover:bg-gray-50/70 dark:hover:bg-gray-950/20 border border-gray-100 dark:border-gray-800/40 rounded-xl text-center transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between aspect-square">
                   <span className="block text-[9px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider">Response Rate</span>
                   <span className="text-2xl font-extrabold text-gray-950 dark:text-white my-auto block">
                     {metrics.responseRate}%
@@ -500,39 +500,46 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
 
         {/* Right Column (Span 8) - Navigation Tabs & Detailed Info */}
         <div className="lg:col-span-8 space-y-6">
-          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800/80 rounded-3xl shadow-xs overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800/80 rounded-xl shadow-xs overflow-hidden">
             {/* Horizontal Sub-tabs (Pill-based premium design) */}
             <div className="flex border-b border-gray-100 dark:border-gray-800 bg-gray-50/40 dark:bg-gray-950/20 px-6 py-4 overflow-x-auto scrollbar-none gap-2">
               {[
-                { id: "business", label: "Business Profile", icon: (
-                  <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
-                ) },
-                { id: "subscription", label: "Subscription Info", icon: (
-                  <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                  </svg>
-                ) },
-                { id: "compliance", label: "Compliance & Vetting", icon: (
-                  <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                ) },
-                { id: "reviews-engagement", label: "Engagement", icon: (
-                  <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                ) }
+                {
+                  id: "business", label: "Business Profile", icon: (
+                    <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  )
+                },
+                {
+                  id: "subscription", label: "Subscription Info", icon: (
+                    <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                  )
+                },
+                {
+                  id: "compliance", label: "Compliance & Vetting", icon: (
+                    <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  )
+                },
+                {
+                  id: "reviews-engagement", label: "Engagement", icon: (
+                    <svg className="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  )
+                }
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-                    activeTab === tab.id
-                      ? "bg-brand-500 text-white shadow-sm shadow-brand-500/10"
-                      : "text-gray-450 hover:text-gray-700 dark:hover:text-gray-250 hover:bg-gray-50 dark:hover:bg-gray-950/40"
-                  }`}
+                  className={`flex items-center px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${activeTab === tab.id
+                    ? "bg-brand-500 text-white shadow-sm shadow-brand-500/10"
+                    : "text-gray-450 hover:text-gray-700 dark:hover:text-gray-250 hover:bg-gray-50 dark:hover:bg-gray-950/40"
+                    }`}
                 >
                   {tab.icon}
                   {tab.label}
@@ -602,7 +609,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
                   {profile?.about && (
                     <div>
                       <h3 className="text-xs font-bold text-gray-400 dark:text-gray-550 uppercase tracking-wider mb-2.5 font-mono">Biography / Description</h3>
-                      <p className="text-xs text-gray-650 dark:text-gray-300 leading-relaxed bg-gray-50/40 dark:bg-gray-950/15 p-4 rounded-2xl border border-gray-100 dark:border-gray-800/60 font-medium">
+                      <p className="text-xs text-gray-650 dark:text-gray-300 leading-relaxed bg-gray-50/40 dark:bg-gray-950/15 p-4 rounded-xl border border-gray-100 dark:border-gray-800/60 font-medium">
                         {profile.about}
                       </p>
                     </div>
@@ -611,7 +618,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
                   {/* Categories, Sub Categories & Skills */}
                   <div>
                     <h3 className="text-xs font-bold text-gray-400 dark:text-gray-550 uppercase tracking-wider mb-3.5 font-mono">Expertise Areas</h3>
-                    <div className="space-y-4 bg-gray-50/20 dark:bg-gray-950/5 p-5 rounded-2xl border border-gray-100 dark:border-gray-800/60">
+                    <div className="space-y-4 bg-gray-50/20 dark:bg-gray-950/5 p-5 rounded-xl border border-gray-100 dark:border-gray-800/60">
                       <div>
                         <span className="text-[9px] text-gray-400 dark:text-gray-500 uppercase font-bold block mb-1.5">Trade Categories</span>
                         {(!profile?.tradeCategories || profile.tradeCategories.length === 0) ? (
@@ -665,7 +672,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
                     {profile?.portfolioItems && profile.portfolioItems.length > 0 ? (
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {profile.portfolioItems.map((item: any, idx: number) => (
-                          <div key={item.id || idx} className="group relative border border-gray-150 dark:border-gray-800 rounded-2xl overflow-hidden bg-gray-50 dark:bg-gray-950/20 aspect-video shadow-2xs">
+                          <div key={item.id || idx} className="group relative border border-gray-150 dark:border-gray-800 rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-950/20 aspect-video shadow-2xs">
                             {item.mediaUrl || item.url ? (
                               <img
                                 src={getFormattedImageUrl(item.mediaUrl || item.url)}
@@ -697,7 +704,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-8 bg-gray-50/40 dark:bg-gray-950/10 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+                      <div className="text-center py-8 bg-gray-50/40 dark:bg-gray-950/10 rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
                         <p className="text-xs text-gray-400 dark:text-gray-600 italic">No showcase portfolio media files uploaded.</p>
                       </div>
                     )}
@@ -764,12 +771,12 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
 
                   {/* Pricing and Limits */}
                   {profile?.subscription?.plan && (
-                    <div className="bg-gradient-to-br from-gray-50/40 to-gray-50/10 dark:from-gray-950/15 dark:to-gray-950/5 rounded-2xl p-5 border border-gray-100 dark:border-gray-800">
+                    <div className="bg-gradient-to-br from-gray-50/40 to-gray-50/10 dark:from-gray-950/15 dark:to-gray-950/5 rounded-xl p-5 border border-gray-100 dark:border-gray-800">
                       <h4 className="text-xs font-bold text-gray-800 dark:text-white uppercase tracking-wider mb-3">
                         Active Plan Details: {profile.subscription.plan.name}
                       </h4>
                       <p className="text-xs text-gray-450 dark:text-gray-500 leading-relaxed mb-4">{profile.subscription.plan.description}</p>
-                      
+
                       <div className="grid grid-cols-2 gap-4 text-xs">
                         <div>
                           <span className="text-gray-400 block font-bold">Max Trades Allowed:</span>
@@ -824,7 +831,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
                     <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4 font-mono">Registry & Upload Documents</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {profile?.logo && (
-                        <div className="p-4 border border-gray-100 dark:border-gray-800 rounded-2xl flex items-center justify-between bg-white dark:bg-gray-950/15 hover:border-gray-200 dark:hover:border-gray-700 transition-colors">
+                        <div className="p-4 border border-gray-100 dark:border-gray-800 rounded-xl flex items-center justify-between bg-white dark:bg-gray-950/15 hover:border-gray-200 dark:hover:border-gray-700 transition-colors">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 overflow-hidden rounded-xl border border-gray-100 dark:border-gray-800 shrink-0">
                               <img src={getFormattedImageUrl(profile.logo)} alt="Logo" className="w-full h-full object-cover" />
@@ -841,9 +848,9 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
                           </a>
                         </div>
                       )}
-                      
+
                       {profile?.document && (
-                        <div className="p-4 border border-gray-100 dark:border-gray-800 rounded-2xl flex items-center justify-between bg-white dark:bg-gray-950/15 hover:border-gray-200 dark:hover:border-gray-700 transition-colors">
+                        <div className="p-4 border border-gray-100 dark:border-gray-800 rounded-xl flex items-center justify-between bg-white dark:bg-gray-950/15 hover:border-gray-200 dark:hover:border-gray-700 transition-colors">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-blue-50 dark:bg-blue-950/30 rounded-xl flex items-center justify-center text-blue-500 shrink-0">
                               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -871,7 +878,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
                     {profile?.certificates && profile.certificates.length > 0 ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {profile.certificates.map((cert: any, idx: number) => (
-                          <div key={cert.id || idx} className="p-4 border border-gray-150 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-950/15 flex items-center justify-between hover:border-gray-200 dark:hover:border-gray-700 transition-colors">
+                          <div key={cert.id || idx} className="p-4 border border-gray-150 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-950/15 flex items-center justify-between hover:border-gray-200 dark:hover:border-gray-700 transition-colors">
                             <div className="flex items-center gap-2.5 min-w-0">
                               <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-950/30 rounded-xl flex items-center justify-center text-emerald-600 shrink-0">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -897,7 +904,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-6 bg-gray-50/40 dark:bg-gray-950/10 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+                      <div className="text-center py-6 bg-gray-50/40 dark:bg-gray-950/10 rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
                         <p className="text-xs text-gray-400 dark:text-gray-650 italic">No custom professional certificates uploaded.</p>
                       </div>
                     )}
@@ -909,7 +916,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
                     {profile?.insuranceDocuments && profile.insuranceDocuments.length > 0 ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {profile.insuranceDocuments.map((doc: any, idx: number) => (
-                          <div key={doc.id || idx} className="p-4 border border-gray-150 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-950/15 flex items-center justify-between hover:border-gray-200 dark:hover:border-gray-700 transition-colors">
+                          <div key={doc.id || idx} className="p-4 border border-gray-150 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-950/15 flex items-center justify-between hover:border-gray-200 dark:hover:border-gray-700 transition-colors">
                             <div className="flex items-center gap-2.5 min-w-0">
                               <div className="w-10 h-10 bg-blue-50 dark:bg-blue-950/30 rounded-xl flex items-center justify-center text-blue-500 shrink-0">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -935,7 +942,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-6 bg-gray-50/40 dark:bg-gray-950/10 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+                      <div className="text-center py-6 bg-gray-50/40 dark:bg-gray-950/10 rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
                         <p className="text-xs text-gray-400 dark:text-gray-650 italic">No insurance verification files uploaded.</p>
                       </div>
                     )}
@@ -950,13 +957,13 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
                   <div>
                     <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4 font-mono">Saved By Customers</h3>
                     {(!trader.savedByCustomers || trader.savedByCustomers.length === 0) ? (
-                      <div className="text-center py-8 bg-gray-50/40 dark:bg-gray-950/10 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+                      <div className="text-center py-8 bg-gray-50/40 dark:bg-gray-950/10 rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
                         <p className="text-xs text-gray-400 dark:text-gray-550 italic">No customer accounts have bookmarked this profile.</p>
                       </div>
                     ) : (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {trader.savedByCustomers.map((saved) => (
-                          <div key={saved.id} className="p-4 border border-gray-100 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-950/15">
+                          <div key={saved.id} className="p-4 border border-gray-100 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-950/15">
                             <div className="flex items-center gap-3">
                               {saved.customer?.profileImage ? (
                                 <div className="w-8.5 h-8.5 overflow-hidden rounded-full shrink-0">
@@ -994,13 +1001,13 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
                   <div>
                     <h3 className="text-xs font-bold text-gray-400 dark:text-gray-550 uppercase tracking-wider mb-4 font-mono">Customer Reviews Feed</h3>
                     {(!trader.traderReviews || trader.traderReviews.length === 0) ? (
-                      <div className="text-center py-8 bg-gray-50/40 dark:bg-gray-950/10 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+                      <div className="text-center py-8 bg-gray-50/40 dark:bg-gray-950/10 rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
                         <p className="text-xs text-gray-400 dark:text-gray-500 italic">No feedback reviews recorded yet.</p>
                       </div>
                     ) : (
                       <div className="space-y-3.5">
                         {trader.traderReviews.map((rev: any) => (
-                          <div key={rev.id} className="p-4 border border-gray-100 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-950/5 hover:border-gray-200 dark:hover:border-gray-700 transition-colors">
+                          <div key={rev.id} className="p-4 border border-gray-100 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-950/5 hover:border-gray-200 dark:hover:border-gray-700 transition-colors">
                             <div className="flex items-center justify-between mb-2.5 gap-2">
                               <span className="text-xs font-bold text-gray-850 dark:text-white bg-gray-50 dark:bg-gray-800 px-2.5 py-0.5 rounded-lg border border-gray-100 dark:border-gray-755 font-mono">
                                 Rating: {rev.rating} / 5
@@ -1179,7 +1186,7 @@ export default function TraderDetailPageClient({ id }: TraderDetailPageClientPro
           <div
             key={toast.id}
             className={`
-              flex items-center gap-3.5 px-4.5 py-3 rounded-2xl shadow-xl border border-gray-200/90 dark:border-gray-800/90
+              flex items-center gap-3.5 px-4.5 py-3 rounded-xl shadow-xl border border-gray-200/90 dark:border-gray-800/90
               max-w-sm w-full pointer-events-auto transition-all duration-300 transform translate-y-0
               ${toastStyles[toast.type]}
             `}

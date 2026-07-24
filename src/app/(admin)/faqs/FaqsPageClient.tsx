@@ -6,6 +6,20 @@ import Badge from "@/components/ui/badge/Badge";
 import { Modal } from "@/components/ui/modal";
 import Pagination from "@/components/ui/pagination/Pagination";
 import { useGetFaqs, useCreateFaq, useUpdateFaq, useDeleteFaq } from "@/hooks/useFaqs";
+import dynamic from "next/dynamic";
+import "react-quill-new/dist/quill.snow.css";
+
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+
+const decodeHtmlEntities = (str: string) => {
+  if (!str) return '';
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+};
 
 export default function FaqsPageClient() {
   const [activeAudienceFilter, setActiveAudienceFilter] = useState<string>("CUSTOMER");
@@ -28,6 +42,7 @@ export default function FaqsPageClient() {
   // Form Modal state
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingFaqId, setEditingFaqId] = useState<string | null>(null);
+  const [deletingFaqId, setDeletingFaqId] = useState<string | null>(null);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [audience, setAudience] = useState<"CUSTOMER" | "TRADER" | "BOTH" | string>("CUSTOMER");
@@ -116,11 +131,12 @@ export default function FaqsPageClient() {
     }
   };
 
-  const handleDeleteFaq = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this FAQ?")) return;
+  const handleDeleteFaq = async () => {
+    if (!deletingFaqId) return;
     try {
-      await deleteMutation.mutateAsync(id);
+      await deleteMutation.mutateAsync(deletingFaqId);
       refetch();
+      setDeletingFaqId(null);
     } catch (err: any) {
       alert(err.message || "Failed to delete FAQ entry.");
     }
@@ -275,7 +291,7 @@ export default function FaqsPageClient() {
                       </svg>
                     </button>
                     <button
-                      onClick={() => handleDeleteFaq(faq.id)}
+                      onClick={() => setDeletingFaqId(faq.id)}
                       className="text-gray-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
                       title="Delete FAQ"
                     >
@@ -302,9 +318,10 @@ export default function FaqsPageClient() {
                 {/* Collapsible Answer Body */}
                 {isExpanded && (
                   <div className="px-5 pb-5 pt-1.5 border-t border-gray-100 dark:border-gray-800 bg-gray-50/20 dark:bg-gray-950/5">
-                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal pt-2">
-                      {faq.answer}
-                    </p>
+                    <div 
+                      className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal pt-2 prose prose-sm dark:prose-invert max-w-none break-words"
+                      dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(faq.answer) }}
+                    />
                   </div>
                 )}
               </div>
@@ -362,15 +379,17 @@ export default function FaqsPageClient() {
           </div>
 
           {/* Answer */}
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 pb-8">
             <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Answer</label>
-            <textarea
-              rows={4}
-              placeholder="Provide the FAQ answer description..."
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-xs border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-950/25 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 transition resize-none"
-            />
+            <div className="bg-white dark:bg-gray-950/25 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden [&_.ql-editor]:min-h-[120px] [&_.ql-container]:border-none [&_.ql-toolbar]:border-none [&_.ql-toolbar]:border-b [&_.ql-toolbar]:border-gray-200 [&_.ql-toolbar.dark]:border-gray-800">
+              <ReactQuill
+                theme="snow"
+                value={answer}
+                onChange={setAnswer}
+                placeholder="Provide the FAQ answer description..."
+                className="text-gray-800 dark:text-white"
+              />
+            </div>
           </div>
 
           {/* Audience, sortOrder & isActive row */}
@@ -432,6 +451,36 @@ export default function FaqsPageClient() {
             </button>
           </div>
         </form>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal isOpen={!!deletingFaqId} onClose={() => setDeletingFaqId(null)} className="max-w-sm p-6">
+        <div className="text-center">
+          <div className="w-12 h-12 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto mb-4">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">Delete FAQ</h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-6">
+            Are you sure you want to delete this FAQ entry? This action cannot be undone.
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setDeletingFaqId(null)}
+              className="flex-1 py-2.5 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-xl border border-gray-200 dark:border-gray-700 transition"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDeleteFaq}
+              disabled={deleteMutation.isPending}
+              className="flex-1 py-2.5 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl transition shadow-xs"
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+            </button>
+          </div>
+        </div>
       </Modal>
     </div>
   );

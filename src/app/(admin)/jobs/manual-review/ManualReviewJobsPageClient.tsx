@@ -201,7 +201,7 @@ export default function ManualReviewJobsPageClient() {
       </div>
 
       {/* Filter and Search Bar Card */}
-      <div className="p-5 mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+      <div className="p-5 mb-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
           {/* Search Box */}
           <div className="flex flex-col gap-1.5 lg:col-span-2">
@@ -262,7 +262,7 @@ export default function ManualReviewJobsPageClient() {
       </div>
 
       {/* Table grid */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-xs overflow-hidden">
+      <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl shadow-xs overflow-hidden">
         <div className="overflow-x-auto min-h-[280px]">
           <Table>
             <TableHeader>
@@ -302,9 +302,8 @@ export default function ManualReviewJobsPageClient() {
                   <TableRow
                     key={job.id}
                     onClick={() => router.push(`/jobs/${job.id}`)}
-                    className={`hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer ${
-                      openDropdownId === job.id ? "relative z-30" : ""
-                    }`}
+                    className={`hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer ${openDropdownId === job.id ? "relative z-30" : ""
+                      }`}
                   >
                     <TableCell className="px-6 py-3.5 text-start">
                       <div className="flex flex-col">
@@ -351,11 +350,10 @@ export default function ManualReviewJobsPageClient() {
                             e.stopPropagation();
                             setOpenDropdownId(openDropdownId === job.id ? null : job.id);
                           }}
-                          className={`dropdown-toggle inline-flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 bg-gray-50/50 hover:bg-gray-100 hover:border-gray-300 text-gray-500 hover:text-gray-800 transition-all duration-200 dark:border-gray-800 dark:bg-gray-900/50 dark:hover:bg-gray-800 dark:hover:border-gray-700 dark:text-gray-400 dark:hover:text-white ${
-                            openDropdownId === job.id
-                              ? "bg-gray-100 border-gray-300 dark:bg-gray-850 dark:border-gray-700 text-gray-800 dark:text-white"
-                              : ""
-                          }`}
+                          className={`dropdown-toggle inline-flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 bg-gray-50/50 hover:bg-gray-100 hover:border-gray-300 text-gray-500 hover:text-gray-800 transition-all duration-200 dark:border-gray-800 dark:bg-gray-900/50 dark:hover:bg-gray-800 dark:hover:border-gray-700 dark:text-gray-400 dark:hover:text-white ${openDropdownId === job.id
+                            ? "bg-gray-100 border-gray-300 dark:bg-gray-850 dark:border-gray-700 text-gray-800 dark:text-white"
+                            : ""
+                            }`}
                         >
                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
@@ -365,11 +363,10 @@ export default function ManualReviewJobsPageClient() {
                         <Dropdown
                           isOpen={openDropdownId === job.id}
                           onClose={() => setOpenDropdownId(null)}
-                          className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${
-                            job.status === "POSTED" && index >= 2 && index >= jobsList.length - 2
-                              ? "bottom-full mb-1.5"
-                              : "top-full mt-1.5"
-                          }`}
+                          className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${job.status === "POSTED" && index >= 2 && index >= jobsList.length - 2
+                            ? "bottom-full mb-1.5"
+                            : "top-full mt-1.5"
+                            }`}
                         >
                           <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-1">
                             <DropdownItem

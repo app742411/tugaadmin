@@ -26,12 +26,12 @@ export default function ModerationPage() {
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-500"></div>
           </div>
         ) : error ? (
-          <div className="p-4 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 dark:bg-rose-500/10 dark:border-rose-500/20 dark:text-rose-400 flex items-center gap-3">
+          <div className="p-4 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 dark:bg-rose-500/10 dark:border-rose-500/20 dark:text-rose-400 flex items-center gap-3">
             <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
             Error loading flags. Please try again.
           </div>
         ) : flags.length === 0 ? (
-          <div className="text-center p-16 bg-white dark:bg-gray-900/40 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-800 flex flex-col items-center">
+          <div className="text-center p-16 bg-white dark:bg-gray-900/40 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 flex flex-col items-center">
             <div className="w-16 h-16 bg-brand-50 dark:bg-brand-500/10 rounded-full flex items-center justify-center text-brand-500 mb-4">
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
@@ -43,11 +43,11 @@ export default function ModerationPage() {
             {flags.map((flag: ModerationFlag) => (
               <div
                 key={flag.id}
-                className="bg-white dark:bg-gray-900/40 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md transition-shadow duration-200 relative overflow-hidden group"
+                className="bg-white dark:bg-gray-900/40 border border-gray-200 dark:border-gray-800 rounded-xl p-5 md:p-6 shadow-sm hover:shadow-md transition-shadow duration-200 relative overflow-hidden group"
               >
                 {/* Subtle indicator bar */}
                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-amber-500 dark:bg-amber-600" />
-                
+
                 <div className="flex flex-col lg:flex-row justify-between gap-4 lg:items-center">
                   <div className="space-y-3 flex-1">
                     {/* Header info */}

@@ -8,7 +8,7 @@ interface CategoryModalProps {
   config: ModalConfig;
   isSubmitting: boolean;
   onClose: () => void;
-  onSubmit: (name: string, image: File | null, config: ModalConfig) => Promise<void>;
+  onSubmit: (name: string, image: File | null, config: ModalConfig, icon?: string) => Promise<void>;
 }
 
 const levelBadgeColor: Record<string, string> = {
@@ -54,15 +54,14 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
       />
 
       {/* Panel */}
-      <div className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+      <div className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
         {/* Header */}
         <div className="flex items-start justify-between p-6 border-b border-gray-100 dark:border-gray-800">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span
-                className={`inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                  levelBadgeColor[config.level] || levelBadgeColor.category
-                }`}
+                className={`inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${levelBadgeColor[config.level] || levelBadgeColor.category
+                  }`}
               >
                 {levelBadgeLabel[config.level] || "Level 1"}
               </span>
@@ -100,7 +99,8 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
             isEditMode={isEditMode}
             initialName={config.editData?.name ?? ""}
             initialImageUrl={config.editData?.imageUrl}
-            onSubmit={(name, image) => onSubmit(name, image, config)}
+            initialIcon={config.editData?.icon}
+            onSubmit={(name, image, icon) => onSubmit(name, image, config, icon)}
             onCancel={() => !isSubmitting && onClose()}
           />
         </div>

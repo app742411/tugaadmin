@@ -5,6 +5,7 @@ export interface CategoryItem {
   name: string;
   image?: string;
   imageUrl?: string;
+  icon?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -62,7 +63,7 @@ export interface ModalConfig {
   parentSkillServiceId?: string;
   /** Set when editing an existing item */
   editId?: string;
-  editData?: { name: string; imageUrl?: string };
+  editData?: { name: string; imageUrl?: string; icon?: string };
 }
 
 export interface ToastItem {

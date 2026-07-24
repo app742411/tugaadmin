@@ -48,7 +48,7 @@ export default function SettingsPage() {
 
       // Show a success message
       showToast("success", "Password changed successfully! Please log back in.");
-      
+
       // Perform clean logout to invalidate tokens in storage and redirect to /signin
       await authService.logout();
     } catch (err: any) {
@@ -69,7 +69,7 @@ export default function SettingsPage() {
       </div>
 
       <div className="max-w-2xl">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6 shadow-sm border-t-4 border-t-brand-500">
+        <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6 shadow-sm border-t-4 border-t-brand-500">
           <div className="mb-6 pb-4 border-b border-gray-100 dark:border-gray-800">
             <h3 className="text-base font-bold text-gray-900 dark:text-white">
               Change Password

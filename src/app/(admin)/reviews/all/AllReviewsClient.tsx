@@ -259,7 +259,7 @@ export default function AllReviewsClient() {
       </div>
 
       {/* Filter and Search Bar Card */}
-      <div className="p-5 mb-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+      <div className="p-5 mb-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
           {/* Search Box */}
           <div className="flex flex-col gap-1.5 lg:col-span-2">
@@ -291,47 +291,47 @@ export default function AllReviewsClient() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-             <label className="text-xs font-bold text-gray-700 dark:text-gray-300">Status</label>
-             <Select
-                options={[
-                  { value: "--", label: "All Statuses" },
-                  { value: "PENDING", label: "Pending" },
-                  { value: "APPROVED", label: "Approved" },
-                  { value: "REJECTED", label: "Rejected" }
-                ]}
-                value={status}
-                onChange={setStatus}
-             />
+            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">Status</label>
+            <Select
+              options={[
+                { value: "--", label: "All Statuses" },
+                { value: "PENDING", label: "Pending" },
+                { value: "APPROVED", label: "Approved" },
+                { value: "REJECTED", label: "Rejected" }
+              ]}
+              value={status}
+              onChange={setStatus}
+            />
           </div>
           <div className="flex flex-col gap-1.5">
-             <label className="text-xs font-bold text-gray-700 dark:text-gray-300">Review Type</label>
-             <Select
-                options={[
-                  { value: "--", label: "All Types" },
-                  { value: "DIRECTORY", label: "Directory" },
-                  { value: "JOB", label: "Job" }
-                ]}
-                value={reviewType}
-                onChange={setReviewType}
-             />
+            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">Review Type</label>
+            <Select
+              options={[
+                { value: "--", label: "All Types" },
+                { value: "DIRECTORY", label: "Directory" },
+                { value: "JOB", label: "Job" }
+              ]}
+              value={reviewType}
+              onChange={setReviewType}
+            />
           </div>
           <div className="flex flex-col gap-1.5">
-             <label className="text-xs font-bold text-gray-700 dark:text-gray-300">Moderation</label>
-             <Select
-                options={[
-                  { value: "--", label: "All" },
-                  { value: "AUTO", label: "Auto" },
-                  { value: "MANUAL", label: "Manual" }
-                ]}
-                value={moderationType}
-                onChange={setModerationType}
-             />
+            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">Moderation</label>
+            <Select
+              options={[
+                { value: "--", label: "All" },
+                { value: "AUTO", label: "Auto" },
+                { value: "MANUAL", label: "Manual" }
+              ]}
+              value={moderationType}
+              onChange={setModerationType}
+            />
           </div>
         </div>
       </div>
 
       {/* Main Table Card */}
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-sm flex flex-col">
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-sm flex flex-col">
         <div className="max-w-full overflow-x-auto min-h-[280px]">
           <div className="min-w-[1100px] w-full">
             <Table>
@@ -469,9 +469,8 @@ export default function AllReviewsClient() {
                       <TableRow
                         key={review.id}
                         onClick={() => setSelectedReview(review)}
-                        className={`hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer ${
-                          openDropdownId === review.id ? "relative z-30" : ""
-                        }`}
+                        className={`hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors border-b border-gray-100 dark:border-gray-800/80 cursor-pointer ${openDropdownId === review.id ? "relative z-30" : ""
+                          }`}
                       >
                         {/* Customer */}
                         <TableCell className="px-6 py-3.5 text-start">
@@ -572,11 +571,10 @@ export default function AllReviewsClient() {
                                 e.stopPropagation();
                                 setOpenDropdownId(openDropdownId === review.id ? null : review.id);
                               }}
-                              className={`dropdown-toggle inline-flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 bg-gray-50/50 hover:bg-gray-100 hover:border-gray-300 text-gray-500 hover:text-gray-800 transition-all duration-200 dark:border-gray-800 dark:bg-gray-900/50 dark:hover:bg-gray-800 dark:hover:border-gray-700 dark:text-gray-400 dark:hover:text-white ${
-                                openDropdownId === review.id
-                                  ? "bg-gray-100 border-gray-300 dark:bg-gray-850 dark:border-gray-700 text-gray-800 dark:text-white"
-                                  : ""
-                              }`}
+                              className={`dropdown-toggle inline-flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 bg-gray-50/50 hover:bg-gray-100 hover:border-gray-300 text-gray-500 hover:text-gray-800 transition-all duration-200 dark:border-gray-800 dark:bg-gray-900/50 dark:hover:bg-gray-800 dark:hover:border-gray-700 dark:text-gray-400 dark:hover:text-white ${openDropdownId === review.id
+                                ? "bg-gray-100 border-gray-300 dark:bg-gray-850 dark:border-gray-700 text-gray-800 dark:text-white"
+                                : ""
+                                }`}
                             >
                               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
@@ -586,11 +584,10 @@ export default function AllReviewsClient() {
                             <Dropdown
                               isOpen={openDropdownId === review.id}
                               onClose={() => setOpenDropdownId(null)}
-                              className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${
-                                review.status === "PENDING" && index >= 2 && index >= reviewsList.length - 2
-                                  ? "bottom-full mb-1.5"
-                                  : "top-full mt-1.5"
-                              }`}
+                              className={`w-44 absolute right-0 z-50 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-lg dark:shadow-none p-1.5 ${review.status === "PENDING" && index >= 2 && index >= reviewsList.length - 2
+                                ? "bottom-full mb-1.5"
+                                : "top-full mt-1.5"
+                                }`}
                             >
                               <div onClick={(e) => e.stopPropagation()} className="flex flex-col gap-1">
                                 {review.status === "PENDING" && (
@@ -939,7 +936,7 @@ export default function AllReviewsClient() {
       {/* Rejection Reason Modal */}
       {isRejectModalOpen && (
         <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/40 backdrop-blur-xs">
-          <div className="relative bg-white dark:bg-gray-900 rounded-2xl max-w-md w-full border border-gray-150 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col p-6 m-4 animate-scale-up">
+          <div className="relative bg-white dark:bg-gray-900 rounded-xl max-w-md w-full border border-gray-150 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col p-6 m-4 animate-scale-up">
             <h4 className="text-base font-bold text-gray-900 dark:text-white mb-2">
               Reject Customer Review
             </h4>

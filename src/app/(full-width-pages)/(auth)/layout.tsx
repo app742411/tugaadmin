@@ -20,7 +20,13 @@ export default function AuthLayout({
   const [randomImage, setRandomImage] = useState("/images/grid-image/login1.png");
 
   useEffect(() => {
-    setRandomImage(Math.random() < 0.5 ? "/images/grid-image/login1.png" : "/images/grid-image/login2.png");
+    const images = [
+      "/images/grid-image/login1.png",
+      "/images/grid-image/login2.png",
+      "/images/grid-image/login3.png",
+      "/images/grid-image/login4.png",
+    ];
+    setRandomImage(images[Math.floor(Math.random() * images.length)]);
   }, []);
 
   useEffect(() => {

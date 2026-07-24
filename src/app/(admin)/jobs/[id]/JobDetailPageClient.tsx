@@ -253,7 +253,7 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
             &larr; Back to Jobs
           </Link>
         </div>
-        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-8">
+        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-8">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-500"></div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">Loading job details...</p>
         </div>
@@ -272,7 +272,7 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
             &larr; Back to Jobs
           </Link>
         </div>
-        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-8 text-center">
+        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-8 text-center">
           <div className="p-3 bg-red-50 dark:bg-red-955/20 text-red-500 rounded-full mb-4">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -290,7 +290,7 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
   return (
     <div className="w-full pb-12">
       {/* Premium Glassmorphic Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-gray-200/80 dark:border-gray-802/80 bg-white/70 dark:bg-gray-900/60 backdrop-blur-md p-6 shadow-sm mb-6">
+      <div className="relative overflow-hidden rounded-xl border border-gray-200/80 dark:border-gray-802/80 bg-white/70 dark:bg-gray-900/60 backdrop-blur-md p-6 shadow-sm mb-6">
         <div className="absolute top-0 right-0 w-80 h-32 bg-gradient-to-l from-brand-500/5 to-transparent dark:from-brand-400/5 rounded-full blur-2xl pointer-events-none" />
 
         {/* Navigation Action Links */}
@@ -353,7 +353,7 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
 
         {/* Left Column: Tabbed View (Job Info, Matches, Escalations) */}
         <div className="lg:col-span-8 space-y-6">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-802/80 rounded-3xl shadow-sm overflow-hidden flex flex-col">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-802/80 rounded-xl shadow-sm overflow-hidden flex flex-col">
 
             {/* Pill-Based Tab Selectors */}
             <div className="px-6 pt-5 pb-0 border-b border-gray-100 dark:border-gray-800 bg-gray-50/20 dark:bg-gray-950/10">
@@ -407,7 +407,7 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
                   {/* Job Overview */}
                   <div className="space-y-2">
                     <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider font-mono">Job Description</h3>
-                    <div className="bg-gray-50/50 dark:bg-gray-950/20 p-5 rounded-2xl border border-gray-100 dark:border-gray-805/75 shadow-3xs">
+                    <div className="bg-gray-50/50 dark:bg-gray-950/20 p-5 rounded-xl border border-gray-100 dark:border-gray-805/75 shadow-3xs">
                       <h4 className="text-sm font-bold text-gray-850 dark:text-white mb-2 leading-relaxed">{job.title}</h4>
                       <p className="text-xs text-gray-600 dark:text-gray-350 leading-relaxed">
                         {job.description}
@@ -418,7 +418,7 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
                   {/* Specification grid parameters */}
                   <div className="pt-2">
                     <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider font-mono mb-3">Specification parameters</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-y-5 gap-x-6 p-5 bg-gray-50/20 dark:bg-gray-950/5 rounded-2xl border border-gray-100/50 dark:border-gray-850/30">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-y-5 gap-x-6 p-5 bg-gray-50/20 dark:bg-gray-950/5 rounded-xl border border-gray-100/50 dark:border-gray-850/30">
                       <div>
                         <span className="text-[10px] text-gray-400 uppercase tracking-wider block">Trades Category</span>
                         <span className="text-xs font-bold text-gray-850 dark:text-gray-250 mt-1 block">
@@ -499,7 +499,7 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
                           return (
                             <div
                               key={attach.id}
-                              className="border border-gray-150 dark:border-gray-800 rounded-2xl p-3 flex flex-col justify-between bg-white dark:bg-gray-955/15 text-center group hover:border-brand-500 transition-colors shadow-3xs"
+                              className="border border-gray-150 dark:border-gray-800 rounded-xl p-3 flex flex-col justify-between bg-white dark:bg-gray-955/15 text-center group hover:border-brand-500 transition-colors shadow-3xs"
                             >
                               <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-2 bg-gray-50 dark:bg-gray-950/30 flex items-center justify-center border border-gray-100 dark:border-gray-800">
                                 <img
@@ -547,11 +547,11 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
                   </div>
 
                   {!job.traderMatches || job.traderMatches.length === 0 ? (
-                    <div className="text-center py-12 bg-gray-50/50 dark:bg-gray-950/20 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+                    <div className="text-center py-12 bg-gray-50/50 dark:bg-gray-950/20 rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
                       <p className="text-xs text-gray-400 dark:text-gray-500 italic">No trader matches recorded yet.</p>
                     </div>
                   ) : (
-                    <div className="overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-805/70 shadow-3xs">
+                    <div className="overflow-hidden rounded-xl border border-gray-100 dark:border-gray-805/70 shadow-3xs">
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
@@ -639,11 +639,11 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
                   </div>
 
                   {!job.escalationLogs || job.escalationLogs.length === 0 ? (
-                    <div className="text-center py-12 bg-gray-50/50 dark:bg-gray-950/20 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+                    <div className="text-center py-12 bg-gray-50/50 dark:bg-gray-950/20 rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
                       <p className="text-xs text-gray-400 dark:text-gray-500 italic">No scope escalations logged yet.</p>
                     </div>
                   ) : (
-                    <div className="overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-805/70 shadow-3xs">
+                    <div className="overflow-hidden rounded-xl border border-gray-100 dark:border-gray-805/70 shadow-3xs">
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
@@ -686,7 +686,7 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
         <div className="lg:col-span-4 space-y-6">
 
           {/* Job Administration Card */}
-          <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-802/80 rounded-3xl p-6 shadow-sm space-y-4">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-802/80 rounded-xl p-6 shadow-sm space-y-4">
             <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800 pb-2.5 font-mono">
               Job Administration
             </h3>
@@ -771,13 +771,13 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
           </div>
 
           {/* Customer Details Card */}
-          <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-820/80 rounded-3xl p-6 shadow-sm space-y-4">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-820/80 rounded-xl p-6 shadow-sm space-y-4">
             <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800 pb-2.5 font-mono">
               Customer Details
             </h3>
             {job.customer ? (
               <div className="space-y-4">
-                <div className="flex items-center gap-3 bg-gray-50/20 dark:bg-gray-950/5 p-3 rounded-2xl border border-gray-100/50 dark:border-gray-805/30">
+                <div className="flex items-center gap-3 bg-gray-50/20 dark:bg-gray-950/5 p-3 rounded-xl border border-gray-100/50 dark:border-gray-805/30">
                   <div className="h-11 w-11 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center bg-gray-100 dark:bg-gray-805">
                     {job.customer.profileImage ? (
                       <img
@@ -838,13 +838,13 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
           </div>
 
           {/* Assigned / Manual Distribution Card */}
-          <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-820/80 rounded-3xl p-6 shadow-sm space-y-4">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200/80 dark:border-gray-820/80 rounded-xl p-6 shadow-sm space-y-4">
             <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800 pb-2.5 font-mono">
               Assigned Trader
             </h3>
             {job.selectedTrader ? (
               <div className="space-y-4">
-                <div className="flex items-center gap-3 bg-gray-50/20 dark:bg-gray-950/5 p-3 rounded-2xl border border-gray-100/50 dark:border-gray-805/30">
+                <div className="flex items-center gap-3 bg-gray-50/20 dark:bg-gray-950/5 p-3 rounded-xl border border-gray-100/50 dark:border-gray-805/30">
                   <div className="h-11 w-11 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center bg-gray-100 dark:bg-gray-805">
                     {job.selectedTrader.profileImage ? (
                       <img
@@ -920,7 +920,7 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
                   </div>
 
                   {/* Checklist */}
-                  <div className="max-h-48 overflow-y-auto border border-gray-150 dark:border-gray-800 rounded-2xl divide-y divide-gray-100 dark:divide-gray-850 bg-white dark:bg-gray-950/10 shadow-3xs">
+                  <div className="max-h-48 overflow-y-auto border border-gray-150 dark:border-gray-800 rounded-xl divide-y divide-gray-100 dark:divide-gray-850 bg-white dark:bg-gray-950/10 shadow-3xs">
                     {isLoadingSuggested ? (
                       <div className="p-3 text-center text-xs text-gray-400">Loading suggested traders...</div>
                     ) : filteredSuggestedTraders.length === 0 ? (
@@ -978,7 +978,7 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
                 </form>
               </div>
             ) : (
-              <div className="p-4 bg-gray-50/50 dark:bg-gray-950/20 border border-dashed border-gray-200 dark:border-gray-800 rounded-2xl text-center">
+              <div className="p-4 bg-gray-50/50 dark:bg-gray-950/20 border border-dashed border-gray-200 dark:border-gray-800 rounded-xl text-center">
                 <span className="text-[11px] text-gray-450 dark:text-gray-550 block italic">No trader assigned to this job yet.</span>
               </div>
             )}
@@ -1022,7 +1022,7 @@ export default function JobDetailPageClient({ id }: JobDetailPageClientProps) {
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className="flex items-center gap-3.5 px-4.5 py-3 rounded-2xl shadow-xl border border-gray-200/90 dark:border-gray-805/90 max-w-sm w-full pointer-events-auto transition-all duration-300 bg-white dark:bg-gray-900/95 text-gray-800 dark:text-white"
+            className="flex items-center gap-3.5 px-4.5 py-3 rounded-xl shadow-xl border border-gray-200/90 dark:border-gray-805/90 max-w-sm w-full pointer-events-auto transition-all duration-300 bg-white dark:bg-gray-900/95 text-gray-800 dark:text-white"
           >
             <span className="text-xs font-bold flex-1">{toast.message}</span>
             <button

@@ -55,6 +55,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const login = async (email: string, password: string) => {
     const data = await authService.login(email, password);
+    
+    if (data.user.role !== "ADMIN") {
+      throw new Error("Access denied: Only administrators can log in to this portal.");
+    }
+    
     setToken(data.accessToken);
     setUser(data.user);
   };

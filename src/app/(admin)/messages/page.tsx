@@ -10,8 +10,8 @@ export default function MessagesComingSoonPage() {
 
       <div className="max-w-2xl mx-auto mt-10 text-center">
         {/* Glowing visual container */}
-        <div className="relative w-28 h-28 mx-auto mb-8 flex items-center justify-center rounded-3xl bg-blue-50 dark:bg-blue-950/15 border border-blue-100 dark:border-blue-900/30">
-          <div className="absolute inset-0 rounded-3xl bg-blue-500/10 blur-xl animate-pulse" />
+        <div className="relative w-28 h-28 mx-auto mb-8 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/15 border border-blue-100 dark:border-blue-900/30">
+          <div className="absolute inset-0 rounded-xl bg-blue-500/10 blur-xl animate-pulse" />
           <svg
             className="w-14 h-14 text-blue-500 relative z-10"
             fill="none"
@@ -38,7 +38,7 @@ export default function MessagesComingSoonPage() {
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-3">
           Platform Messaging System
         </h1>
-        
+
         {/* Description */}
         <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto leading-relaxed mb-8">
           A real-time messaging monitor to inspect user conversation logs, trace quote adjustments, filter attachment uploads for security compliance, and support mediator dispute audits.

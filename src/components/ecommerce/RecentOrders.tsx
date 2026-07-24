@@ -74,7 +74,7 @@ const tableData: TraderApplication[] = [
 const PdfIcon = () => (
   <span className="inline-flex items-center justify-center bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-bold px-1.5 py-0.5 rounded gap-1 cursor-pointer hover:bg-rose-100 transition-colors">
     <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="stroke-current">
-      <path d="M1 11V1M9 11V4.5L5.5 1H1" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M1 11V1M9 11V4.5L5.5 1H1" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
     PDF
   </span>
@@ -84,7 +84,7 @@ const PdfIcon = () => (
 const ImgIcon = () => (
   <span className="inline-flex items-center justify-center bg-blue-50 text-blue-600 border border-blue-200 text-[10px] font-bold px-1.5 py-0.5 rounded gap-1 cursor-pointer hover:bg-blue-100 transition-colors">
     <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="stroke-current">
-      <path d="M1 11V1M9 11V4.5L5.5 1H1" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M1 11V1M9 11V4.5L5.5 1H1" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
     IMG
   </span>
@@ -92,7 +92,7 @@ const ImgIcon = () => (
 
 export default function RecentOrders() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 shadow-sm w-full">
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white px-4 pb-3 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 shadow-sm w-full">
       <div className="flex flex-col gap-2 mb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">
