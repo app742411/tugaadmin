@@ -75,7 +75,11 @@ const SubCategoryColumn: React.FC<SubCategoryColumnProps> = ({
           <div className="min-w-0 pr-2">
             <h3 className="text-sm font-bold text-gray-900 dark:text-white">Skill Services</h3>
             <p className="text-[11px] text-gray-400 dark:text-gray-500 truncate">
-              under{" "}
+              {isLoading ? "Loading..." : (
+                <span className="font-bold text-blue-600 dark:text-blue-400">
+                  {skillServices.length} Skill Services
+                </span>
+              )} • under{" "}
               <span className="text-brand-600 dark:text-brand-400 font-semibold">
                 {selectedCategory.name}
               </span>

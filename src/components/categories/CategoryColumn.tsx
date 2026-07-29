@@ -50,7 +50,11 @@ const CategoryColumn: React.FC<CategoryColumnProps> = ({
           <div>
             <h3 className="text-sm font-bold text-gray-900 dark:text-white">Categories</h3>
             <p className="text-[11px] text-gray-400 dark:text-gray-500">
-              {isLoading ? "Loading..." : `${categories.length} total`}
+              {isLoading ? "Loading..." : (
+                <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                  {categories.length} Categories
+                </span>
+              )}
             </p>
           </div>
           <button
