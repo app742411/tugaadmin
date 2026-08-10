@@ -233,9 +233,9 @@ export default function CustomerDetailPageClient({ id }: CustomerDetailPageClien
                 <Badge color={getStatusColor(customer.status)} size="md">
                   Status: {customer.status}
                 </Badge>
-                <Badge color={customer.isVerified ? "success" : "warning"} size="md">
+                {/* <Badge color={customer.isVerified ? "success" : "warning"} size="md">
                   {customer.isVerified ? "Verified" : "Unverified"}
-                </Badge>
+                </Badge> */}
               </div>
 
               {/* Information table */}

@@ -132,11 +132,11 @@ const navGroups: NavGroup[] = [
           { name: "All Reviews", path: "/reviews/all" },
         ],
       },
-      {
-        icon: <InfoIcon />,
-        name: "Disputes",
-        path: "/disputes",
-      },
+      // {
+      //   icon: <InfoIcon />,
+      //   name: "Disputes",
+      //   path: "/disputes",
+      // },
     ],
   },
   {
@@ -157,11 +157,11 @@ const navGroups: NavGroup[] = [
   {
     name: "Support",
     items: [
-      {
-        icon: <ChatIcon />,
-        name: "Messages",
-        path: "/messages",
-      },
+      // {
+      //   icon: <ChatIcon />,
+      //   name: "Messages",
+      //   path: "/messages",
+      // },
       {
         icon: <DocsIcon />,
         name: "FAQs",
@@ -182,11 +182,11 @@ const navGroups: NavGroup[] = [
   {
     name: "Administration",
     items: [
-      {
-        icon: <ModerationIcon />,
-        name: "Moderation",
-        path: "/moderation",
-      },
+      // {
+      //   icon: <ModerationIcon />,
+      //   name: "Moderation",
+      //   path: "/moderation",
+      // },
       {
         icon: <SettingsIcon />,
         name: "Settings",
