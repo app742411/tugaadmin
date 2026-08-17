@@ -56,7 +56,7 @@ export default function MonthlySalesChart() {
         fontSize: "10px",
         fontFamily: "Manrope, sans-serif",
         fontWeight: "bold",
-        colors: ["#374151"]
+        colors: ["#243A24"]
       },
       offsetY: -5,
     },

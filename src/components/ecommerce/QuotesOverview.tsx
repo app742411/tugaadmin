@@ -12,7 +12,7 @@ export default function QuotesOverview() {
       type: "donut",
       fontFamily: "Manrope, sans-serif",
     },
-    colors: ["#6E9625", "#374151", "#D1D5DB"], // Green, Dark Gray, Light Gray
+    colors: ["#6E9625", "#243A24", ""], // Green, Dark Gray, Light Gray
     labels: ["Accepted", "Declined", "Expired"],
     dataLabels: {
       enabled: false,
@@ -33,7 +33,7 @@ export default function QuotesOverview() {
               show: true,
               fontSize: "28px",
               fontWeight: 800,
-              color: "#111827",
+              color: "#243A24",
               offsetY: -10,
               formatter: function (val) {
                 return "4,883";

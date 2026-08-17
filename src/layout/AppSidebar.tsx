@@ -147,11 +147,11 @@ const navGroups: NavGroup[] = [
         name: "Subscriptions",
         path: "/plans",
       },
-      {
-        icon: <PayoutsIcon />,
-        name: "Payouts",
-        path: "/payouts",
-      },
+      // {
+      //   icon: <PayoutsIcon />,
+      //   name: "Payouts",
+      //   path: "/payouts",
+      // },
     ],
   },
   {
@@ -164,7 +164,7 @@ const navGroups: NavGroup[] = [
       // },
       {
         icon: <DocsIcon />,
-        name: "FAQs",
+        name: "Contact",
         path: "/faqs",
       },
       {

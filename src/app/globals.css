@@ -97,7 +97,7 @@
   /* Strong contrast elements / High contrast text */
   --color-gray-800: #1F2937;
   /* Primary Text from Figma mockup */
-  --color-gray-900: #111827;
+  --color-gray-900: #243A24F;
   /* Primary Brand Headings from Figma mockup */
   --color-gray-950: #030712;
   --color-gray-dark: #1F2937;
@@ -863,7 +863,7 @@ span.flatpickr-weekday,
 
 /* Premium Sidebar Style Overrides */
 aside.fixed {
-  background-color: #111827 !important;
+  background-color: #243A24 !important;
   /* Deep Dark Navy/Slate black from Figma mockup */
   color: #9ca3af !important;
   border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
