@@ -281,9 +281,9 @@ export default function PlansPage() {
         </div>
       )}
 
-      {/* Grid List */}
+      {/* Grid List - 1440 Optimized */}
       {!isLoading && !error && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 xl:gap-8">
           {plans.map((plan) => {
             const styles = getTierStyles(plan.name);
             const cyclePrice = getPriceForCycle(plan.prices, billingCycle);
@@ -518,9 +518,9 @@ export default function PlansPage() {
         </div>
       )}
 
-      {/* ─── Edit Modal Overlay ──────────────────────────────────────────────── */}
+      {/* ─── Edit Modal Overlay - 1440 Screen Optimized (z-[999999] above headers) ──────────────── */}
       {editingPlan && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm transition-opacity"
@@ -528,24 +528,33 @@ export default function PlansPage() {
           />
 
           {/* Panel */}
-          <div className="relative w-full max-w-xl bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex flex-col max-h-[90vh]">
-            {/* Header */}
-            <div className="flex items-start justify-between p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50">
-              <div>
-                <span className="inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 border border-brand-200 dark:border-brand-500/20">
-                  Update Plan Settings
-                </span>
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white leading-tight mt-1">
-                  Edit Plan: {editingPlan.name}
-                </h2>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  Update pricing amounts, category quotas, exposure level, and feature flags.
-                </p>
+          <div className="relative w-full max-w-3xl xl:max-w-4xl bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex flex-col max-h-[90vh]">
+            {/* Header (Sticky / Fixed) */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-900/70 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 border border-brand-200/60 dark:border-brand-500/20">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base font-bold text-gray-900 dark:text-white leading-tight">
+                      Edit Plan: {editingPlan.name}
+                    </h2>
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 border border-brand-200 dark:border-brand-500/20">
+                      Settings & Quotas
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    Configure pricing, category quotas, exposure level, and feature limits.
+                  </p>
+                </div>
               </div>
               <button
                 onClick={closeEditModal}
                 disabled={isSaving}
-                className="flex-shrink-0 p-2 rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors"
+                className="p-2 rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -553,346 +562,357 @@ export default function PlansPage() {
               </button>
             </div>
 
-            {/* Form */}
-            <form onSubmit={handleSave} className="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
-              {/* Description & Banner Label */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                    Banner / Badge Label
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={bannerLabel}
-                    onChange={(e) => setBannerLabel(e.target.value)}
-                    disabled={isSaving}
-                    placeholder="e.g. Bronze, Silver, Gold"
-                    className="w-full px-3 py-2 rounded-xl text-sm border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25 focus:border-brand-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                    Exposure / Visibility Level
-                  </label>
-                  <select
-                    value={exposureLevel}
-                    onChange={(e) => setExposureLevel(e.target.value as ExposureLevel)}
-                    disabled={isSaving}
-                    className="w-full px-3 py-2 rounded-xl text-sm border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25"
-                  >
-                    <option value="STANDARD">STANDARD (Normal Directory Ranking)</option>
-                    <option value="INCREASED">INCREASED (Boosted Directory Ranking)</option>
-                    <option value="MAXIMUM">MAXIMUM (Top Priority Ranking)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                  Plan Description
-                </label>
-                <textarea
-                  rows={2}
-                  required
-                  value={formDesc}
-                  onChange={(e) => setFormDesc(e.target.value)}
-                  disabled={isSaving}
-                  className="w-full px-3 py-2 rounded-xl text-sm border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25 focus:border-brand-500 disabled:opacity-60 resize-none"
-                />
-              </div>
-
-              {/* Pricing section */}
-              <div className="bg-gray-50/70 dark:bg-gray-800/40 p-3.5 rounded-xl border border-gray-100 dark:border-gray-800/80">
-                <h4 className="text-xs font-bold text-gray-800 dark:text-gray-200 mb-2 flex items-center gap-1.5">
-                  <svg className="w-3.5 h-3.5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Pricing Amounts (EUR €)
-                </h4>
-                <div className="grid grid-cols-2 gap-3">
-                  {/* Monthly Price */}
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1">
-                      Monthly Price (€)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      required
-                      value={monthlyPrice}
-                      onChange={(e) => setMonthlyPrice(Number(e.target.value))}
-                      disabled={isSaving}
-                      className="w-full px-3 py-2 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25"
-                    />
-                  </div>
-
-                  {/* Yearly Price */}
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1">
-                      Yearly Price (€)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      required
-                      value={yearlyPrice}
-                      onChange={(e) => setYearlyPrice(Number(e.target.value))}
-                      disabled={isSaving}
-                      className="w-full px-3 py-2 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Trade Categories & Quotas */}
-              <div className="bg-gray-50/70 dark:bg-gray-800/40 p-3.5 rounded-xl border border-gray-100 dark:border-gray-800/80 space-y-3">
-                <h4 className="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
-                  <svg className="w-3.5 h-3.5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                  Category Limits & Quotas
-                </h4>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {/* Max Trade Categories */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400">
-                        Max Trades / Categories
-                      </label>
-                      <label className="flex items-center gap-1 text-[10px] text-gray-500 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={unlimitedTrades}
-                          onChange={(e) => setUnlimitedTrades(e.target.checked)}
-                          className="rounded text-brand-600 focus:ring-brand-500"
-                        />
-                        <span>Unlimited</span>
-                      </label>
-                    </div>
-                    <input
-                      type="number"
-                      min={1}
-                      disabled={isSaving || unlimitedTrades}
-                      required={!unlimitedTrades}
-                      value={unlimitedTrades ? 9999 : maxTrades}
-                      onChange={(e) => setMaxTrades(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:opacity-75"
-                    />
-                  </div>
-
-                  {/* Max Portfolio Uploads */}
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1">
-                      Max Portfolios
-                    </label>
-                    <input
-                      type="number"
-                      min={0}
-                      required
-                      value={maxPortfolioUploads}
-                      onChange={(e) => setMaxPortfolioUploads(Number(e.target.value))}
-                      disabled={isSaving}
-                      className="w-full px-3 py-2 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25"
-                    />
-                  </div>
-
-                  {/* Max Quotes per Day */}
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1">
-                      Max Quotes/Day
-                    </label>
-                    <input
-                      type="number"
-                      min={0}
-                      required
-                      value={maxQuotesPerDay}
-                      onChange={(e) => setMaxQuotesPerDay(Number(e.target.value))}
-                      disabled={isSaving}
-                      className="w-full px-3 py-2 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Free Trial & Support */}
-              <div className="bg-gray-50/70 dark:bg-gray-800/40 p-3.5 rounded-xl border border-gray-100 dark:border-gray-800/80 space-y-3">
-                <h4 className="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
-                  <svg className="w-3.5 h-3.5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Trial & Support Settings
-                </h4>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* Trial Days */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400">
-                        Trial Days
-                      </label>
-                      <label className="flex items-center gap-1 text-[10px] text-gray-500 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={trialEnabled}
-                          onChange={(e) => setTrialEnabled(e.target.checked)}
-                          className="rounded text-brand-600 focus:ring-brand-500"
-                        />
-                        <span>Enable Trial</span>
-                      </label>
-                    </div>
-                    <input
-                      type="number"
-                      min={0}
-                      disabled={isSaving || !trialEnabled}
-                      value={trialDays}
-                      onChange={(e) => setTrialDays(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:opacity-75"
-                    />
-                  </div>
-
-                  {/* Customer Support Days */}
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1">
-                      Customer Support (Days/Week)
-                    </label>
-                    <input
-                      type="number"
-                      min={1}
-                      max={7}
-                      required
-                      value={customerSupportDays}
-                      onChange={(e) => setCustomerSupportDays(Number(e.target.value))}
-                      disabled={isSaving}
-                      className="w-full px-3 py-2 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Toggles Group */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                {/* Allow Portfolio Videos */}
-                <div className="flex items-center justify-between p-3 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-white/[0.02]">
-                  <div>
-                    <h5 className="text-xs font-semibold text-gray-800 dark:text-white">Allow Video Uploads</h5>
-                    <p className="text-[10px] text-gray-400">Enable video showcase in portfolio</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setAllowPortfolioVideos(!allowPortfolioVideos)}
-                    disabled={isSaving}
-                    className={`relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                      allowPortfolioVideos ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-700"
-                    }`}
-                  >
-                    <span
-                      className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                        allowPortfolioVideos ? "translate-x-5" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                {/* Featured At Top */}
-                <div className="flex items-center justify-between p-3 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-white/[0.02]">
-                  <div>
-                    <h5 className="text-xs font-semibold text-gray-800 dark:text-white">Featured At Top</h5>
-                    <p className="text-[10px] text-gray-400">Priority placement across portal</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setFeaturedAtTop(!featuredAtTop)}
-                    disabled={isSaving}
-                    className={`relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                      featuredAtTop ? "bg-amber-500" : "bg-gray-300 dark:bg-gray-700"
-                    }`}
-                  >
-                    <span
-                      className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                        featuredAtTop ? "translate-x-5" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                {/* New Job Alerts */}
-                <div className="flex items-center justify-between p-3 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-white/[0.02]">
-                  <div>
-                    <h5 className="text-xs font-semibold text-gray-800 dark:text-white">Instant Job Alerts</h5>
-                    <p className="text-[10px] text-gray-400">Push notifications for leads</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setNewJobAlerts(!newJobAlerts)}
-                    disabled={isSaving}
-                    className={`relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                      newJobAlerts ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-700"
-                    }`}
-                  >
-                    <span
-                      className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                        newJobAlerts ? "translate-x-5" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                {/* Plan Active Status */}
-                <div className="flex items-center justify-between p-3 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-white/[0.02]">
-                  <div>
-                    <h5 className="text-xs font-semibold text-gray-800 dark:text-white">Plan Active</h5>
-                    <p className="text-[10px] text-gray-400">Available to subscription buyers</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setIsActive(!isActive)}
-                    disabled={isSaving}
-                    className={`relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                      isActive ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-700"
-                    }`}
-                  >
-                    <span
-                      className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                        isActive ? "translate-x-5" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
-                <button
-                  type="button"
-                  onClick={closeEditModal}
-                  disabled={isSaving}
-                  className="flex-1 px-4 py-2.5 rounded-xl text-xs font-semibold border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors disabled:opacity-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSaving}
-                  className="flex-1 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#1a2e05] dark:bg-brand-500 hover:bg-[#243d07] dark:hover:bg-brand-600 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
-                >
-                  {isSaving ? (
-                    <>
-                      <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            {/* Form - 2 Column Layout for 1440 screens */}
+            <form id="edit-plan-form" onSubmit={handleSave} className="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                {/* Left Column: Plan Information & Pricing */}
+                <div className="space-y-4">
+                  {/* General Info Card */}
+                  <div className="p-4 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30 space-y-3">
+                    <h4 className="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                      <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      Saving Changes...
-                    </>
-                  ) : (
-                    "Save Changes"
-                  )}
-                </button>
+                      Plan Information
+                    </h4>
+
+                    <div>
+                      <label className="block text-[11px] font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Banner / Badge Label
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={bannerLabel}
+                        onChange={(e) => setBannerLabel(e.target.value)}
+                        disabled={isSaving}
+                        placeholder="e.g. Bronze, Silver, Gold"
+                        className="w-full px-3 py-2 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Exposure / Visibility Level
+                      </label>
+                      <select
+                        value={exposureLevel}
+                        onChange={(e) => setExposureLevel(e.target.value as ExposureLevel)}
+                        disabled={isSaving}
+                        className="w-full px-3 py-2 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25"
+                      >
+                        <option value="STANDARD">STANDARD (Normal Directory Ranking)</option>
+                        <option value="INCREASED">INCREASED (Boosted Directory Ranking)</option>
+                        <option value="MAXIMUM">MAXIMUM (Top Priority Ranking)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Plan Description
+                      </label>
+                      <textarea
+                        rows={2}
+                        required
+                        value={formDesc}
+                        onChange={(e) => setFormDesc(e.target.value)}
+                        disabled={isSaving}
+                        className="w-full px-3 py-2 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25 disabled:opacity-60 resize-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Pricing Card */}
+                  <div className="p-4 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30 space-y-3">
+                    <h4 className="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                      <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Pricing (EUR €)
+                    </h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1">
+                          Monthly (€)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          required
+                          value={monthlyPrice}
+                          onChange={(e) => setMonthlyPrice(Number(e.target.value))}
+                          disabled={isSaving}
+                          className="w-full px-3 py-2 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1">
+                          Yearly (€)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          required
+                          value={yearlyPrice}
+                          onChange={(e) => setYearlyPrice(Number(e.target.value))}
+                          disabled={isSaving}
+                          className="w-full px-3 py-2 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Column: Quotas, Trials & Feature Flags */}
+                <div className="space-y-4">
+                  {/* Category Limits & Quotas */}
+                  <div className="p-4 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30 space-y-3">
+                    <h4 className="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                      <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                      Category Limits & Quotas
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400">
+                            Max Trades
+                          </label>
+                          <label className="flex items-center gap-1 text-[10px] text-gray-500 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={unlimitedTrades}
+                              onChange={(e) => setUnlimitedTrades(e.target.checked)}
+                              className="rounded text-brand-600 focus:ring-brand-500"
+                            />
+                            <span>All</span>
+                          </label>
+                        </div>
+                        <input
+                          type="number"
+                          min={1}
+                          disabled={isSaving || unlimitedTrades}
+                          required={!unlimitedTrades}
+                          value={unlimitedTrades ? 9999 : maxTrades}
+                          onChange={(e) => setMaxTrades(Number(e.target.value))}
+                          className="w-full px-2.5 py-1.5 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:opacity-75"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1">
+                          Portfolios
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          required
+                          value={maxPortfolioUploads}
+                          onChange={(e) => setMaxPortfolioUploads(Number(e.target.value))}
+                          disabled={isSaving}
+                          className="w-full px-2.5 py-1.5 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1">
+                          Quotes/Day
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          required
+                          value={maxQuotesPerDay}
+                          onChange={(e) => setMaxQuotesPerDay(Number(e.target.value))}
+                          disabled={isSaving}
+                          className="w-full px-2.5 py-1.5 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Free Trial & Support */}
+                  <div className="p-4 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30 space-y-3">
+                    <h4 className="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                      <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Trial & Support Settings
+                    </h4>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400">
+                            Trial Days
+                          </label>
+                          <label className="flex items-center gap-1 text-[10px] text-gray-500 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={trialEnabled}
+                              onChange={(e) => setTrialEnabled(e.target.checked)}
+                              className="rounded text-brand-600 focus:ring-brand-500"
+                            />
+                            <span>Enable</span>
+                          </label>
+                        </div>
+                        <input
+                          type="number"
+                          min={0}
+                          disabled={isSaving || !trialEnabled}
+                          value={trialDays}
+                          onChange={(e) => setTrialDays(Number(e.target.value))}
+                          className="w-full px-2.5 py-1.5 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:opacity-75"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1">
+                          Support (Days/Wk)
+                        </label>
+                        <input
+                          type="number"
+                          min={1}
+                          max={7}
+                          required
+                          value={customerSupportDays}
+                          onChange={(e) => setCustomerSupportDays(Number(e.target.value))}
+                          disabled={isSaving}
+                          className="w-full px-2.5 py-1.5 rounded-lg text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/25"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 4 Feature Toggles Grid */}
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {/* Allow Video Uploads */}
+                    <div className="flex items-center justify-between p-2.5 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800/60 shadow-xs">
+                      <div>
+                        <h5 className="text-[11px] font-semibold text-gray-800 dark:text-white">Video Uploads</h5>
+                        <p className="text-[9px] text-gray-400">Showcase videos</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setAllowPortfolioVideos(!allowPortfolioVideos)}
+                        disabled={isSaving}
+                        className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ${
+                          allowPortfolioVideos ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-700"
+                        }`}
+                      >
+                        <span
+                          className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ${
+                            allowPortfolioVideos ? "translate-x-4" : "translate-x-0"
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Featured At Top */}
+                    <div className="flex items-center justify-between p-2.5 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800/60 shadow-xs">
+                      <div>
+                        <h5 className="text-[11px] font-semibold text-gray-800 dark:text-white">Top Featured</h5>
+                        <p className="text-[9px] text-gray-400">Search ranking</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setFeaturedAtTop(!featuredAtTop)}
+                        disabled={isSaving}
+                        className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ${
+                          featuredAtTop ? "bg-amber-500" : "bg-gray-300 dark:bg-gray-700"
+                        }`}
+                      >
+                        <span
+                          className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ${
+                            featuredAtTop ? "translate-x-4" : "translate-x-0"
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* New Job Alerts */}
+                    <div className="flex items-center justify-between p-2.5 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800/60 shadow-xs">
+                      <div>
+                        <h5 className="text-[11px] font-semibold text-gray-800 dark:text-white">Instant Alerts</h5>
+                        <p className="text-[9px] text-gray-400">Lead notifications</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setNewJobAlerts(!newJobAlerts)}
+                        disabled={isSaving}
+                        className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ${
+                          newJobAlerts ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-700"
+                        }`}
+                      >
+                        <span
+                          className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ${
+                            newJobAlerts ? "translate-x-4" : "translate-x-0"
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Plan Active Status */}
+                    <div className="flex items-center justify-between p-2.5 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800/60 shadow-xs">
+                      <div>
+                        <h5 className="text-[11px] font-semibold text-gray-800 dark:text-white">Plan Active</h5>
+                        <p className="text-[9px] text-gray-400">Buyer availability</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setIsActive(!isActive)}
+                        disabled={isSaving}
+                        className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ${
+                          isActive ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-700"
+                        }`}
+                      >
+                        <span
+                          className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ${
+                            isActive ? "translate-x-4" : "translate-x-0"
+                          }`}
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </form>
+
+            {/* Sticky / Fixed Footer Action Buttons */}
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-900/80 shrink-0">
+              <button
+                type="button"
+                onClick={closeEditModal}
+                disabled={isSaving}
+                className="px-5 py-2.5 rounded-xl text-xs font-semibold border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/[0.04] transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                form="edit-plan-form"
+                disabled={isSaving}
+                className="px-6 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#1a2e05] dark:bg-brand-500 hover:bg-[#243d07] dark:hover:bg-brand-600 transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+              >
+                {isSaving ? (
+                  <>
+                    <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Saving Changes...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

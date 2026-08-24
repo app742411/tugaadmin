@@ -122,11 +122,11 @@ export const EcommerceMetrics = () => {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap- sm:grid-cols-3 xl:grid-cols-6 md:gap-3 w-full">
+    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 xl:gap-3.5 w-full">
       {metrics.map((item, index) => (
         <div
           key={index}
-          className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900 flex flex-col justify-between"
+          className="rounded-xl border border-gray-100 bg-white p-3.5 sm:p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900 flex flex-col justify-between"
         >
           <div className="flex items-start justify-between">
             <div className={`flex items-center justify-center w-10 h-10 rounded-lg ${item.bg}`}>

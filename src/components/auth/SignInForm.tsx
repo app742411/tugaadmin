@@ -40,8 +40,8 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="flex flex-col flex-1 lg:w-1/2 w-full items-center justify-center p-6 sm:p-12">
-      <div className="w-full max-w-[420px] bg-white rounded-xl sm:shadow-[0_8px_40px_rgb(0,0,0,0.04)] sm:p-10 border border-gray-100/50">
+    <div className="flex flex-col flex-1 lg:w-1/2 w-full items-center justify-center p-6 sm:p-10 xl:p-16">
+      <div className="w-full max-w-[420px] xl:max-w-[460px] bg-white rounded-2xl sm:shadow-[0_8px_40px_rgb(0,0,0,0.04)] sm:p-10 xl:p-12 border border-gray-100/70">
 
         {/* Logo Section */}
         <div className="flex items-center gap-2 mb-8">

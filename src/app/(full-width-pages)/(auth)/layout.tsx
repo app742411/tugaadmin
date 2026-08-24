@@ -72,15 +72,15 @@ export default function AuthLayout({
             <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/80 via-black/40 to-black/10"></div>
 
             {/* Text Content */}
-            <div className="absolute bottom-0 left-0 z-30 w-full p-12 md:p-16 text-white">
-              <div className="w-12 h-1 bg-green-500 rounded mb-8"></div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-[1.15] text-white">
+            <div className="absolute bottom-0 left-0 z-30 w-full p-10 md:p-14 xl:p-16 2xl:p-20 text-white">
+              <div className="w-12 h-1 bg-green-500 rounded mb-6 xl:mb-8"></div>
+              <h1 className="text-3xl md:text-4xl xl:text-5xl font-bold mb-4 leading-[1.15] text-white">
                 Find trusted <br /> professionals <br /> for every job
               </h1>
-              <p className="text-gray-300 text-lg mb-10 max-w-md">
+              <p className="text-gray-300 text-base xl:text-lg mb-8 xl:mb-10 max-w-md">
                 Compare quotes, hire with confidence, and get your home projects done right.
               </p>
-              <div className="flex items-center gap-4 pt-8 border-t border-white/20">
+              <div className="flex items-center gap-4 pt-6 xl:pt-8 border-t border-white/20">
                 <div className="flex -space-x-3">
                   <div className="relative w-10 h-10 rounded-full border-2 border-brand-950 overflow-hidden">
                     <Image fill src="/images/user/user-01.jpg" alt="User" className="object-cover" />

@@ -60,7 +60,7 @@ export default function AdminLayout({
         {/* Header */}
         <AppHeader />
         {/* Page Content */}
-        <div className="p-4 mx-auto max-w-full md:p-6">{children}</div>
+        <div className="p-4 mx-auto max-w-full md:p-6 xl:p-8 2xl:px-10">{children}</div>
       </div>
     </div>
   );
