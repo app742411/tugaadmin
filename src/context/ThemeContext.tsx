@@ -15,18 +15,22 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [theme, setTheme] = useState<Theme>("light");
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [theme] = useState<Theme>("light");
 
   useEffect(() => {
-    // This code will only run on the client side
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    const initialTheme = savedTheme || "light"; // Default to light theme
+    // Force light mode and remove dark class from root
+    document.documentElement.classList.remove("dark");
 
+    /*
+    // Dark mode local storage reading disabled:
+    const savedTheme = localStorage.getItem("theme") as Theme | null;
+    const initialTheme = savedTheme || "light";
     setTheme(initialTheme);
-    setIsInitialized(true);
+    */
   }, []);
 
+  /*
+  // Dark mode local storage persistence disabled:
   useEffect(() => {
     if (isInitialized) {
       localStorage.setItem("theme", theme);
@@ -37,9 +41,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     }
   }, [theme, isInitialized]);
+  */
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+    // Dark mode toggling disabled:
+    // setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
   return (

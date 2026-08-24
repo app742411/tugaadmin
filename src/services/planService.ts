@@ -1,5 +1,5 @@
 import { apiClient } from "./apiClient";
-import { PlanItem } from "@/types/plan.types";
+import { PlanItem, UpdatePlanDto } from "@/types/plan.types";
 
 export const planService = {
   /** Fetch all subscription plans (Bronze, Silver, Gold) with pricing details */
@@ -16,9 +16,10 @@ export const planService = {
   },
 
   /** Update an existing plan by ID */
-  updatePlan: async (id: string, data: any): Promise<PlanItem> => {
+  updatePlan: async (id: string, data: UpdatePlanDto): Promise<PlanItem> => {
     const res = await apiClient.patch<any>(`/api/admin-plan/${id}`, data);
     const body = res.data;
     return body?.data ?? body;
   },
 };
+
