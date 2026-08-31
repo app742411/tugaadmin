@@ -122,27 +122,28 @@ export const EcommerceMetrics = () => {
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 xl:gap-3.5 w-full">
+    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-2.5 sm:gap-3 w-full">
       {metrics.map((item, index) => (
         <div
           key={index}
-          className="rounded-xl border border-gray-100 bg-white p-3.5 sm:p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900 flex flex-col justify-between"
+          className="rounded-xl border border-gray-100 bg-white p-3 sm:p-3.5 shadow-xs dark:border-gray-800 dark:bg-gray-900 flex flex-col justify-between"
         >
-          <div className="flex items-start justify-between">
-            <div className={`flex items-center justify-center w-10 h-10 rounded-lg ${item.bg}`}>
+          <div className="flex items-start justify-between gap-1.5">
+            <div className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg shrink-0 ${item.bg}`}>
               {item.icon}
             </div>
-            <div className="flex flex-col items-end">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+            <div className="flex flex-col items-end min-w-0">
+              <span className="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5 truncate max-w-full">
                 {item.title}
               </span>
-              <div className="flex items-baseline gap-2">
-                <span className="font-bold text-gray-900 text-lg dark:text-white">
+              <div className="flex items-baseline gap-1.5 flex-wrap justify-end">
+                <span className="font-bold text-gray-900 text-base sm:text-lg dark:text-white">
                   {item.value}
                 </span>
                 <span
-                  className={`text-xs font-semibold flex items-center ${item.isPositive ? "text-green-500" : "text-red-500"
-                    }`}
+                  className={`text-[11px] sm:text-xs font-semibold flex items-center ${
+                    item.isPositive ? "text-green-500" : "text-red-500"
+                  }`}
                 >
                   {item.isPositive ? (
                     <svg className="w-3 h-3 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
@@ -152,7 +153,7 @@ export const EcommerceMetrics = () => {
                   {item.change}
                 </span>
               </div>
-              <span className="text-[10px] text-gray-400 mt-0.5">vs last month</span>
+              <span className="text-[9px] text-gray-400 mt-0.5">vs last month</span>
             </div>
           </div>
 

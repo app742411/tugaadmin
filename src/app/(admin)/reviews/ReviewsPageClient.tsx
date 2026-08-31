@@ -292,49 +292,49 @@ export default function ReviewsPageClient() {
       {/* Main Table Card */}
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 shadow-sm flex flex-col">
         <div className="max-w-full overflow-x-auto min-h-[280px]">
-          <div className="min-w-[1100px] w-full">
-            <Table>
+          <div className="w-full min-w-full">
+            <Table className="w-full table-auto">
               <TableHeader className="border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/20">
                 <TableRow>
                   <TableCell
                     isHeader
-                    className="px-6 py-4 font-bold text-gray-600 text-start text-xs uppercase tracking-wider dark:text-gray-400"
+                    className="px-3 sm:px-4 py-3.5 font-bold text-gray-600 text-start text-xs uppercase tracking-wider dark:text-gray-400 whitespace-nowrap"
                   >
                     Customer
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-6 py-4 font-bold text-gray-600 text-start text-xs uppercase tracking-wider dark:text-gray-400"
+                    className="px-3 sm:px-4 py-3.5 font-bold text-gray-600 text-start text-xs uppercase tracking-wider dark:text-gray-400 whitespace-nowrap"
                   >
                     Trader
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-6 py-4 font-bold text-gray-600 text-start text-xs uppercase tracking-wider dark:text-gray-400"
+                    className="px-3 sm:px-4 py-3.5 font-bold text-gray-600 text-start text-xs uppercase tracking-wider dark:text-gray-400 whitespace-nowrap"
                   >
                     Rating & Title
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-6 py-4 font-bold text-gray-600 text-start text-xs uppercase tracking-wider dark:text-gray-400"
+                    className="px-3 sm:px-4 py-3.5 font-bold text-gray-600 text-start text-xs uppercase tracking-wider dark:text-gray-400 whitespace-nowrap"
                   >
                     Review Comment
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-6 py-4 font-bold text-gray-600 text-center text-xs uppercase tracking-wider dark:text-gray-400"
+                    className="px-2 sm:px-3 py-3.5 font-bold text-gray-600 text-center text-xs uppercase tracking-wider dark:text-gray-400 whitespace-nowrap"
                   >
                     Proofs
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-6 py-4 font-bold text-gray-600 text-start text-xs uppercase tracking-wider dark:text-gray-400"
+                    className="px-3 sm:px-4 py-3.5 font-bold text-gray-600 text-start text-xs uppercase tracking-wider dark:text-gray-400 whitespace-nowrap"
                   >
                     Submitted At
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-6 py-4 font-bold text-gray-600 text-center text-xs uppercase tracking-wider dark:text-gray-400"
+                    className="px-2 sm:px-3 py-3.5 font-bold text-gray-600 text-center text-xs uppercase tracking-wider dark:text-gray-400 whitespace-nowrap"
                   >
                     Actions
                   </TableCell>
@@ -432,10 +432,10 @@ export default function ReviewsPageClient() {
                           }`}
                       >
                         {/* Customer */}
-                        <TableCell className="px-6 py-3.5 text-start">
-                          <div className="flex items-center gap-3">
+                        <TableCell className="px-3 sm:px-4 py-3 text-start">
+                          <div className="flex items-center gap-2.5">
                             {review.customer.profileImage ? (
-                              <div className="w-9 h-9 overflow-hidden rounded-full border border-gray-100 dark:border-gray-800 flex-shrink-0">
+                              <div className="w-8 h-8 overflow-hidden rounded-full border border-gray-100 dark:border-gray-800 flex-shrink-0">
                                 <img
                                   src={getFormattedImageUrl(review.customer.profileImage)}
                                   alt={review.customer.fullName}
@@ -444,16 +444,16 @@ export default function ReviewsPageClient() {
                               </div>
                             ) : (
                               <div
-                                className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-[11px] flex-shrink-0 ${custColor}`}
+                                className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-[11px] flex-shrink-0 ${custColor}`}
                               >
                                 {custInit}
                               </div>
                             )}
                             <div className="flex flex-col min-w-0">
-                              <span className="font-semibold text-gray-800 dark:text-white/90 text-sm truncate">
+                              <span className="font-semibold text-gray-800 dark:text-white/90 text-xs sm:text-sm truncate">
                                 {review.customer.fullName}
                               </span>
-                              <span className="text-gray-400 dark:text-gray-500 text-xs truncate">
+                              <span className="text-gray-400 dark:text-gray-500 text-[11px] truncate">
                                 {review.customer.email}
                               </span>
                             </div>
@@ -461,10 +461,10 @@ export default function ReviewsPageClient() {
                         </TableCell>
 
                         {/* Trader */}
-                        <TableCell className="px-6 py-3.5 text-start">
-                          <div className="flex items-center gap-3">
+                        <TableCell className="px-3 sm:px-4 py-3 text-start">
+                          <div className="flex items-center gap-2.5">
                             {review.trader.profileImage ? (
-                              <div className="w-9 h-9 overflow-hidden rounded-full border border-gray-100 dark:border-gray-800 flex-shrink-0">
+                              <div className="w-8 h-8 overflow-hidden rounded-full border border-gray-100 dark:border-gray-800 flex-shrink-0">
                                 <img
                                   src={getFormattedImageUrl(review.trader.profileImage)}
                                   alt={review.trader.fullName}
@@ -473,16 +473,16 @@ export default function ReviewsPageClient() {
                               </div>
                             ) : (
                               <div
-                                className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-[11px] flex-shrink-0 ${tradColor}`}
+                                className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-[11px] flex-shrink-0 ${tradColor}`}
                               >
                                 {tradInit}
                               </div>
                             )}
                             <div className="flex flex-col min-w-0">
-                              <span className="font-semibold text-gray-800 dark:text-white/90 text-sm truncate">
+                              <span className="font-semibold text-gray-800 dark:text-white/90 text-xs sm:text-sm truncate">
                                 {review.trader.fullName}
                               </span>
-                              <span className="text-gray-400 dark:text-gray-500 text-xs truncate">
+                              <span className="text-gray-400 dark:text-gray-500 text-[11px] truncate">
                                 {review.trader.email}
                               </span>
                             </div>
@@ -490,24 +490,24 @@ export default function ReviewsPageClient() {
                         </TableCell>
 
                         {/* Rating & Title */}
-                        <TableCell className="px-6 py-3.5 text-start">
+                        <TableCell className="px-3 sm:px-4 py-3 text-start">
                           <div className="flex flex-col gap-1">
                             {renderStars(review.rating)}
-                            <span className="font-semibold text-gray-800 dark:text-white text-xs truncate max-w-[150px]">
+                            <span className="font-semibold text-gray-800 dark:text-white text-xs truncate max-w-[130px]">
                               {review.title}
                             </span>
                           </div>
                         </TableCell>
 
                         {/* Review text */}
-                        <TableCell className="px-6 py-3.5 text-start text-sm text-gray-500 dark:text-gray-400 font-normal">
-                          <p className="line-clamp-2 max-w-[300px] break-words">
+                        <TableCell className="px-3 sm:px-4 py-3 text-start text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-normal">
+                          <p className="line-clamp-2 max-w-[180px] xl:max-w-[220px] break-words">
                             {review.review}
                           </p>
                         </TableCell>
 
                         {/* Proofs count */}
-                        <TableCell className="px-6 py-3.5 text-center">
+                        <TableCell className="px-2 sm:px-3 py-3 text-center">
                           {review.proofs && review.proofs.length > 0 ? (
                             <Badge color="info" size="sm" variant="light">
                               📎 {review.proofs.length} Proof{review.proofs.length > 1 ? "s" : ""}
@@ -518,12 +518,12 @@ export default function ReviewsPageClient() {
                         </TableCell>
 
                         {/* Submitted Date */}
-                        <TableCell className="px-6 py-3.5 text-start text-gray-500 dark:text-gray-400 text-sm">
+                        <TableCell className="px-3 sm:px-4 py-3 text-start text-gray-500 dark:text-gray-400 text-xs whitespace-nowrap">
                           {formatDate(review.createdAt)}
                         </TableCell>
 
                         {/* Actions */}
-                        <TableCell className="px-6 py-3.5 text-center" onClick={(e) => e.stopPropagation()}>
+                        <TableCell className="px-2 sm:px-3 py-3 text-center" onClick={(e) => e.stopPropagation()}>
                           <div className="relative inline-block text-left">
                             <button
                               onClick={(e) => {

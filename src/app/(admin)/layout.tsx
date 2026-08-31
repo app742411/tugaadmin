@@ -27,8 +27,8 @@ export default function AdminLayout({
   const mainContentMargin = isMobileOpen
     ? "ml-0"
     : isExpanded || isHovered
-      ? "lg:ml-[290px]"
-      : "lg:ml-[90px]";
+      ? "lg:ml-[240px]"
+      : "lg:ml-[80px]";
 
   if (isLoading) {
     return (
@@ -49,18 +49,18 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen xl:flex">
+    <div className="min-h-screen flex flex-col lg:flex-row w-full max-w-full overflow-x-hidden">
       {/* Sidebar and Backdrop */}
       <AppSidebar />
       <Backdrop />
       {/* Main Content Area */}
       <div
-        className={`flex-1 transition-all  duration-300 ease-in-out ${mainContentMargin}`}
+        className={`flex-1 min-w-0 max-w-full overflow-x-hidden transition-all duration-300 ease-in-out ${mainContentMargin}`}
       >
         {/* Header */}
         <AppHeader />
         {/* Page Content */}
-        <div className="p-4 mx-auto max-w-full md:p-6 xl:p-8 2xl:px-10">{children}</div>
+        <div className="p-4 mx-auto max-w-full md:p-6 xl:p-8 2xl:px-10 overflow-x-hidden">{children}</div>
       </div>
     </div>
   );

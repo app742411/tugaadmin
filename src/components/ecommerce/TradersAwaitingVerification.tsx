@@ -106,37 +106,31 @@ export default function TradersAwaitingVerification() {
         </div>
       </div>
 
-      <div className="max-w-full overflow-x-auto flex-1">
-        <Table>
+      <div className="max-w-full overflow-x-auto flex-1 custom-scrollbar">
+        <Table className="min-w-[500px] w-full">
           <TableHeader className="border-gray-100 dark:border-gray-800 border-b">
             <TableRow>
               <TableCell
                 isHeader
-                className="py-3 font-semibold text-gray-400 text-start text-[10px] uppercase tracking-wider dark:text-gray-500"
+                className="py-3 px-3 sm:px-4 font-semibold text-gray-400 text-start text-[10px] uppercase tracking-wider dark:text-gray-500 whitespace-nowrap"
               >
                 TRADER
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 font-semibold text-gray-400 text-start text-[10px] uppercase tracking-wider dark:text-gray-500"
+                className="py-3 px-3 sm:px-4 font-semibold text-gray-400 text-start text-[10px] uppercase tracking-wider dark:text-gray-500 whitespace-nowrap"
               >
                 TRADE
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 font-semibold text-gray-400 text-start text-[10px] uppercase tracking-wider dark:text-gray-500"
+                className="py-3 px-3 sm:px-4 font-semibold text-gray-400 text-start text-[10px] uppercase tracking-wider dark:text-gray-500 whitespace-nowrap"
               >
                 SUBMITTED
               </TableCell>
-              {/* <TableCell
-                isHeader
-                className="py-3 font-semibold text-gray-400 text-start text-[10px] uppercase tracking-wider dark:text-gray-500"
-              >
-                DOCUMENTS
-              </TableCell> */}
               <TableCell
                 isHeader
-                className="py-3 font-semibold text-gray-400 text-start text-[10px] uppercase tracking-wider dark:text-gray-500"
+                className="py-3 px-3 sm:px-4 font-semibold text-gray-400 text-start text-[10px] uppercase tracking-wider dark:text-gray-500 whitespace-nowrap"
               >
                 ACTIONS
               </TableCell>
@@ -146,40 +140,33 @@ export default function TradersAwaitingVerification() {
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
             {tableData.map((trader) => (
               <TableRow key={trader.id} className="hover:bg-gray-50/[0.3] dark:hover:bg-white/[0.01] transition-colors border-b border-gray-50">
-                <TableCell className="py-4">
+                <TableCell className="py-3.5 px-3 sm:px-4">
                   <div className="flex items-center gap-3">
-                    <div className={`h-8 w-8 flex items-center justify-center rounded-full text-white font-bold text-xs ${trader.color}`}>
+                    <div className={`h-8 w-8 shrink-0 flex items-center justify-center rounded-full text-white font-bold text-xs ${trader.color}`}>
                       {trader.initials}
                     </div>
-                    <div>
-                      <p className="font-bold text-gray-900 text-sm dark:text-white">
+                    <div className="min-w-0">
+                      <p className="font-bold text-gray-900 text-sm dark:text-white truncate">
                         {trader.name}
                       </p>
-                      <span className="text-gray-400 text-xs dark:text-gray-500 block">
+                      <span className="text-gray-400 text-xs dark:text-gray-500 block truncate">
                         {trader.email}
                       </span>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="py-4 text-gray-700 font-semibold text-sm dark:text-gray-300">
+                <TableCell className="py-3.5 px-3 sm:px-4 text-gray-700 font-semibold text-xs sm:text-sm dark:text-gray-300 whitespace-nowrap">
                   {trader.trade}
                 </TableCell>
-                <TableCell className="py-4 text-gray-500 font-medium text-xs dark:text-gray-400">
+                <TableCell className="py-3.5 px-3 sm:px-4 text-gray-500 font-medium text-xs dark:text-gray-400 whitespace-nowrap">
                   {trader.submitted}
                 </TableCell>
-                {/* <TableCell className="py-4">
-                  <div className="flex items-center gap-1.5">
-                    {trader.docs.map((doc, i) =>
-                      doc === "pdf" ? <PdfIcon key={i} /> : <ImgIcon key={i} />
-                    )}
-                  </div>
-                </TableCell> */}
-                <TableCell className="py-4">
-                  <div className="flex items-center gap-2">
-                    <button className="inline-flex items-center justify-center py-1.5 px-3 font-bold rounded-lg bg-[#6E9625] text-white text-xs hover:bg-[#5a7a1e] transition-colors shadow-sm cursor-pointer">
+                <TableCell className="py-3.5 px-3 sm:px-4 whitespace-nowrap">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <button className="inline-flex items-center justify-center py-1.5 px-3 font-semibold rounded-lg bg-[#6E9625] text-white text-xs hover:bg-[#5a7a1e] transition-colors shadow-xs cursor-pointer">
                       Approve
                     </button>
-                    <button className="inline-flex items-center justify-center py-1.5 px-3 font-bold rounded-lg bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 dark:bg-red-500/10 dark:border-red-500/20 dark:hover:bg-red-500/20 text-xs transition-colors shadow-sm cursor-pointer">
+                    <button className="inline-flex items-center justify-center py-1.5 px-3 font-semibold rounded-lg bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 dark:bg-red-500/10 dark:border-red-500/20 dark:hover:bg-red-500/20 text-xs transition-colors shadow-xs cursor-pointer">
                       Reject
                     </button>
                     <button className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">

@@ -34,13 +34,13 @@ export default function Ecommerce() {
 
       {/* Bottom Row: Traders (6), Revenue (3), Timeline (3) */}
       <div className="grid grid-cols-12 gap-3 items-stretch w-full">
-        <div className="col-span-12 xl:col-span-5">
+        <div className="col-span-12 xl:col-span-6">
           <TradersAwaitingVerification />
         </div>
         <div className="col-span-12 md:col-span-6 xl:col-span-3">
           <RevenueOverview />
         </div>
-        <div className="col-span-12 md:col-span-6 xl:col-span-4">
+        <div className="col-span-12 md:col-span-6 xl:col-span-3">
           <ActivityTimeline />
         </div>
       </div>
