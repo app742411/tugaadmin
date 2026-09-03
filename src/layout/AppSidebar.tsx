@@ -378,26 +378,20 @@ const AppSidebar: React.FC = () => {
         <Link href="/">
           <div className={isExpanded || isHovered || isMobileOpen ? "block" : "hidden"}>
             <Image
-              className="dark:hidden"
-              src="/images/logo/logo.svg"
-              alt="Logo"
+              src="/images/logo/fulllogo.png"
+              alt="Tuga Trades Logo"
               width={150}
               height={40}
-            />
-            <Image
-              className="hidden dark:block"
-              src="/images/logo/logo-dark.svg"
-              alt="Logo"
-              width={150}
-              height={40}
+              className="h-10 w-auto object-contain"
             />
           </div>
           <div className={!isExpanded && !isHovered && !isMobileOpen ? "block" : "hidden"}>
             <Image
-              src="/images/logo/logo-icon.svg"
-              alt="Logo"
+              src="/images/logo/logo.png"
+              alt="Tuga Trades Icon"
               width={32}
               height={32}
+              className="h-8 w-8 object-contain"
             />
           </div>
         </Link>

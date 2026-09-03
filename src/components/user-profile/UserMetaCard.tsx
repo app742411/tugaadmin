@@ -95,7 +95,7 @@ export default function UserMetaCard() {
   };
 
   const getFormattedImageUrl = (url: string | null | undefined) => {
-    if (!url) return "/images/logo/logo-icon.svg";
+    if (!url) return "/images/logo/logo.png";
     if (url.startsWith("data:") || url.startsWith("http://") || url.startsWith("https://")) {
       return url;
     }

@@ -41,7 +41,7 @@ export default function UserDropdown() {
     ? (rawProfileImage.startsWith("data:") || rawProfileImage.startsWith("http")
       ? rawProfileImage
       : `${process.env.NEXT_PUBLIC_API_URL || ""}${rawProfileImage.startsWith("/") ? "" : "/"}${rawProfileImage}`)
-    : "/images/logo/logo-icon.svg";
+    : "/images/logo/logo.png";
 
   return (
     <div className="relative">

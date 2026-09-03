@@ -913,14 +913,6 @@ aside.fixed h2 {
   /* Muted gray caps menu/others headers */
 }
 
-/* Force light logo inside the dark sidebar */
-aside.fixed .dark\:hidden {
-  display: none !important;
-}
-
-aside.fixed .hidden.dark\:block {
-  display: block !important;
-}
 
 /* Premium Primary action buttons (CTA / Review) from Figma mockup */
 button.bg-brand-500,

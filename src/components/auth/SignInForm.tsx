@@ -44,9 +44,14 @@ export default function SignInForm() {
       <div className="w-full max-w-[420px] xl:max-w-[460px] bg-white rounded-2xl sm:shadow-[0_8px_40px_rgb(0,0,0,0.04)] sm:p-10 xl:p-12 border border-gray-100/70">
 
         {/* Logo Section */}
-        <div className="flex items-center gap-2 mb-8">
-          <Image src="/images/logo/logo-icon.svg" alt="TugaTrades Logo" width={36} height={36} className="shrink-0" />
-          <span className="text-2xl font-bold text-gray-800 tracking-tight">Tuga<span className="text-[#648b26]">Trades</span></span>
+        <div className="flex items-center mb-8">
+          <Image
+            src="/images/logo/fulllogo.png"
+            alt="TugaTrades Logo"
+            width={180}
+            height={48}
+            className="h-10 w-auto object-contain"
+          />
         </div>
 
         {/* Heading Section */}
