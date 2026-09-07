@@ -15,7 +15,9 @@ export const metadata: Metadata = {
   },
   description: "Tuga Trades Admin Dashboard",
   icons: {
-    icon: "/images/logo/logo.png",
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
   },
 };
 
