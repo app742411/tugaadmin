@@ -17,6 +17,8 @@ import {
   ChatIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
+import { deactiveAccountService } from "../services/deactiveAccount";
+
 
 const SettingsIcon: React.FC = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-6">
@@ -64,6 +66,7 @@ type NavItem = {
   icon?: React.ReactNode;
   path: string;
   subItems?: NavSubItem[];
+  action?: () => void;
 };
 
 type NavGroup = {
@@ -182,6 +185,11 @@ const navGroups: NavGroup[] = [
   {
     name: "Administration",
     items: [
+      {
+        icon: <UserCircleIcon />,
+        name: "De-Activate Account",
+        path: "/activate-account",
+      },
       // {
       //   icon: <ModerationIcon />,
       //   name: "Moderation",
@@ -241,8 +249,8 @@ const AppSidebar: React.FC = () => {
                         {nav.icon && (
                           <span
                             className={`${isChildActive
-                                ? "menu-item-icon-active"
-                                : "menu-item-icon-inactive"
+                              ? "menu-item-icon-active"
+                              : "menu-item-icon-inactive"
                               }`}
                           >
                             {nav.icon}
@@ -250,8 +258,8 @@ const AppSidebar: React.FC = () => {
                         )}
                         <span
                           className={`menu-item-text ${isExpanded || isHovered || isMobileOpen
-                              ? "inline-block"
-                              : "hidden"
+                            ? "inline-block"
+                            : "hidden"
                             }`}
                         >
                           {nav.name}
@@ -279,8 +287,8 @@ const AppSidebar: React.FC = () => {
                     {isOpen && (
                       <ul
                         className={`pl-6 flex flex-col gap-1 mt-1 border-l border-gray-100 dark:border-gray-800 ml-4 ${isExpanded || isHovered || isMobileOpen
-                            ? "block"
-                            : "hidden"
+                          ? "block"
+                          : "hidden"
                           }`}
                       >
                         {nav.subItems!.map((sub) => (
@@ -288,8 +296,8 @@ const AppSidebar: React.FC = () => {
                             <Link
                               href={sub.path}
                               className={`menu-item text-xs py-2 px-3 rounded-lg ${isActive(sub.path)
-                                  ? "menu-item-active"
-                                  : "menu-item-inactive"
+                                ? "menu-item-active"
+                                : "menu-item-inactive"
                                 }`}
                             >
                               {sub.name}
@@ -306,9 +314,13 @@ const AppSidebar: React.FC = () => {
                 <li key={nav.name}>
                   <Link
                     href={nav.path}
+                    onClick={nav.action ? (e) => {
+                      e.preventDefault();
+                      nav.action!();
+                    } : undefined}
                     className={`menu-item group ${isActive(nav.path)
-                        ? "menu-item-active"
-                        : "menu-item-inactive"
+                      ? "menu-item-active"
+                      : "menu-item-inactive"
                       } ${!nav.icon ? "pl-[52px]" : ""} cursor-pointer ${!isExpanded && !isHovered
                         ? "lg:justify-center"
                         : "lg:justify-start"
@@ -317,8 +329,8 @@ const AppSidebar: React.FC = () => {
                     {nav.icon && (
                       <span
                         className={`${isActive(nav.path)
-                            ? "menu-item-icon-active"
-                            : "menu-item-icon-inactive"
+                          ? "menu-item-icon-active"
+                          : "menu-item-icon-inactive"
                           }`}
                       >
                         {nav.icon}
@@ -326,8 +338,8 @@ const AppSidebar: React.FC = () => {
                     )}
                     <span
                       className={`menu-item-text ${isExpanded || isHovered || isMobileOpen
-                          ? "inline-block"
-                          : "hidden"
+                        ? "inline-block"
+                        : "hidden"
                         }`}
                     >
                       {nav.name}
