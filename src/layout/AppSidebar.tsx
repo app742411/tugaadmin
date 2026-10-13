@@ -190,11 +190,11 @@ const navGroups: NavGroup[] = [
         name: "De-Activate Account",
         path: "/activate-account",
       },
-      // {
-      //   icon: <ModerationIcon />,
-      //   name: "Moderation",
-      //   path: "/moderation",
-      // },
+      {
+        icon: <ModerationIcon />,
+        name: "Moderation",
+        path: "/moderation",
+      },
       {
         icon: <SettingsIcon />,
         name: "Settings",
